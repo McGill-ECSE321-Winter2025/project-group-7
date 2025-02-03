@@ -12,7 +12,7 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
 
     👻Mary, a U2 software engineering student👩‍💻
 
-    Shengyi, a U2 software engineering student👩‍💻
+    🌝Shengyi, a U2 software engineering student👩‍💻
 
     👸🏽Snigdha, a U2 computer engineering sdtuent👩‍💻
 
@@ -22,19 +22,12 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
 **See project reports and meeting minutes on our Wiki**
 
 Table 1 : Roles of each team member Deliverable 1:
-Name | Role | Number of Hours 
---- | --- | --- 
-Artimice | x | n 
-&nbsp; | x | n 
-Brian | x | n 
-&nbsp; | x | n 
-Doddy | x | n 
-&nbsp; | x | n 
-Jyothsna | x | n 
-&nbsp; | x | n 
-Mary | x | n 
-&nbsp; | x | n 
-Shengyi | x | n 
-&nbsp; | x | n 
-Snigdha | x | n 
-&nbsp; | x | n 
+Name | Role | Tasks | Number of Hours 
+--- | --- | --- | ---
+Artimice | x | n | x
+Brian | x | n | x
+Doddy | x | n | x
+Jyothsna | x | n | x
+Mary | x | n | x
+Shengyi | x | n | x
+Snigdha | x | n | x
