@@ -2,8 +2,15 @@ package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
+@Entity
 public class Event {
+    @Id
+    @GeneratedValue
     private int id;
     private Date startDate;
     private Time startTime;
@@ -12,6 +19,7 @@ public class Event {
     private int maxNumParticipants;
     private String location;
     private String description;
+    @ManyToOne
     private UserAccount creator;
 
     public Event(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, UserAccount creator)
