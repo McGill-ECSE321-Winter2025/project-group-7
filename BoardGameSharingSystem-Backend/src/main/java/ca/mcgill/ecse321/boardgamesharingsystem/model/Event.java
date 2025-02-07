@@ -12,8 +12,9 @@ public class Event {
     private int maxNumParticipants;
     private String location;
     private String description;
+    private UserAccount creator;
 
-    public Event(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description)
+    public Event(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, UserAccount creator)
     {
         this.startDate = startDate;
         this.startTime = startTime;
@@ -22,6 +23,7 @@ public class Event {
         this.maxNumParticipants = maxNumParticipants;
         this.location = location;
         this.description = description;
+        this.creator = creator;
     }
     public int getId()
     {
@@ -54,5 +56,9 @@ public class Event {
     public String getDescription()
     {
         return description;
+    }
+    public UserAccount getCreator()
+    {
+        return creator;
     }
 }
