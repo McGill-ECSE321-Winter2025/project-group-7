@@ -1,15 +1,22 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
 import java.sql.Date;
 import java.sql.Time;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
-
+@Entity
 public class Review {
-    private int id;
+    @Id @GeneratedValue private int id;
     private Date reviewDate;
     private int rating;
     private String comment;
 
-    public Review(Date reviewDate, int rating, String conmment) {
+    @ManyToOne UserAccount reviewer;
+    @ManyToOne Game game;
+
+    public Review(Date reviewDate, int rating, String comment) {
         this.reviewDate = reviewDate;
         this.rating = rating;
         this.comment = comment;
@@ -20,8 +27,10 @@ public class Review {
         return this.id;
 
     }
+
     public Date getReviewDate(){
         return this.reviewDate;
+    
     }
 
     public String getComment(){

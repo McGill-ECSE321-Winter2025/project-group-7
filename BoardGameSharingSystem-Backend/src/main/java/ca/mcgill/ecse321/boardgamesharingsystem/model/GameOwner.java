@@ -1,7 +1,16 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+
+@Entity
 public class GameOwner {
-    private int id;
+    @Id @GeneratedValue private int id;
+
+    @OneToOne private UserAccount user;
+
 
     public GameOwner(){
     }
