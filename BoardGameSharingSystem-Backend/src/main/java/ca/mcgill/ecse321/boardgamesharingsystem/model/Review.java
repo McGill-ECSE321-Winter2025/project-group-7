@@ -8,13 +8,17 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Review {
-    @Id @GeneratedValue private int id;
+    @Id 
+    @GeneratedValue 
+    private int id;
     private Date reviewDate;
     private int rating;
     private String comment;
 
-    @ManyToOne UserAccount reviewer;
-    @ManyToOne Game game;
+    @ManyToOne 
+    UserAccount reviewer;
+    @ManyToOne 
+    Game game;
 
     public Review(Date reviewDate, int rating, String comment) {
         this.reviewDate = reviewDate;
