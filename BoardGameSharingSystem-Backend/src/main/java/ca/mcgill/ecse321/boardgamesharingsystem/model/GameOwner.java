@@ -7,7 +7,9 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class GameOwner {
-    @Id @GeneratedValue private int id;
+    @Id 
+    @GeneratedValue 
+    private int id;
 
     @OneToOne private UserAccount user;
 
