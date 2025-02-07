@@ -27,19 +27,19 @@ public class Event {
     {
         return id;
     }
-    public int getStartDate()
+    public Date getStartDate()
     {
         return startDate;
     }
-    public int getStartTime()
+    public Time getStartTime()
     {
         return startTime;
     }
-    public int getEndDate()
+    public Date getEndDate()
     {
         return endDate;
     }
-    public int getEndTime()
+    public Time getEndTime()
     {
         return endTime;
     }
@@ -47,11 +47,11 @@ public class Event {
     {
         return maxNumParticipants;
     }
-    public int getLocation()
+    public String getLocation()
     {
         return location;
     }
-    public int getDescription()
+    public String getDescription()
     {
         return description;
     }
