@@ -1,13 +1,23 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
-public class Game {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+@Entity
+public class Game {
+    @Id
+    @GeneratedValue
     private int id;
     private String title;
     private int minNumPlayers;
     private int maxNumPlayers;
     private String pictureURL;
     private String description;
+
+    protected Game(){
+
+    }
 
     public Game(String title, int minNumPlayers, int maxNumPlayers, String pictureURL, String description){
         this.title= title;
