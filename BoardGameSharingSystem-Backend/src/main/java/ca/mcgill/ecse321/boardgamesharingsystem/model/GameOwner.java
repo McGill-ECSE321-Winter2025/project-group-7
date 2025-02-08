@@ -11,7 +11,7 @@ public class GameOwner {
     @GeneratedValue 
     private int id;
 
-    @OneToOne private UserAccount user;
+    @OneToOne(optional = true) private UserAccount user;
 
 
     public GameOwner(){
@@ -19,5 +19,10 @@ public class GameOwner {
 
     public int getId(){
         return this.id;
+    }
+
+    public void setUser(UserAccount user){
+        this.user = user;
+
     }
 }
