@@ -11,14 +11,23 @@ public class GameOwner {
     @GeneratedValue 
     private int id;
 
-    @OneToOne(optional = true) private UserAccount user;
+    @OneToOne 
+    private UserAccount user;
 
 
-    public GameOwner(){
+    protected GameOwner(){
+    }
+
+    public GameOwner(UserAccount user){
+        this.user = user;
     }
 
     public int getId(){
         return this.id;
+    }
+
+    public UserAccount getUser(){
+        return this.user;
     }
 
     public void setUser(UserAccount user){
