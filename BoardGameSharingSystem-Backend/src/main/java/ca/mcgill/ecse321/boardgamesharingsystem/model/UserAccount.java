@@ -14,6 +14,10 @@ public class UserAccount {
     @GeneratedValue
     private int id;
 
+    protected UserAccount(){
+        
+    }
+
     public UserAccount (String name, String email, String password) {
         this.name = name;
         this.email = email;

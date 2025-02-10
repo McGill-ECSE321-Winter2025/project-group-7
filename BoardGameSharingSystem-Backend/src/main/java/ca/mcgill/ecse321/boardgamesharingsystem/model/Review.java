@@ -20,6 +20,10 @@ public class Review {
     @ManyToOne 
     private Game game;
 
+    protected Review(){
+        
+    }
+
     public Review(Date reviewDate, int rating, String comment, UserAccount reviewer, Game game) {
         this.reviewDate = reviewDate;
         this.rating = rating;
