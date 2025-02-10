@@ -1,10 +1,15 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
+import java.io.Serializable;
+
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class EventGame{

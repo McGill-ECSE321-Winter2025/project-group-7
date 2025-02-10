@@ -3,15 +3,16 @@ package ca.mcgill.ecse321.boardgamesharingsystem.model;
 import java.sql.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class BorrowRequest{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int id;
 
     private Date startDate;
@@ -61,7 +62,7 @@ public class BorrowRequest{
         return gameCopy;
     }
 
-    public Status getRequestStatus() {
+    public RequestStatus getRequestStatus() {
         return requestStatus;
     }
 
@@ -81,7 +82,7 @@ public class BorrowRequest{
         this.gameCopy = gameCopy;
     }
 
-    public void setRequestStatus(Status requestStatus) {
+    public void setRequestStatus(RequestStatus requestStatus) {
         this.requestStatus = requestStatus;
     }
 }
