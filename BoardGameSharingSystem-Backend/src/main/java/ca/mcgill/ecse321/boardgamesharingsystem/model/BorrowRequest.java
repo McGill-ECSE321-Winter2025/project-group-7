@@ -13,14 +13,22 @@ public class BorrowRequest{
     @Id
     @GeneratedValue
     private int id;
+
     private Date startDate;
     private Date endDate;
 
+    @ManyToOne
     private UserAccount borrower;
+
+    @ManyToOne
     private GameCopy gameCopy;
 
-    public enum requestStatus { Pending, Accepted, Rejected }
-    private Status requestStatus;
+    @Enumerated(EnumType.STRING) // 存储枚举值的字符串
+    private RequestStatus requestStatus;
+
+    public enum RequestStatus {
+        Pending, Accepted, Rejected
+    }
 
     protected BorrowRequest() {
     }
@@ -28,7 +36,7 @@ public class BorrowRequest{
     public BorrowRequest(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        setRequestStatus(requestStatus.Pending);
+        this.requestStatus = RequestStatus.Pending;
     }
 
     public Date getStartDate() {
