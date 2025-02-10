@@ -57,6 +57,10 @@ public class RequestAnswer {
         return dropOffTime;
     }
 
+    public BorrowRequest getRequest() {
+        return request;
+    }
+
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
     }
