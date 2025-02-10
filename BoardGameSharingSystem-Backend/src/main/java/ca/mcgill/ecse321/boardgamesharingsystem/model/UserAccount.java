@@ -3,10 +3,13 @@ package ca.mcgill.ecse321.boardgamesharingsystem.model;
 /**
  * A class that defines the User account.
  */
+@Entity
 public class UserAccount {
     private String email;
     private String name;
     private String password;
+    @Id
+    @GeneratedValue
     private int id;
 
     public UserAccount (String name, String email, String password) {
