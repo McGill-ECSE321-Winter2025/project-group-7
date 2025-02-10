@@ -11,7 +11,7 @@ import jakarta.persistence.InheritanceType;
 @Entity
 public class BorrowRequest{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private Date startDate;
@@ -23,7 +23,7 @@ public class BorrowRequest{
     @ManyToOne
     private GameCopy gameCopy;
 
-    @Enumerated(EnumType.STRING) // 存储枚举值的字符串
+    @Enumerated(EnumType.STRING)
     private RequestStatus requestStatus;
 
     public enum RequestStatus {
@@ -33,10 +33,16 @@ public class BorrowRequest{
     protected BorrowRequest() {
     }
 
-    public BorrowRequest(Date startDate, Date endDate) {
+    public BorrowRequest(Date startDate, Date endDate, UserAccount borrower, GameCopy gameCopy) {
         this.startDate = startDate;
         this.endDate = endDate;
+        this.borrower = borrower;
+        this.gameCopy = gameCopy;
         this.requestStatus = RequestStatus.Pending;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public Date getStartDate() {
@@ -47,6 +53,18 @@ public class BorrowRequest{
         return endDate;
     }
 
+    public UserAccount getBorrower() {
+        return borrower;
+    }
+
+    public GameCopy getGameCopy() {
+        return gameCopy;
+    }
+
+    public Status getRequestStatus() {
+        return requestStatus;
+    }
+
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
@@ -55,8 +73,12 @@ public class BorrowRequest{
         this.endDate = endDate;
     }
 
-    public Status getRequestStatus() {
-        return requestStatus;
+    public void setBorrower(UserAccount borrower) {
+        this.borrower = borrower;
+    }
+
+    public void setGameCopy(GameCopy gameCopy) {
+        this.gameCopy = gameCopy;
     }
 
     public void setRequestStatus(Status requestStatus) {
