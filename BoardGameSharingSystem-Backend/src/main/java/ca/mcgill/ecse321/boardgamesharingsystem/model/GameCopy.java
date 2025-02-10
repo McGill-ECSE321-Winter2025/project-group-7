@@ -13,22 +13,18 @@ public class GameCopy {
     private Game game;
     @ManyToOne
     private GameOwner owner;
-    @OneToMany
-    private Set<BorrowRequest> requests;
 
     public GameCopy() {
 
     }
 
-    public GameCopy(Game game) {
+    public GameCopy(Game game, GameOwner gameOwner) {
         this.game = game;
+        this.owner = gameOwner;
     }
 
     public Integer getId() {
         return id;
-    }
-    public void setId(Integer id) {
-        this.id = id;
     }
     public Game getGame() {
         return game;
@@ -42,11 +38,5 @@ public class GameCopy {
 
     public void setGameOwner(GameOwner gameOwner) {
         this.gameOwner = gameOwner;
-    }
-    public Set<BorrowRequest> getRequests() {
-        return requests;
-    }
-    public void setRequests(Set<BorrowRequest> requests) {
-        this.requests = requests;
     }
 }
