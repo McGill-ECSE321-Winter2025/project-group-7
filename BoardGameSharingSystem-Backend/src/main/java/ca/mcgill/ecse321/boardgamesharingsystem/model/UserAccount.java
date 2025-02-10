@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 /**
  * A class that defines the User account.
  */
