@@ -25,10 +25,14 @@ public class RequestAnswer {
     private BorrowRequest request;
     private String contactEmail;
 
+    protected RequestAnswer(){
 
-    public RequestAnswer(Date dropOffDate, Time dropOffTime, String location, String contactEmail) {
+    }
+
+    public RequestAnswer(Date dropOffDate, Time dropOffTime, String location, BorrowRequest request, String contactEmail) {
         this.dropOffDate = dropOffDate;
         this.location= location;
+        this.request = request;
         this.contactEmail = contactEmail;
         this.dropOffTime = dropOffTime;
     }
@@ -51,6 +55,10 @@ public class RequestAnswer {
 
     public Time getDropOffTime(){
         return dropOffTime;
+    }
+
+    public BorrowRequest getRequest() {
+        return request;
     }
 
     public void setContactEmail(String contactEmail) {

@@ -13,7 +13,7 @@ public class GameCopy {
     @ManyToOne
     private GameOwner owner;
 
-    public GameCopy() {
+    protected GameCopy() {
 
     }
 

@@ -37,7 +37,7 @@ public class Registration {
     @Embeddable
     public static class RegistrationKey implements Serializable  {
         @ManyToOne
-        private UserAccount user;
+        private UserAccount participant;
         @ManyToOne
         private Event event;
 
@@ -46,12 +46,12 @@ public class Registration {
         }
 
         public RegistrationKey(UserAccount user, Event event){
-            this.user = user;
+            this.participant = user;
             this.event = event;
         }
 
         public UserAccount getUser() {
-            return user;
+            return participant;
         }
 
         public Event getEvent() {
@@ -64,12 +64,12 @@ public class Registration {
                 return false;
             }
             RegistrationKey that = (RegistrationKey) obj;
-            return this.event.getId() == that.event.getId() && this.user.getId() == that.user.getId();
+            return this.event.getId() == that.event.getId() && this.participant.getId() == that.participant.getId();
         }
 
         @Override
         public int hashCode(){
-            return Objects.hash(this.user.getId(), this.event.getId());
+            return Objects.hash(this.participant.getId(), this.event.getId());
         }
     }
 }

@@ -22,6 +22,10 @@ public class Event {
     @ManyToOne
     private UserAccount creator;
 
+    protected Event(){
+
+    }
+
     public Event(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, UserAccount creator)
     {
         this.startDate = startDate;
