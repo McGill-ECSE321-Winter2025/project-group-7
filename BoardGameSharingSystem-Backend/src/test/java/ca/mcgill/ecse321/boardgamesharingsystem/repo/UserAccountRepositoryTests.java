@@ -35,6 +35,5 @@ public class UserAccountRepositoryTests {
         assertEquals(mila.getName(), milaFromDb.getName());
         assertEquals(mila.getEmail(), milaFromDb.getEmail());
         assertEquals(mila.getPassword(), milaFromDb.getPassword());
-
     }
 }

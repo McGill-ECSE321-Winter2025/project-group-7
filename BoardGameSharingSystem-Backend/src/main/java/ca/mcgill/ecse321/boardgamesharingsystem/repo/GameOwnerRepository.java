@@ -6,5 +6,4 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 
 public interface GameOwnerRepository extends CrudRepository<GameOwner, Integer>{
     public GameOwner findGameOwnerById(int id);
-    
 }

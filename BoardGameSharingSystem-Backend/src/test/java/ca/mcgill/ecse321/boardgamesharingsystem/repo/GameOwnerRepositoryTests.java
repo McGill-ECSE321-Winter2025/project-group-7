@@ -26,9 +26,9 @@ public class GameOwnerRepositoryTests {
     }
 
     @Test
-    public void testPersistAndLoadGameOwner()
+    public void testCreateAndReadGameOwner()
     {
-        //arrange
+        //Arrange
         String name = "bojack";
         String email = "bojack@gmail.com";
         String password = "password";
@@ -38,18 +38,13 @@ public class GameOwnerRepositoryTests {
         GameOwner gameOwner = new GameOwner(currentUser);
         gameOwnerRepository.save(gameOwner);
 
-        //act
+        //Act
         GameOwner gameOwnerFromDb = gameOwnerRepository.findGameOwnerById(gameOwner.getId());
 
-        //assert
+        //Assert
         assertNotNull(gameOwnerFromDb);
         assertEquals(gameOwner.getId(), gameOwnerFromDb.getId());
         assertNotNull(gameOwnerFromDb.getUser());
         assertEquals(gameOwnerFromDb.getUser().getId(), currentUser.getId());
-
     }
-
-
-
-
 }

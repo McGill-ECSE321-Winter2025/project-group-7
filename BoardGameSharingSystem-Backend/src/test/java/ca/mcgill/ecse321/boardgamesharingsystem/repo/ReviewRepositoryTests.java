@@ -33,8 +33,8 @@ public class ReviewRepositoryTests {
     }
 
     @Test
-    public void testPersistAndLoadUserAccount(){
-        //arrange
+    public void testCreateAndReadReview(){
+        //Arrange
         String name = "bojack";
         String email = "bojack@gmail.com";
         String password = "password";
@@ -55,21 +55,18 @@ public class ReviewRepositoryTests {
         Review review = new Review(reviewDate, rating, comment, currentUser, game);
         review = reviewRepository.save(review);
 
-        //act
+        //Act
         Review reviewFromDb = reviewRepository.findReviewById(review.getId());
 
-        //assert
+        //Assert
         assertNotNull(reviewFromDb);
         assertEquals(reviewFromDb.getId(), review.getId());
         assertEquals(reviewFromDb.getRating(), rating);
         assertEquals(reviewFromDb.getComment(), comment);
         assertEquals(reviewFromDb.getReviewDate(), reviewDate);
-        
         assertNotNull(reviewFromDb.getGame());
         assertEquals(reviewFromDb.getGame().getId(), game.getId());
-
         assertNotNull(reviewFromDb.getReviewer());
         assertEquals(reviewFromDb.getReviewer().getId(), currentUser.getId());
-
     }
 }

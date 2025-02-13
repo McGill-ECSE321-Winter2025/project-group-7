@@ -6,5 +6,4 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.Review;
 
 public interface ReviewRepository extends CrudRepository<Review, Integer>{
     public Review findReviewById(int id);
-    
 }

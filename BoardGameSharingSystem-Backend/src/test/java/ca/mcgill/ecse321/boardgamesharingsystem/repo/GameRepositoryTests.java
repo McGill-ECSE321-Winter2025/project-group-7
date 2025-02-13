@@ -37,6 +37,5 @@ public class GameRepositoryTests {
         assertEquals(chess.getPictureURL(), chessFromDB.getPictureURL());
         assertEquals(chess.getTitle(), chessFromDB.getTitle());
         assertEquals(chess.getDescription(), chessFromDB.getDescription());
-
     }
 }

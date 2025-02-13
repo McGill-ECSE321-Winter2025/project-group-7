@@ -17,6 +17,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 public class EventRepositoryTests {
     @Autowired
     private EventRepository eventRepository;
+
     @Autowired
     private UserAccountRepository userAccountRepository;
     
@@ -30,7 +31,7 @@ public class EventRepositoryTests {
     @Test
     public void testPersistAndLoadEvent()
     {
-        //Setup necessary attributes to create Event
+        //Arrange
         Date startDate = Date.valueOf("2025-02-11");
         Time startTime = Time.valueOf("11:00:00");
         Date endDate = Date.valueOf("2025-02-11");
@@ -48,9 +49,10 @@ public class EventRepositoryTests {
         Event event = new Event(startDate, startTime, endDate, endTime, maxNumParticipants, location, description, creator);
         event = eventRepository.save(event);
 
+        //Act
         Event eventFromDb = eventRepository.findEventById(event.getId());
         
-        //Assert attributes are correct
+        //Assert
         assertNotNull(eventFromDb);
         assertEquals(event.getId(), eventFromDb.getId());
         assertEquals(startDate, eventFromDb.getStartDate());
@@ -60,8 +62,6 @@ public class EventRepositoryTests {
         assertEquals(maxNumParticipants, eventFromDb.getMaxNumParticipants());
         assertEquals(location, eventFromDb.getLocation());
         assertEquals(description, eventFromDb.getDescription());
-
-        //Assert creator association is correct
         assertNotNull(eventFromDb.getCreator());
         assertEquals(creator.getId(), eventFromDb.getCreator().getId());
     }
