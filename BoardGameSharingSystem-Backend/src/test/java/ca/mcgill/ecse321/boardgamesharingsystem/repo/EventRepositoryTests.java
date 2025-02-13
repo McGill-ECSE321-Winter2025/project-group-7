@@ -29,7 +29,7 @@ public class EventRepositoryTests {
     }
 
     @Test
-    public void testPersistAndLoadEvent()
+    public void testCreateAndReadEvent()
     {
         //Arrange
         Date startDate = Date.valueOf("2025-02-11");
