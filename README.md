@@ -30,7 +30,7 @@ Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li><
 Jyothsna | x | <li>~~Work on class diagram~~</li> | x
 Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li></ul> | x
 Shengyi | x | <li>~~Work on class diagram~~</li> | x
-Snigdha | x | <li>~~Work on class diagram~~</li> | x
+Snigdha | x | <li>~~Work on class diagram~~</li> | 22
 
 Project Report for Deliverable 1 can be accessed here
 [Project Report](Project-Report)
