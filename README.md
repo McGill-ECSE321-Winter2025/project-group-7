@@ -1,6 +1,6 @@
 # ECSE321 Group 7🐻‍❄️
 ## The Project
-Hi! We are group 7🤯 We are a team of 7 students consists of:
+Hi! We are group 7🤯 We are a team of 7 students consisting of:
 
     🪼Artimice, a U2 computer engineering sdtuent👩‍💻
 
@@ -14,7 +14,7 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
 
     🌝Shengyi, a U2 software engineering student👩‍💻
 
-    👸🏽Snigdha, a U2 computer engineering sdtuent👩‍💻
+    👸🏽Snigdha, a U2 computer engineering student👩‍💻
 
 ## Board Game Sharing System – Project Scope
 🎲 The Board Game Sharing System is a Java-based application designed for board game enthusiasts to connect, share games, and organize events. The application supports two types of users: Players and Game Owners. Players can browse available board games, register for events, and request to borrow games, while Game Owners can manage their game collections, approve or decline borrowing requests, and track lending history.
@@ -38,13 +38,13 @@ This project is focused on providing a seamless experience for board game enthus
 Table 1 : Roles of each team member Deliverable 1:
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice | x | <ul><li>~~Work on class diagram~~</li><li>Generated model codes from Umple</li></ul> | x
-Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li> <li>~~Refine class diagram~~</li></ul> | 20
-Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li></ul> | x
-Jyothsna | x | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li></ul> | x
-Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li></ul> | x
-Shengyi | x | <li>~~Work on class diagram~~</li> | x
-Snigdha | x | <li>~~Work on class diagram~~</li> | 22
+Artimice | x | <ul><li>~~Work on class diagram~~</li><li>Generated model codes from Umple</li><li>~~Persistance Layer and Testing~~</li></ul> | x
+Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li> <li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li></ul> | 20
+Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li><li>~~Persistance Layer and Testing~~</li></ul> | x
+Jyothsna | x | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistance Layer and Testing~~</li></ul> | 22
+Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li><li>~~Persistance Layer and Testing~~</li></ul> | x
+Shengyi | x | <ul><li>~~Work on class diagram~~</li><li>Persistance Layer and Testing</li></ul> | x
+Snigdha | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li></ul> | 22
 
 Project Report for Deliverable 1 can be accessed here
 [Project Report](Project-Report)
