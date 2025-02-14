@@ -8,7 +8,7 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
 
     🐈‍⬛Doddy, a U2 software engineering student🧑‍💻
 
-    🧚‍♀️Jyothsna, a U2 computer engineering student👩‍💻
+    🦋Jyothsna, a U2 computer engineering student👩‍💻
 
     👻Mary, a U2 software engineering student👩‍💻
 
@@ -17,7 +17,7 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
     👸🏽Snigdha, a U2 computer engineering sdtuent👩‍💻
 
 ## Board Game Sharing System – Project Scope
-🃏The Board Game Sharing System is a Java-based application designed for board game enthusiasts to connect, share games, and organize events. The application supports two types of users: Players and Game Owners. Players can browse available board games, register for events, and request to borrow games, while Game Owners can manage their game collections, approve or decline borrowing requests, and track lending history.
+🎲 The Board Game Sharing System is a Java-based application designed for board game enthusiasts to connect, share games, and organize events. The application supports two types of users: Players and Game Owners. Players can browse available board games, register for events, and request to borrow games, while Game Owners can manage their game collections, approve or decline borrowing requests, and track lending history.
 ### Key Features:
 + **Secure Access & User Roles** – User authentication is required, and users can switch between Player and Game Owner roles.
 + **Game Library** – A centralized collection of board games where users can browse available titles and see their owners.
@@ -40,7 +40,7 @@ Name | Role | Tasks | Number of Hours
 Artimice | x | <ul><li>~~Work on class diagram~~</li><li>Generated model codes from Umple</li></ul> | x
 Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li> <li>~~Refine class diagram~~</li></ul> | 20
 Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li></ul> | x
-Jyothsna | x | <li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li></ul> | x
+Jyothsna | x | </ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li></ul> | x
 Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li></ul> | x
 Shengyi | x | <li>~~Work on class diagram~~</li> | x
 Snigdha | x | <li>~~Work on class diagram~~</li> | 22
