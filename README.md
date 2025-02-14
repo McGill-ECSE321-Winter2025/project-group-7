@@ -8,7 +8,7 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
 
     🐈‍⬛Doddy, a U2 software engineering student🧑‍💻
 
-    🧚‍♀️Jyothsna, a U2 computer engineering sdtuent👩‍💻
+    🧚‍♀️Jyothsna, a U2 computer engineering student👩‍💻
 
     👻Mary, a U2 software engineering student👩‍💻
 
