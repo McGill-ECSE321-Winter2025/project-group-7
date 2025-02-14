@@ -28,6 +28,7 @@ Hi! We are group 7🤯 We are a team of 7 students consists of:
 + **Backend:** Java, Spring Boot, Hibernate (ORM), REST API
 + **Database:** PostgreSQL
 + **Frontend:** Vue.js, HTML, CSS, JavaScript
+  
 This project is focused on providing a seamless experience for board game enthusiasts by enabling easy game sharing and event organization. Future enhancements may include additional social features or advanced search and filtering options.
 
 
@@ -40,7 +41,7 @@ Name | Role | Tasks | Number of Hours
 Artimice | x | <ul><li>~~Work on class diagram~~</li><li>Generated model codes from Umple</li></ul> | x
 Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li> <li>~~Refine class diagram~~</li></ul> | 20
 Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li></ul> | x
-Jyothsna | x | </ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li></ul> | x
+Jyothsna | x | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li></ul> | x
 Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li></ul> | x
 Shengyi | x | <li>~~Work on class diagram~~</li> | x
 Snigdha | x | <li>~~Work on class diagram~~</li> | 22
