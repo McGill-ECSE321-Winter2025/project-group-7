@@ -35,7 +35,7 @@ public class EventGameRepositoryTests {
     }
 
     @Test
-    public void testCreateEventGame() {
+    public void testCreateAndReadEventGame() {
         //Arrange
         Game chess = new Game("chess", 2, 2, "chess.com","the chess game consists..." );
         chess = gameRepository.save(chess);

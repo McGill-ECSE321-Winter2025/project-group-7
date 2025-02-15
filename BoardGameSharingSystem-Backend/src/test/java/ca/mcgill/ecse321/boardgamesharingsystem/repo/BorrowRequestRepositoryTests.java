@@ -37,7 +37,7 @@ public class BorrowRequestRepositoryTests {
     }
 
     @Test
-    public void testCreateBorrowRequest() {
+    public void testCreateAndReadBorrowRequest() {
         //Arrange
         Date startdate = Date.valueOf("2025-02-14");
         Date endDate = Date.valueOf("2025-02-20");
