@@ -32,6 +32,7 @@ public class EventGameRepositoryTests {
         eventGameRepository.deleteAll();
         eventRepository.deleteAll();
         gameRepository.deleteAll();
+        userAccountRepository.deleteAll(); //ADDED
     }
 
     @Test

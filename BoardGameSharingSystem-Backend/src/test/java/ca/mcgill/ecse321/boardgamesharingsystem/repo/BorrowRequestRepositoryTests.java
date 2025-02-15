@@ -34,6 +34,7 @@ public class BorrowRequestRepositoryTests {
         borrowRequestRepository.deleteAll();
         userAccountRepository.deleteAll();
         gameCopyRepository.deleteAll();
+        gameRepository.deleteAll(); //ADDED
     }
 
     @Test
