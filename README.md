@@ -43,9 +43,9 @@ Name | Role | Tasks | Number of Hours
 --- | --- | --- | ---
 Artimice | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Maintain backlog in GitHub Projects</li></ul> | x
 Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Provide project deliverable on wiki</li></ul> | 20
-Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li><li>~~Persistance Layer and Testing~~</li><li>Maintain backlog in GitHub Projects</li></ul> | x
+Doddy | x | <ul><li>~~Work on class diagram~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Maintain backlog in GitHub Projects</li></ul> | x
 Jyothsna | x | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: welcome page (intro to group, scope of project)</li></ul> | 22
-Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: design decisions recorded</li></ul> | 20
+Mary | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: design decisions recorded</li><li>Arrange weekly meetings and task dealines</li></ul> | 20
 Shengyi | x | <ul><li>~~Work on class diagram~~</li><li>Persistance Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | x
-Snigdha | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: minutes of meeting recorded</li></ul> | 22
+Snigdha | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: minutes of meeting recorded</li><li>Arrange task dealines</li></ul> | 22
 
