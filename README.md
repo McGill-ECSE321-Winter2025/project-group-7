@@ -35,6 +35,9 @@ This project is focused on providing a seamless experience for board game enthus
 ## Team Management
 **See project reports and meeting minutes on our Wiki**
 
+Project Report for Deliverable 1 can be accessed here
+[Project Report](Project-Report)
+
 Table 1 : Roles of each team member Deliverable 1:
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
@@ -46,5 +49,3 @@ Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisi
 Shengyi | x | <ul><li>~~Work on class diagram~~</li><li>Persistance Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | x
 Snigdha | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: minutes of meeting recorded</li></ul> | 22
 
-Project Report for Deliverable 1 can be accessed here
-[Project Report](Project-Report)
