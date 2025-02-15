@@ -32,9 +32,10 @@ public class BorrowRequestRepositoryTests {
     @AfterEach
     private void clearDatabase() {
         borrowRequestRepository.deleteAll();
-        userAccountRepository.deleteAll();
         gameCopyRepository.deleteAll();
-        gameRepository.deleteAll(); //ADDED
+        gameOwnerRepository.deleteAll();
+        gameRepository.deleteAll();
+        userAccountRepository.deleteAll();
     }
 
     @Test
