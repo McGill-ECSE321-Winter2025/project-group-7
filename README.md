@@ -2,7 +2,7 @@
 ## The Project
 Hi! We are group 7🤯 We are a team of 7 students consisting of:
 
-    🪼Artimice, a U2 computer engineering sdtuent👩‍💻
+    🪼Artimice, a U2 computer engineering student👩‍💻
 
     🦑Brian, a U2 software engineering student🧑‍💻
 
@@ -33,19 +33,17 @@ This project is focused on providing a seamless experience for board game enthus
 
 
 ## Team Management
-**See project reports and meeting minutes on our Wiki**
+**Please refer to the [wiki page](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki) to see project report and meeting minutes for each deliverable.**
 
-Project Report for Deliverable 1 can be accessed here
-[Project Report](Project-Report)
 
-Table 1 : Roles of each team member Deliverable 1:
+Table 1 : Roles of each team member Deliverable 1
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Maintain backlog in GitHub Projects</li></ul> | x
-Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Provide project deliverable on wiki</li></ul> | 20
-Doddy | x | <ul><li>~~Work on class diagram~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Maintain backlog in GitHub Projects</li></ul> | x
-Jyothsna | x | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: welcome page (intro to group, scope of project)</li></ul> | 22
-Mary | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: design decisions recorded</li><li>Arrange weekly meetings and task dealines</li></ul> | 20
-Shengyi | x | <ul><li>~~Work on class diagram~~</li><li>Persistance Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | x
-Snigdha | x | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: minutes of meeting recorded</li><li>Arrange task dealines</li></ul> | 22
+Artimice |  <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Validate backlog in GitHub Projects</li></ul> | x
+Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>~~Maintain backlog in GitHub Projects~~</li><li>Provide project deliverable on wiki</li></ul> | 20
+Doddy | <ul><li>GitHub Backlog Contributor</li><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Validate backlog in GitHub Projects</li></ul> | x
+Jyothsna | <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: welcome page (intro to group, scope of project)</li></ul> | 22
+Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Backend Developer  | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>Lab report: design decisions recorded</li><li>Arrange weekly meetings and task dealines</li></ul> | 20
+Shengyi | <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>Persistance Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | x
+Snigdha | <ul><li>Assistant Task Coordinator</li><li>Backend Developer| <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>~~Lab report: minutes of meeting recorded~~</li><li>~~Arrange task deadlines~~</li></ul> | 22
 
