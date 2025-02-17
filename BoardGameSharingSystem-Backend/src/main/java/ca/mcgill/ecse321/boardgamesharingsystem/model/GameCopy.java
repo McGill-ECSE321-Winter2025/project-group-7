@@ -7,7 +7,7 @@ public class GameCopy {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private int id;
     @ManyToOne
     private Game game;
     @ManyToOne
@@ -22,7 +22,7 @@ public class GameCopy {
         this.owner = gameOwner;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
     public Game getGame() {
