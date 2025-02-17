@@ -44,6 +44,6 @@ Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Backen
 Doddy | <ul><li>~~GitHub Backlog Contributor~~</li><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Refine class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Validate backlog in GitHub Projects~~</li></ul> | 20
 Jyothsna | <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistence Layer and Testing~~</li><li>~~ReadME: welcome page (intro to group, scope of project)~~</li></ul> | 22
 Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Backend Developer  | <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>Lab report: design decisions recorded</li><li>~~Arrange weekly meetings and task deadlines~~</li></ul> | 20
-Shengyi | <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>Persistence Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | x
+Shengyi | <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Lab report: design decisions recorded~~</li></ul> | x
 Snigdha | <ul><li>Assistant Task Coordinator</li><li>Backend Developer| <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Lab report: minutes of meeting recorded~~</li><li>~~Arrange task deadlines~~</li></ul> | 22
 
