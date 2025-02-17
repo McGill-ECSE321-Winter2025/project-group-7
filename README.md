@@ -51,12 +51,12 @@ Snigdha | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer| <ul><
 Table 2 : Roles of each team member Deliverable 1.5
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice |  <ul></ul> | X
-Brian |  <ul></ul> | X
-Doddy | <ul></ul> | X
-Jyothsna | <ul></ul> | X
-Mary | <ul></ul> | X
-Shengyi | <ul></ul> | X
-Snigdha | <ul></ul> | X
+Artimice |  | <ul></ul> | X
+Brian |  | <ul></ul> | X
+Doddy |  | <ul></ul> | X
+Jyothsna |  | <ul></ul> | X
+Mary |  | <ul></ul> | X
+Shengyi |  | <ul></ul> | X
+Snigdha |  | <ul></ul> | X
 
 
