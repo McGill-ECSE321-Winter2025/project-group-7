@@ -34,6 +34,7 @@ public class RegistrationRepositoryTests {
 
     @Test
     public void testSaveAndRetrieveRegistration() {
+        //Arrange
         UserAccount creator = new UserAccount("mike", "mike@mikemail.com", "mike123");
         creator = userAccountRepository.save(creator);
         
@@ -51,12 +52,14 @@ public class RegistrationRepositoryTests {
         Registration registration = new Registration(regKey, Date.valueOf("2025-02-17"), Time.valueOf("12:00:00"));
         registration = registrationRepository.save(registration);
         
-        Registration retrievedReg = registrationRepository.findRegistrationByKey(regKey);
+        //Act
+        Registration registrationFromDb = registrationRepository.findRegistrationByKey(regKey);
         
-        assertNotNull(retrievedReg, "Registration should be present in the database");
-        assertEquals(creator.getId(), retrievedReg.getKey().getUser().getId(), "User ID should match");
-        assertEquals(event.getId(), retrievedReg.getKey().getEvent().getId(), "Event ID should match");
-        assertEquals(Date.valueOf("2025-02-17"), retrievedReg.getRegistrationDate(), "Registration date should match");
-        assertEquals(Time.valueOf("12:00:00"), retrievedReg.getRegistrationTime(), "Registration time should match");
+        //Assert
+        assertNotNull(registrationFromDb, "Registration should be present in the database");
+        assertEquals(creator.getId(), registrationFromDb.getKey().getUser().getId(), "User ID should match");
+        assertEquals(event.getId(), registrationFromDb.getKey().getEvent().getId(), "Event ID should match");
+        assertEquals(Date.valueOf("2025-02-17"), registrationFromDb.getRegistrationDate(), "Registration date should match");
+        assertEquals(Time.valueOf("12:00:00"), registrationFromDb.getRegistrationTime(), "Registration time should match");
     }
 }
