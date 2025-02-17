@@ -26,6 +26,10 @@ public class Registration {
 
     }
 
+    public RegistrationKey getKey(){
+        return key;
+    }
+
     public Date getRegistrationDate() {
         return registrationDate;
     }
