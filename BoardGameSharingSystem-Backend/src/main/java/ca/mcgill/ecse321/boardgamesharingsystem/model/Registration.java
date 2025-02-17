@@ -16,16 +16,14 @@ public class Registration {
     private Date registrationDate;
     private Time registrationTime;
 
-    public Registration() {}
+    public Registration() {
 
-    public Registration(RegistrationKey key, Date registrationDate, Time registrationTime) {
+    }
+    public Registration(RegistrationKey key,Date registrationDate, Time registrationTime) {
         this.key = key;
         this.registrationDate = registrationDate;
         this.registrationTime = registrationTime;
-    }
 
-    public RegistrationKey getKey() {
-        return key;
     }
 
     public Date getRegistrationDate() {
@@ -37,16 +35,17 @@ public class Registration {
     }
 
     @Embeddable
-    public static class RegistrationKey implements Serializable {
+    public static class RegistrationKey implements Serializable  {
         @ManyToOne
         private UserAccount participant;
-
         @ManyToOne
         private Event event;
 
-        public RegistrationKey() {}
+        public RegistrationKey(){
 
-        public RegistrationKey(UserAccount user, Event event) {
+        }
+
+        public RegistrationKey(UserAccount user, Event event){
             this.participant = user;
             this.event = event;
         }
@@ -60,8 +59,8 @@ public class Registration {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof RegistrationKey)) {
+        public boolean equals(Object obj){
+            if (!(obj instanceof RegistrationKey)){
                 return false;
             }
             RegistrationKey that = (RegistrationKey) obj;
@@ -69,7 +68,7 @@ public class Registration {
         }
 
         @Override
-        public int hashCode() {
+        public int hashCode(){
             return Objects.hash(this.participant.getId(), this.event.getId());
         }
     }

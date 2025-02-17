@@ -1,33 +1,49 @@
 # ECSE321 Group 7🐻‍❄️
 ## The Project
-Hi! We are group 7🤯 We are a team of 7 students consists of:
+Hi! We are group 7🤯 We are a team of 7 students consisting of:
 
-    🪼Artimice, a U2 computer engineering sdtuent👩‍💻
+    🪼Artimice, a U2 computer engineering student👩‍💻
 
     🦑Brian, a U2 software engineering student🧑‍💻
 
     🐈‍⬛Doddy, a U2 software engineering student🧑‍💻
 
-    🧚‍♀️Jyothsna, a U2 computer engineering sdtuent👩‍💻
+    🦋Jyothsna, a U2 computer engineering student👩‍💻
 
     👻Mary, a U2 software engineering student👩‍💻
 
     🌝Shengyi, a U2 software engineering student👩‍💻
 
-    👸🏽Snigdha, a U2 computer engineering sdtuent👩‍💻
+    👸🏽Snigdha, a U2 computer engineering student👩‍💻
 
-🃏Our project is to create a web application for board game enthusiasts that allows users to connect, share their games, and organize events with two main account types: Player and Game Owner. 
+## Board Game Sharing System – Project Scope
+🎲 The Board Game Sharing System is a Java-based application designed for board game enthusiasts to connect, share games, and organize events. The application supports two types of users: Players and Game Owners. Players can browse available board games, register for events, and request to borrow games, while Game Owners can manage their game collections, approve or decline borrowing requests, and track lending history.
+### Key Features:
++ **Secure Access & User Roles** – User authentication is required, and users can switch between Player and Game Owner roles.
++ **Game Library** – A centralized collection of board games where users can browse available titles and see their owners.
++ **Game Lending & Tracking** – Players can request to borrow games, and Game Owners can approve, decline, and monitor their lending history.
++ **Event Creation & Participation** – Users can schedule board game events, set details such as date and location, and allow other users to register.
++ **Community Feedback & Reviews** – Users can share their experiences by leaving reviews for board games they’ve played.
+### Technology Stack:
++ **Backend:** Java, Spring Boot, Hibernate (ORM), REST API
++ **Database:** PostgreSQL
++ **Frontend:** Vue.js, HTML, CSS, JavaScript
+  
+This project is focused on providing a seamless experience for board game enthusiasts by enabling easy game sharing and event organization. Future enhancements may include additional social features or advanced search and filtering options.
+
 
 ## Team Management
-**See project reports and meeting minutes on our Wiki**
+**Please refer to the [wiki page](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki) to see project report and meeting minutes for each deliverable.**
 
-Table 1 : Roles of each team member Deliverable 1:
+
+Table 1 : Roles of each team member Deliverable 1
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice | x | <ul><li>~~Work on class diagram~~</li><li>Generated model codes from Umple</li></ul> | x
-Brian | x | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li> <li>~~Refine class diagram~~</li></ul> | x
-Doddy | x | <ul><li>~~Work on class diagram~~</li><li>Refine class diagram</li></ul> | x
-Jyothsna | x | <li>~~Work on class diagram~~</li> | x
-Mary | x | <ul><li>~~Work on class diagram~~</li><li>Report on key design decisions</li></ul> | x
-Shengyi | x | <li>~~Work on class diagram~~</li> | x
-Snigdha | x | <li>~~Work on class diagram~~</li> | x
+Artimice |  <ul><li>Full Stack Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Validate backlog in GitHub Projects~~</li></ul> | 20
+Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li><li>~~Refine class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Maintain backlog in GitHub Projects~~</li><li>~~Provide project deliverable on wiki~~</li></ul> | 20
+Doddy | <ul><li>~~GitHub Backlog Contributor~~</li><li>Full Stack Developer | <ul><li>~~Work on class diagram~~</li><li>~~Refine class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Validate backlog in GitHub Projects~~</li></ul> | 20
+Jyothsna | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistence Layer and Testing~~</li><li>~~ReadME: welcome page~~</li></ul> | 20
+Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack Developer  | <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>Lab report: design decisions recorded</li><li>~~Arrange weekly meetings and task deadlines~~</li></ul> | 20
+Shengyi | <ul><li>Full Stack Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Lab report: design decisions recorded~~</li></ul> | 20
+Snigdha | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer| <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Lab report: minutes of meeting recorded~~</li><li>~~Arrange task deadlines~~</li></ul> | 22
+
