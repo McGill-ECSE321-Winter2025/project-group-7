@@ -80,6 +80,7 @@ public class RequestAnswerRepositoryTests {
         //Assert
         assertNotNull(requestAnsFromDb);
         assertEquals(requestAns.getId(), requestAnsFromDb.getId());
+        assertEquals(requestAns.getRequest().getId(), requestAnsFromDb.getRequest().getId());
         assertEquals(requestAns.getContactEmail(), requestAnsFromDb.getContactEmail());
         assertEquals(requestAns.getDropOffDate(), requestAnsFromDb.getDropOffDate());
         assertEquals(requestAns.getDropOffTime(), requestAnsFromDb.getDropOffTime());
