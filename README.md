@@ -47,3 +47,16 @@ Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack 
 Shengyi | <ul><li>Full Stack Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Lab report: design decisions recorded~~</li></ul> | 20
 Snigdha | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer| <ul><li>~~Work on class diagram~~</li><li>~~Persistence Layer and Testing~~</li><li>~~Lab report: minutes of meeting recorded~~</li><li>~~Arrange task deadlines~~</li></ul> | 22
 
+
+Table 2 : Roles of each team member Deliverable 1.5
+Name | Role | Tasks | Number of Hours 
+--- | --- | --- | ---
+Artimice |  <ul></ul> | X
+Brian |  <ul></ul> | X
+Doddy | <ul></ul> | X
+Jyothsna | <ul></ul> | X
+Mary | <ul></ul> | X
+Shengyi | <ul></ul> | X
+Snigdha | <ul></ul> | X
+
+
