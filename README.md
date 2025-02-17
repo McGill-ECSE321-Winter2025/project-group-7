@@ -39,7 +39,7 @@ This project is focused on providing a seamless experience for board game enthus
 Table 1 : Roles of each team member Deliverable 1
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice |  <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>~~Validate backlog in GitHub Projects~~</li></ul> | x
+Artimice |  <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>~~Validate backlog in GitHub Projects~~</li></ul> | 20
 Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Transfer class diagram to draw.io~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>~~Maintain backlog in GitHub Projects~~</li><li>~~Provide project deliverable on wiki~~</li></ul> | 20
 Doddy | <ul><li>~~GitHub Backlog Contributor~~</li><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Refine class diagram~~</li><li>~~Persistance Layer and Testing~~</li><li>~~Validate backlog in GitHub Projects~~</li></ul> | x
 Jyothsna | <ul><li>Backend Developer | <ul><li>~~Work on class diagram~~</li><li>~~Outline scope of project~~</li><li>~~Persistance Layer and Testing~~</li><li>~~ReadME: welcome page (intro to group, scope of project)~~</li></ul> | 22
