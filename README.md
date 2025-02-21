@@ -54,9 +54,9 @@ Name | Role | Tasks | Number of Hours
 Artimice |  | <ul></ul> | X
 Brian |  | <ul></ul> | X
 Doddy |  | <ul></ul> | X
-Jyothsna |  | <ul></ul> | X
+Jyothsna |  | <ul><li>Maintain Backlog (issue creation)</li></ul> | X
 Mary |  | <ul></ul> | X
 Shengyi |  | <ul></ul> | X
-Snigdha |  | <ul></ul> | X
+Snigdha |  | <ul><li>Maintain Backlog (issue creation)</li></ul> | X
 
 
