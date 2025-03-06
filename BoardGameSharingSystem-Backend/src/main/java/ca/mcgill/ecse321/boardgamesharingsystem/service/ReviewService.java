@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Review;
@@ -28,19 +30,19 @@ public class ReviewService {
     public Review createReview(int rating, String comment, int userID, int gameID){
         UserAccount user = userRepo.findUserAccountById(userID);
         if (user == null) {
-            throw new IllegalArgumentException("There is no user with the ID " + userID);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user with the ID " + userID);
 
         }
 
         Game game = gameRepo.findGameById(gameID);
 
         if (game  == null) {
-            throw new IllegalArgumentException("There is no game with the ID "+ gameID);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no game with the ID "+ gameID);
 
         }
 
         if (rating < 0 || rating > 100){
-            throw new IllegalArgumentException("The rating must be between 0 to 100");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"The rating must be between 0 to 100");
 
         }
 
