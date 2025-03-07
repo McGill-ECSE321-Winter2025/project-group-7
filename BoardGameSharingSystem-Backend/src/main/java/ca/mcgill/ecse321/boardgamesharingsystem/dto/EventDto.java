@@ -2,47 +2,46 @@ package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class EventDto {
-    @FutureOrPresent
-    private Date startDate;
-    @FutureOrPresent
+    //Using LocalDate internally since jakarta constraints do not work well on sql.Date
+    @FutureOrPresent(message = "startDate must not be in the past")
+    private LocalDate startDate;
     private Time startTime;
-    @Future
-    private Date endDate;
-    @Future
+    @FutureOrPresent(message = "endDate must not be in the past")
+    private LocalDate endDate;
     private Time endTime;
-    @Min(1)
+    @Min(value = 1, message = "max number of participants must be at least 1")
     private int maxNumParticipants;
-    @NotNull
+    @NotNull(message = "location must not be null")
     private String location;
-    @NotNull
+    @NotNull(message = "description must not be null")
     private String description;
-    @NotNull
+    @NotNull(message = "contactEmail must not be null")
     private String contactEmail;
     private int creatorId;
 
     public EventDto(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, String contactEmail, int creatorId)
     {
-        this.startDate = startDate;
+        this.startDate = startDate.toLocalDate();
         this.startTime = startTime;
-        this.endDate = endDate;
+        this.endDate = endDate.toLocalDate();
         this.endTime = endTime;
         this.maxNumParticipants = maxNumParticipants;
-        this.location = location == null ? "" : location;
-        this.description = description == null ? "" : description;
+        this.location = location;
+        this.description = description;
         this.contactEmail = contactEmail;
         this.creatorId = creatorId;
     }
 
     public Date getStartDate() 
     {
-        return startDate;
+        return Date.valueOf(startDate);
     }
 
     public Time getStartTime() 
@@ -52,7 +51,7 @@ public class EventDto {
 
     public Date getEndDate() 
     {
-        return endDate;
+        return Date.valueOf(endDate);
     }
 
     public Time getEndTime() 
