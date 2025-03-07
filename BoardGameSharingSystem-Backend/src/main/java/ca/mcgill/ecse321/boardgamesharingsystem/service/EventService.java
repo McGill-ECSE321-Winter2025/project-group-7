@@ -158,7 +158,7 @@ public class EventService {
         Game game = gameRepository.findGameById(gameID);
         if(game == null)
         {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format("no event found with ID %d", gameID));
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format("no game found with ID %d", gameID));
         }
         return game;
     }
@@ -295,8 +295,8 @@ public class EventService {
         {
             throw new BoardGameSharingSystemException(HttpStatus.EXPECTATION_FAILED, String.format("event %d is already at maximum capacity", eventID));
         }
-        if(event.getEndDate().after(Date.valueOf(LocalDate.now())) || 
-        (event.getEndDate().equals(Date.valueOf(LocalDate.now())) && event.getEndTime().after(Time.valueOf(LocalTime.now()))))
+        if(event.getEndDate().before(Date.valueOf(LocalDate.now())) || 
+        (event.getEndDate().equals(Date.valueOf(LocalDate.now())) && !event.getEndTime().after(Time.valueOf(LocalTime.now()))))
         {
             throw new BoardGameSharingSystemException(HttpStatus.EXPECTATION_FAILED, String.format("event %d has already ended", eventID));
         }
@@ -326,9 +326,9 @@ public class EventService {
     private void validateEventTimes(@Valid EventDto event)
     {
         if(event.getStartDate().after(event.getEndDate()) || 
-        (event.getStartDate().equals(event.getEndDate()) && event.getStartTime().after(event.getEndTime())))
+        (event.getStartDate().equals(event.getEndDate()) && !event.getStartTime().before(event.getEndTime())))
         {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Start Date and Time must be before End Date and Time");
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Start Date and Time must be before End Date and Time");
         }
     }
 }
