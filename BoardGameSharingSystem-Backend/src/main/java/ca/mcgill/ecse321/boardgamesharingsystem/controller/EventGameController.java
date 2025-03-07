@@ -21,7 +21,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.service.EventService;
 @RestController
 public class EventGameController {
     @Autowired
-    EventService eventService;
+    private EventService eventService;
     
     /**
      * Adds a Game to an Event by creating an EventGame
@@ -49,12 +49,33 @@ public class EventGameController {
     }
 
     /**
+     * Returns a list of all EventGames associated to an Event or Game, depending on the requestParam.
+     * Event will take precedence over Game, and if neither is present, an empty list is returned.
+     * @param eventId the optional Event associated to the EventGames
+     * @param eventId the optional Game associated to the EventGames
+     * @return the list of found EventGames
+     */
+    @GetMapping("eventGames")
+    private List<EventGameResponseDto> findEventGamesby(@RequestParam(value="eventId", required=false) Integer eventId, @RequestParam(value="gameId", required=false) Integer gameId)
+    {
+        List<EventGameResponseDto> res = new ArrayList<>();
+        if(eventId != null)
+        {
+            return findEventGamesbyEvent(eventId);
+        }
+        else if(gameId != null)
+        {
+            return findEventGamesbyGame(gameId);
+        }
+        return res;
+    }
+
+    /**
      * Returns a list of all EventGames associated to an Event
      * @param eventId the Event associated to the EventGames
      * @return the list of found EventGames
      */
-    @GetMapping("eventGames")
-    public List<EventGameResponseDto> findEventGamesbyEvent(@RequestParam("eventId") int eventId)
+    private List<EventGameResponseDto> findEventGamesbyEvent(int eventId)
     {
         List<EventGame> eventGamesFound = eventService.findEventGamesByEvent(eventId);
         List<EventGameResponseDto> responses = new ArrayList<>();
@@ -67,8 +88,7 @@ public class EventGameController {
      * @param gameId the Game associated to the EventGames
      * @return the list of found EventGames
      */
-    @GetMapping("eventGames")
-    public List<EventGameResponseDto> findEventGamesbyGame(@RequestParam("gameId") int gameId)
+    private List<EventGameResponseDto> findEventGamesbyGame(int gameId)
     {
         List<EventGame> eventGamesFound = eventService.findEventGamesByGame(gameId);
         List<EventGameResponseDto> responses = new ArrayList<>();
