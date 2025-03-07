@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.RegistrationResponseDto;
+import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Registration;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.EventService;
 
@@ -36,13 +37,41 @@ public class RegistrationController {
     }
 
     /**
+     * Returns the Registration associated with the specified Event, UserAccount, or both
+     * @param eventId the optional Event associated to the registration
+     * @param participantId the optional UserAccount associated to the registration
+     * @return the Registration including the timestamp of the response
+     */
+    @GetMapping("registrations")
+    public List<RegistrationResponseDto> findRegistrationBy(@RequestParam(value="eventId", required=false) Integer eventId, @RequestParam(value="participantId", required=false) Integer participantId)
+    {
+        if(eventId == null && participantId == null)
+        {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "at least one of eventId or participantId must not be null");
+        }
+        if(eventId == null)
+        {
+            return findRegistrationByParticipant(participantId);
+        }
+        else if(participantId == null)
+        {
+            return findRegistrationByEvent(eventId);
+        }
+        else
+        {
+            List<RegistrationResponseDto> response = new ArrayList<>();
+            response.add(findRegistrationByEventAndParticipant(eventId, participantId));
+            return response;
+        }
+    }
+
+    /**
      * Returns the Registration associated with the specified Event and UserAccount
      * @param eventId the Event associated to the registration
      * @param participantId the UserAccount associated to the registration
      * @return the Registration including the timestamp of the response
      */
-    @GetMapping("registrations")
-    public RegistrationResponseDto findRegistrationByEventAndParticipant(@RequestParam("eventId") int eventId, @RequestParam("participantId") int participantId)
+    private RegistrationResponseDto findRegistrationByEventAndParticipant(int eventId, int participantId)
     {
         return new RegistrationResponseDto(eventService.findRegistrationByEventAndParticipant(participantId, eventId));
     }
@@ -52,8 +81,7 @@ public class RegistrationController {
      * @param eventId the Event associated to the Registration
      * @return the Registration including the timestamp of the response
      */
-    @GetMapping("registrations")
-    public List<RegistrationResponseDto> findRegistrationByEvent(@RequestParam("eventId") int eventId)
+    private List<RegistrationResponseDto> findRegistrationByEvent(int eventId)
     {
         List<Registration> registrationsFound = eventService.findRegistrationsByEvent(eventId);
         List<RegistrationResponseDto> responses = new ArrayList<>();
@@ -66,8 +94,7 @@ public class RegistrationController {
      * @param participantId the UserAccount associated to the Registration
      * @return the Registration including the timestamp of the response
      */
-    @GetMapping("registrations")
-    public List<RegistrationResponseDto> findRegistrationByParticipant(@RequestParam("participantId") int participantId)
+    private List<RegistrationResponseDto> findRegistrationByParticipant(int participantId)
     {
         List<Registration> registrationsFound = eventService.findRegistrationsByParticipant(participantId);
         List<RegistrationResponseDto> responses = new ArrayList<>();
