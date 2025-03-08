@@ -87,9 +87,8 @@ public class RequestAnswerRepositoryTests {
         assertEquals(requestAns.getLocation(), requestAnsFromDb.getLocation());
     }
 
-    /* (still in progress)
     @Test
-    public void testReadRequestAnswerbyBorrowRequestId(){
+    public void testReadRequestAnswerbyRequestId(){
         //Arrange
         UserAccount borrower = new UserAccount("Hredhi", "hredhi@gmail.com", "1234");
         borrower = userAccountRepository.save(borrower);
@@ -115,7 +114,7 @@ public class RequestAnswerRepositoryTests {
         requestAns = requestAnswerRepository.save(requestAns);
         
         //Act
-        RequestAnswer requestAnsFromDb = requestAnswerRepository.findRequestAnswerByBorrowRequestId(borrowRequest.getId());
+        RequestAnswer requestAnsFromDb = requestAnswerRepository.findRequestAnswerByRequestId(borrowRequest.getId());
 
         //Assert
         assertNotNull(requestAnsFromDb);
@@ -126,5 +125,5 @@ public class RequestAnswerRepositoryTests {
         assertEquals(requestAns.getDropOffTime(), requestAnsFromDb.getDropOffTime());
         assertEquals(requestAns.getLocation(), requestAnsFromDb.getLocation());
         
-    }*/
+    }
 }

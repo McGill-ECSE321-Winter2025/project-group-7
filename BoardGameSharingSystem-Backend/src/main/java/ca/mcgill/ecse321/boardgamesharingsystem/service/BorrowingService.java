@@ -282,7 +282,7 @@ public class BorrowingService
         }
 
         //findRequestAnswerByBorrowRequestId is in progress
-        RequestAnswer foundAnswer = requestAnswerRepository.findRequestAnswerByBorrowRequestId(borrowingRequestId);
+        RequestAnswer foundAnswer = requestAnswerRepository.findRequestAnswerByRequestId(borrowingRequestId);
 
         if (foundAnswer == null)
         {

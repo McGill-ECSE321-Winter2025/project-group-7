@@ -38,7 +38,7 @@ public class RegistrationRepositoryTests {
     }
 
     @Test
-    public void testSaveAndRetrieveRegistration() {
+    public void testCreateAndReadRegistration() {
         //Arrange
         UserAccount creator = new UserAccount("mike", "mike@mikemail.com", "mike123");
         creator = userAccountRepository.save(creator);
