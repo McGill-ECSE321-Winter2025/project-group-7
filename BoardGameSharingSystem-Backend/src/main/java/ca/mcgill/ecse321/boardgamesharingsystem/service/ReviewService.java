@@ -60,7 +60,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(int id){
+    public Review deleteReview(int id){
         Review review = reviewRepo.findReviewById(id);
 
         if (review == null){
@@ -69,10 +69,11 @@ public class ReviewService {
         }
 
         reviewRepo.delete(review);
+        return review;
     }
 
     @Transactional
-    public void updateReview(int rating, String comment, int reviewID) {
+    public Review updateReview(int rating, String comment, int reviewID) {
         Review review = reviewRepo.findReviewById(reviewID);
         if (review == null) {
             throw new IllegalArgumentException("There is no review with the ID "+ reviewID);
@@ -88,9 +89,9 @@ public class ReviewService {
             throw new IllegalArgumentException("The comment cannotbe empty");
 
         }
-        //should the date for the review update too
         review.setComment(comment);
         review.setRating(rating);
+        return review;
 
 
 
