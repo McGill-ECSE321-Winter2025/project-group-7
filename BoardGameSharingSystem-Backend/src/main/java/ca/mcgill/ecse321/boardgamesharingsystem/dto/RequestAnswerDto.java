@@ -1,34 +1,44 @@
+package ca.mcgill.ecse321.boardgamesharingsystem.dto;
+
+import java.sql.Date;
+import java.sql.Time;
+
 public class RequestAnswerDto {
-    private Long id;
-    private Long borrowingRequestId;
-    private String dropoffDate;
-    private String dropoffTime;
+    private int id;
+    private int borrowingRequestId;
+    private Date dropoffDate;
+    private Time dropoffTime;
     private String dropoffLocation;
+    private String contactEmail;
 
     // Constructors
     public RequestAnswerDto() {}
 
-    public RequestAnswerDto(Long id, Long borrowingRequestId, String dropoffDate, String dropoffTime, String dropoffLocation) {
+    public RequestAnswerDto(int id, int borrowingRequestId, Date dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
         this.id = id;
         this.borrowingRequestId = borrowingRequestId;
         this.dropoffDate = dropoffDate;
         this.dropoffTime = dropoffTime;
         this.dropoffLocation = dropoffLocation;
+        this.contactEmail = contactEmail;
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public Long getBorrowingRequestId() { return borrowingRequestId; }
-    public void setBorrowingRequestId(Long borrowingRequestId) { this.borrowingRequestId = borrowingRequestId; }
+    public int getBorrowingRequestId() { return borrowingRequestId; }
+    public void setBorrowingRequestId(int borrowingRequestId) { this.borrowingRequestId = borrowingRequestId; }
 
-    public String getDropoffDate() { return dropoffDate; }
-    public void setDropoffDate(String dropoffDate) { this.dropoffDate = dropoffDate; }
+    public Date getDropoffDate() { return dropoffDate; }
+    public void setDropoffDate(Date dropoffDate) { this.dropoffDate = dropoffDate; }
 
-    public String getDropoffTime() { return dropoffTime; }
-    public void setDropoffTime(String dropoffTime) { this.dropoffTime = dropoffTime; }
+    public Time getDropoffTime() { return dropoffTime; }
+    public void setDropoffTime(Time dropoffTime) { this.dropoffTime = dropoffTime; }
 
     public String getDropoffLocation() { return dropoffLocation; }
     public void setDropoffLocation(String dropoffLocation) { this.dropoffLocation = dropoffLocation; }
+
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 }

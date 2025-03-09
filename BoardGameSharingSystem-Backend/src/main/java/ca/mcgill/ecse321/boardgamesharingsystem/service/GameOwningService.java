@@ -33,6 +33,16 @@ public class GameOwningService {
     private GameCopyRepository gameCopyRepo;
 
     /**
+     * Finds all GameCopies associated with a specific Game.
+     * @param gameId the ID of the Game
+     * @return a list of GameCopies
+     */
+    @Transactional(readOnly = true)
+    public List<GameCopy> findGameCopiesFromGame(int gameId) {
+        return gameCopyRepo.findByGameId(gameId);
+    }
+
+    /**
      * Create a GameOwner from an existing UserAccount
      */
     @Transactional
@@ -91,21 +101,12 @@ public class GameOwningService {
      * Remove a GameCopy from a GameOwner
      */
     @Transactional
-    public void removeGameCopyFromGameOwner(int gameCopyId) {
-        // Find the GameCopy
-        GameCopy gameCopy = gameCopyRepo.findGameCopyById(gameCopyId);
-        if (gameCopy == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GameCopy not found");
-        }
+    public GameCopy removeGameCopyFromGameOwner(int gameCopyId) {
+        GameCopy gameCopy = gameCopyRepo.findById(gameCopyId)
+                .orElseThrow(() -> new IllegalArgumentException("GameCopy not found with ID: " + gameCopyId));
 
-        // Check if the owner has more than one copy of this game
-        List<GameCopy> copies = gameCopyRepo.findByOwnerId(gameCopy.getGameOwner().getId());
-        if (copies.size() <= 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot remove the only copy of the game");
-        }
-
-        // Delete the GameCopy
         gameCopyRepo.delete(gameCopy);
+        return gameCopy;
     }
 
     /**

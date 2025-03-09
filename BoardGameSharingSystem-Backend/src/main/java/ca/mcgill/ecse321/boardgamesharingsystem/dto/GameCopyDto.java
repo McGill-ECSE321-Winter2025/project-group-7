@@ -1,3 +1,8 @@
+package ca.mcgill.ecse321.boardgamesharingsystem.dto;
+
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+
+
 public class GameCopyDto {
     private Long id;
     private Long gameId;
