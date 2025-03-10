@@ -28,74 +28,86 @@ public class GameCollectionService {
     /**
      * 
      * @param gameId the id of the game
-     * @return the game with the id 
+     * @return the game with the id
      */
-    public Game findGameById(int gameId){
+    public Game findGameById(int gameId) {
         Game game = gameRepo.findGameById(gameId);
 
-        if(game == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Could not find a game with id %d", gameId));
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("Could not find a game with id %d", gameId));
         }
         return game;
-        
+
     }
 
     /**
      * 
-     * @return the list of all games in the system 
+     * @return the list of all games in the system
      */
-    public List<Game> findAllGames(){
+    public List<Game> findAllGames() {
         List<Game> games = gameRepo.findAll();
-        if (games == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Could not find the list of games");
+        if (games == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find the list of games");
         }
         return games;
     }
 
     /**
      * 
-     * @param gameId the id of the game 
-     * @return the list of game copies for the game with the id 
+     * @param gameId the id of the game
+     * @return the list of game copies for the game with the id
      */
-    public List<GameCopy> findGameCopiesFromGame(int gameId){
+    public List<GameCopy> findGameCopiesFromGame(int gameId) {
         List<GameCopy> gameCopies = gameCopyRepo.findByGameId(gameId);
-        if (gameCopies == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("Could not find the list of game copies for game with id %d",gameId));
+        if (gameCopies == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("Could not find the list of game copies for game with id %d", gameId));
         }
         return gameCopies;
     }
 
     /**
      * 
-     * @param gameToCreate the request containing information about the game to create
+     * @param gameToCreate the request containing information about the game to
+     *                     create
      * @return the game that was created
      */
     @Transactional
-    public Game createGame(@Valid GameRequestDto gameToCreate){
+    public Game createGame(@Valid GameRequestDto gameToCreate) {
         int minNumPlayers = gameToCreate.getMinNumPlayers();
         int maxNumPlayers = gameToCreate.getMaxNumPlayers();
-        if (maxNumPlayers< minNumPlayers){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
+        if (maxNumPlayers < minNumPlayers) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(
+                    "The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         Game game = new Game(
-				gameToCreate.getTitle(),
-				gameToCreate.getMaxNumPlayers(),
-				gameToCreate.getMinNumPlayers(),
+                gameToCreate.getTitle(),
+                gameToCreate.getMaxNumPlayers(),
+                gameToCreate.getMinNumPlayers(),
                 gameToCreate.getPictureURL(),
                 gameToCreate.getDescription());
-		return gameRepo.save(game);
+        return gameRepo.save(game);
     }
 
+    /**
+     * 
+     * @param gameId       the id of the game
+     * @param gameToUpdate the request for updating the game
+     * @return the updated game
+     */
     @Transactional
-    public Game updateGame(int gameId,@Valid GameRequestDto gameToUpdate){
-        Game game = gameRepo.findGameById(gameId) ;
-        if (game == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("Could not update game because a game with id %d does not exist ", gameId));
+    public Game updateGame(int gameId, @Valid GameRequestDto gameToUpdate) {
+        Game game = gameRepo.findGameById(gameId);
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("Could not update game because a game with id %d does not exist ", gameId));
         }
         int minNumPlayers = gameToUpdate.getMinNumPlayers();
         int maxNumPlayers = gameToUpdate.getMaxNumPlayers();
-        if (minNumPlayers < maxNumPlayers){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
+        if (minNumPlayers < maxNumPlayers) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(
+                    "The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         game.setTitle(gameToUpdate.getTitle());
         game.setMaxNumPlayers(maxNumPlayers);
