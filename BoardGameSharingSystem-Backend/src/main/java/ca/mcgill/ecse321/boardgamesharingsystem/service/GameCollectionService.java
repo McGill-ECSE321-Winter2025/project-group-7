@@ -75,7 +75,7 @@ public class GameCollectionService {
         int minNumPlayers = gameToCreate.getMinNumPlayers();
         int maxNumPlayers = gameToCreate.getMaxNumPlayers();
         if (maxNumPlayers< minNumPlayers){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayer %d ", minNumPlayers, maxNumPlayers));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         Game game = new Game(
 				gameToCreate.getTitle(),
@@ -95,7 +95,7 @@ public class GameCollectionService {
         int minNumPlayers = gameToUpdate.getMinNumPlayers();
         int maxNumPlayers = gameToUpdate.getMaxNumPlayers();
         if (minNumPlayers < maxNumPlayers){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayer %d ", minNumPlayers, maxNumPlayers));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         game.setTitle(gameToUpdate.getTitle());
         game.setMaxNumPlayers(maxNumPlayers);
