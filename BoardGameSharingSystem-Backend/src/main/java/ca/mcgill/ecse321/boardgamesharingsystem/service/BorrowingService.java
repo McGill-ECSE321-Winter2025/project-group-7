@@ -16,6 +16,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest.RequestStatus;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * This service class implements functionalities related to the borrowing of board games,
@@ -23,34 +24,17 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest.RequestStatu
  * as managing request answers.
  */
 @Service
+@Validated
 public class BorrowingService
 {
-    private final BorrowRequestRepository borrowingRequestRepository;
-    private final RequestAnswerRepository requestAnswerRepository;
-    private final UserAccountRepository userAccountRepository;
-    private final GameCopyRepository gameCopyRepository;
-
-    /**
-     * Constructs a BorrowingService with all required repositories.
-     * 
-     * @param borrowingRequestRepo The repository for BorrowingRequest entities.
-     * @param requestAnswerRepo    The repository for RequestAnswer entities.
-     * @param userAccountRepo      The repository for UserAccount entities.
-     * @param gameCopyRepo         The repository for GameCopy entities.
-     */
     @Autowired
-    public BorrowingService(
-        BorrowRequestRepository borrowingRequestRepo,
-        RequestAnswerRepository requestAnswerRepo,
-        UserAccountRepository userAccountRepo,
-        GameCopyRepository gameCopyRepo
-    )
-    {
-        this.borrowingRequestRepository = borrowingRequestRepo;
-        this.requestAnswerRepository = requestAnswerRepo;
-        this.userAccountRepository = userAccountRepo;
-        this.gameCopyRepository = gameCopyRepo;
-    }
+    private BorrowRequestRepository borrowingRequestRepository;
+    @Autowired
+    private RequestAnswerRepository requestAnswerRepository;
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+    @Autowired
+    private GameCopyRepository gameCopyRepository;
 
     /**
      * Creates a new BorrowingRequest.
