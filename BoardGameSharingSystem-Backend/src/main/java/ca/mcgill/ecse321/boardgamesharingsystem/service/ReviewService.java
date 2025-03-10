@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.service.JavaServiceLoadable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
@@ -16,6 +18,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.repo.ReviewRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
 import jakarta.transaction.Transactional;
 
+@Service
 public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepo;
