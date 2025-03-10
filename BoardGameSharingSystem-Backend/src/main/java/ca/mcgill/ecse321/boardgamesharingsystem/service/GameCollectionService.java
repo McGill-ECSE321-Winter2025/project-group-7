@@ -1,5 +1,7 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -8,42 +10,73 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
-import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameCreationDto;
-import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameUpdateDto;
+import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
+import jakarta.validation.Valid;
 
 @Service
 @Validated
 public class GameCollectionService {
     @Autowired
     private GameRepository gameRepo;
+    @Autowired
+    private GameCopyRepository gameCopyRepo;
 
-    //Still in progress -- not tested
+    /**
+     * 
+     * @param gameId the id of the game
+     * @return the game with the id 
+     */
     public Game findGameById(int gameId){
         Game game = gameRepo.findGameById(gameId);
 
         if(game == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("No game has id %d", gameId));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Could not find a game with id %d", gameId));
         }
-
-        else{
-            return game;
-        }
+        return game;
         
     }
 
-    public Game findAllGames(){
-        return null;
+    /**
+     * 
+     * @return the list of all games in the system 
+     */
+    public List<Game> findAllGames(){
+        List<Game> games = gameRepo.findAll();
+        if (games == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Could not find the list of games");
+        }
+        return games;
     }
 
-    public Game findGameCopiesFromGame(int gameId){
-        return null;
+    /**
+     * 
+     * @param gameId the id of the game 
+     * @return the list of game copies for the game with the id 
+     */
+    public List<GameCopy> findGameCopiesFromGame(int gameId){
+        List<GameCopy> gameCopies = gameCopyRepo.findByGameId(gameId);
+        if (gameCopies == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("Could not find the list of game copies for game with id %d",gameId));
+        }
+        return gameCopies;
     }
 
-    //Still in progress -- not tested
+    /**
+     * 
+     * @param gameToCreate the request containing information about the game to create
+     * @return the game that was created
+     */
     @Transactional
-    public Game createGame(GameCreationDto gameToCreate){
+    public Game createGame(@Valid GameRequestDto gameToCreate){
+        int minNumPlayers = gameToCreate.getMinNumPlayers();
+        int maxNumPlayers = gameToCreate.getMaxNumPlayers();
+        if (maxNumPlayers< minNumPlayers){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayer %d ", minNumPlayers, maxNumPlayers));
+        }
         Game game = new Game(
 				gameToCreate.getTitle(),
 				gameToCreate.getMaxNumPlayers(),
@@ -54,12 +87,20 @@ public class GameCollectionService {
     }
 
     @Transactional
-    public Game deleteGame(int gameId){
-        return null;
-    }
-
-    @Transactional
-    public Game updateGame(GameUpdateDto gameToUpdate){
-        return null;
+    public Game updateGame(int gameId,@Valid GameRequestDto gameToUpdate){
+        Game game = gameRepo.findGameById(gameId) ;
+        if (game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("Could not update game because a game with id %d does not exist ", gameId));
+        }
+        int minNumPlayers = gameToUpdate.getMinNumPlayers();
+        int maxNumPlayers = gameToUpdate.getMaxNumPlayers();
+        if (minNumPlayers < maxNumPlayers){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.format("The minNumPlayers %d is greater then the maxNumPlayer %d ", minNumPlayers, maxNumPlayers));
+        }
+        game.setTitle(gameToUpdate.getTitle());
+        game.setMaxNumPlayers(maxNumPlayers);
+        game.setMinNumPlayers(minNumPlayers);
+        game.setDescription(gameToUpdate.getDescription());
+        return gameRepo.save(game);
     }
 }
