@@ -10,6 +10,7 @@ public class GameRequestDto {
     private int minNumPlayers;
     @Positive(message = "The game must have a positive maxNUmPlayers.")
     private int maxNumPlayers;
+    @NotBlank(message = "The game must have a pictureURL")
     private String pictureURL;
     @NotBlank(message = "The game must have a description.")
     private String description;
