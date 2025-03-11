@@ -28,7 +28,7 @@ public class ReviewController {
     @PostMapping("/reviews/{reviewerId}/{gameId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewResponseDto createReviewForGame(@RequestBody ReviewDto review) {
-        return new ReviewResponseDto(reviewService.createReview(review.getRating(), review.getComment(), review.getUserId(), review.getGameId()));
+        return new ReviewResponseDto(reviewService.createReview(review, review.getUserId(), review.getGameId()));
 
     }
 
@@ -45,7 +45,7 @@ public class ReviewController {
     @PutMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewResponseDto updateReview(@PathVariable int reviewId, @RequestBody ReviewDto review) {
-        return new ReviewResponseDto(reviewService.updateReview(review.getRating(), review.getComment(), reviewId));
+        return new ReviewResponseDto(reviewService.updateReview(review));
     }
 
     @DeleteMapping("/reviews/{id}")

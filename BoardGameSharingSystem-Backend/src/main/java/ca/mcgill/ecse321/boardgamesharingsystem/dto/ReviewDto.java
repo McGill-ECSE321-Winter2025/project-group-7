@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 import java.sql.Date;
 
 public class ReviewDto {
+    private int id;
     private Date reviewDate;
     private int rating;
     private String comment;
@@ -11,12 +12,18 @@ public class ReviewDto {
 
     public ReviewDto() {}
 
-    public ReviewDto(Date reviewDate, int rating, String comment, int userId, int gameId) {
+    public ReviewDto(Date reviewDate, int rating, String comment, int userId, int gameId, int id) {
         this.reviewDate = reviewDate;
         this.rating = rating;
         this.comment = comment; 
         this.userId = userId;
         this.gameId = gameId;
+        this.id = id;
+
+    }
+
+    public int getId(){
+        return this.id;
 
     }
 

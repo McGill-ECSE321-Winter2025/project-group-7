@@ -123,14 +123,13 @@ public class ReviewServiceTests {
         //Arrange
         UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
         when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
-
         Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
         when(gameRepository.findGameById(11)).thenReturn(monopoly);
-
         when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, 10, 11, 1);
+        
         //Act
-        Review review = reviewService.createReview(VALID_RATING,VALID_COMMENT, 10, 11);
+        Review review = reviewService.createReview(reviewDto, 10, 11);
 
         //Assert
         assertNotNull(review);
@@ -145,19 +144,87 @@ public class ReviewServiceTests {
     @Test
     public void testCreateReviewWithInvalidUserAccount(){
         //Arrange
-
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.findGameById(11)).thenReturn(monopoly);
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        
         //Act
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, 9, 11, review.getId());
 
         //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 9, 11));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
     @Test
-    public void testCreateReviewWithInvalidRating(){
+    public void testCreateReviewWithInvalidGame() {
         //Arrange
-
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.findGameById(11)).thenReturn(monopoly);
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        
         //Act
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, 10, 9, review.getId());
 
         //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 9));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+
+    }
+
+    @Test
+    public void testCreateReviewWithInvalidComment(){
+        //Arrange
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.findGameById(11)).thenReturn(monopoly);
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, null, miffy, monopoly);
+        
+        //Act
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, null, 10, 11, review.getId());
+
+        //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 11));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+    }
+
+    @Test
+    public void testCreateReviewWithHighRating(){
+        //Arrange
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.findGameById(11)).thenReturn(monopoly);
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
+        Review review = new Review(Date.valueOf(LocalDate.now()), 101, VALID_COMMENT, miffy, monopoly);
+        
+        //Act
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), 101, VALID_COMMENT, 10, 11, review.getId());
+
+        //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 11));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+    }
+
+    @Test
+    public void testCreateReviewWithLowRating(){
+        //Arrange
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.findGameById(11)).thenReturn(monopoly);
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
+        Review review = new Review(Date.valueOf(LocalDate.now()), -1, VALID_COMMENT, miffy, monopoly);
+        
+        //Act
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), -1, VALID_COMMENT, 10, 11, review.getId());
+
+        //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 11));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
     @Test
@@ -170,9 +237,10 @@ public class ReviewServiceTests {
         when(reviewRepository.findReviewById(12)).thenReturn(review);
         int newRating = 4;
         String newComment = "Wow great game!!!!!";
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), newRating, newComment, miffy.getId(), monopoly.getId(), 12);
 
         //Act
-        Review updatedReview = reviewService.updateReview(newRating, newComment, 12);
+        Review updatedReview = reviewService.updateReview(reviewDto);
 
         //Assert
         assertNotNull(updatedReview);
@@ -185,13 +253,20 @@ public class ReviewServiceTests {
 
     @Test
     public void testUpdateInvalidReview(){
-        //Arrange
-        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+         //Arrange
+         Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+         when(gameRepository.findGameById(11)).thenReturn(monopoly);
+         UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+         when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
+         Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
 
-        //Act
-
-        //Assert
+         
+         //Act
+         ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, 10, 11, 5);
+ 
+         //Assert
+         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
+         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
     @Test
@@ -206,7 +281,10 @@ public class ReviewServiceTests {
         String newComment = "Wow great game!!!!!";
 
         //Act
-        Review updatedReview = reviewService.updateReview(newRating, newComment, 12);
+        //Review updatedReview = reviewService.updateReview(newRating, newComment, 12);
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), newRating, newComment, miffy.getId(), monopoly.getId(), 12);
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
     @Test
@@ -221,34 +299,66 @@ public class ReviewServiceTests {
         String newComment = "Wow great game!!!!!";
 
         //Act
-        Review updatedReview = reviewService.updateReview(newRating, newComment, 12);
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), newRating, newComment, miffy.getId(), monopoly.getId(), 12);
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
     @Test
     public void testUpdateReviewWithInvalidComment(){
         //Arrange
+        when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        when(reviewRepository.findReviewById(12)).thenReturn(review);
+        String newComment = null;
 
         //Act
+        ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, newComment, miffy.getId(), monopoly.getId(), 12);
 
         //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
     @Test
     public void testDeleteValidReview(){
         //Arrange
-
+        when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        when(reviewRepository.findReviewById(12)).thenReturn(review);
+    
         //Act
-
+        Review deletedReview = reviewService.deleteReview(12);
+        
         //Assert
+        assertNotNull(deletedReview);
+        assertEquals(review.getComment(), deletedReview.getComment());
+        assertEquals(review.getRating(), deletedReview.getRating());
+        assertEquals(review.getReviewDate(), deletedReview.getReviewDate());
+        assertEquals(review.getReviewer().getId(), deletedReview.getReviewer().getId());
+        assertEquals(review.getGame().getId(), deletedReview.getGame().getId());
+        assertEquals(review.getId(), deletedReview.getId());
+        
     }
 
     @Test
     public void testDeleteInvalidReview(){
         //Arrange
+        when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        when(reviewRepository.findReviewById(12)).thenReturn(review);
 
         //Act
-
+        
         //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.deleteReview(1));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
 

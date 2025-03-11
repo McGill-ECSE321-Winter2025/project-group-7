@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.mcgill.ecse321.boardgamesharingsystem.dto.ReviewDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Review;
@@ -32,7 +33,9 @@ public class ReviewService {
     private UserAccountRepository userRepo;
 
     @Transactional
-    public Review createReview(int rating, String comment, int userID, int gameID){
+    public Review createReview(ReviewDto reviewDto, int userID, int gameID){
+        int rating = reviewDto.getRating();
+        String comment = reviewDto.getComment();
         UserAccount user = userRepo.findUserAccountById(userID);
         if (user == null) {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "There is no user with the ID " + userID);
@@ -78,7 +81,10 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review updateReview(int rating, String comment, int reviewID) {
+    public Review updateReview(ReviewDto reviewDto) {
+        int rating = reviewDto.getRating();
+        String comment = reviewDto.getComment();
+        int reviewID = reviewDto.getId();
         Review review = reviewRepo.findReviewById(reviewID);
         if (review == null) {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no review with the ID "+ reviewID);
