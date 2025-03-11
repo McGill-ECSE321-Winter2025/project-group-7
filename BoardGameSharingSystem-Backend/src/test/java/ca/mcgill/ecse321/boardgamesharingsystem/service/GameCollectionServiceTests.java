@@ -25,6 +25,9 @@ import org.springframework.http.HttpStatus;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 
@@ -50,12 +53,17 @@ public class GameCollectionServiceTests {
     private static final String VALID_PICTURE_URL_2 = "uno.jpeg";
     private static final String VALID_DESCRIPTION_2 = "UNO is a fun game to be played with friends";
     private Game game;
+    private GameCopy gameCopy;
     private static final int GT_MAX_MIN_NUM_PLAYERS = 8;
 
     @BeforeEach
     void setup(){
         game = new Game(VALID_TITLE_2, VALID_MIN_NUM_PLAYERS_2,VALID_MAX_NUM_PLAYERS_2
         ,VALID_PICTURE_URL_2,VALID_DESCRIPTION_2);
+
+        UserAccount user = new UserAccount("Bobby", "bobby@gmail.com", "bobby1234455555");
+        GameOwner gameOwner = new GameOwner(user);
+        gameCopy = new GameCopy(game, gameOwner);
     }
     @Test
     public void testFindGameById() {
@@ -102,8 +110,54 @@ public class GameCollectionServiceTests {
     }
 
     @Test
+    public void testFindAllGamesIfReturnedListNull(){
+        //Arrange
+        when(gameRepository.findAll()).thenReturn(null);
+        //Act+Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
+        ()-> gameCollectionService.findAllGames());
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("Could not find the list of games", e.getMessage().trim());
+    }
+
+    @Test
     public void testFindGameCopiesFromGame(){
-        //TODO
+        //Arrange
+        when(gameCollectionService.findGameCopiesFromGame(42)).thenReturn(Arrays.asList(gameCopy));
+
+        //Act
+        List<GameCopy> gameCopies = gameCollectionService.findGameCopiesFromGame(42);
+        
+        //Assert
+        assertNotNull(gameCopies);
+        assertFalse(gameCopies.isEmpty());
+        assertEquals(1, gameCopies.size());
+        assertEquals(gameCopy, gameCopies.get(0));
+
+    }
+
+    @Test
+    public void testFindGameCopiesFromUnknownGame(){
+        // Arrange
+        when(gameRepository.findById(42)).thenReturn(null);
+        //Act+Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
+        ()-> gameCollectionService.findGameCopiesFromGame(42));
+        
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("Could not find the list of game copies for game with id 42 since it does not exist", e.getMessage().trim());
+    }
+
+    @Test
+    public void testFindGameCopiesFromGameError(){
+        //
+        when(gameCopyRepository.findByGameId(42)).thenReturn(null);
+        //Act+Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
+        ()-> gameCollectionService.findGameCopiesFromGame(42));
+        
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("Could not find the list of game copies for game with id 42", e.getMessage().trim());        
     }
 
     @Test

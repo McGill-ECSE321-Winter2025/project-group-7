@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class GameCollectionService {
     public List<Game> findAllGames() {
         List<Game> games = gameRepo.findAll();
         if (games == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find the list of games");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Could not find the list of games");
         }
         return games;
     }
@@ -60,9 +61,13 @@ public class GameCollectionService {
      * @return the list of game copies for the game with the id
      */
     public List<GameCopy> findGameCopiesFromGame(int gameId) {
+        if (gameRepo.findById(gameId)==null){
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+            String.format("Could not find the list of game copies for game with id %d since it does not exist",gameId));
+        }
         List<GameCopy> gameCopies = gameCopyRepo.findByGameId(gameId);
         if (gameCopies == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
                     String.format("Could not find the list of game copies for game with id %d", gameId));
         }
         return gameCopies;
