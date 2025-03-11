@@ -74,11 +74,11 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindGameById() {
         //Arrange
-        when(gameRepository.findGameById(42)).thenReturn(new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS,
+        when(gameRepository.findGameById(23)).thenReturn(new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS,
                 VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION));
 
         //Act
-        Game game = gameRepository.findGameById(42);
+        Game game = gameCollectionService.findGameById(23);
 
         //Assert
         assertNotNull(game);
@@ -103,7 +103,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindAllGames(){
         //Arrange
-        when(gameCollectionService.findAllGames()).thenReturn(Arrays.asList(game));
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(game));
 
         //Act
         List<Game> games = gameCollectionService.findAllGames();
@@ -129,7 +129,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindGameCopiesFromGame(){
         //Arrange
-        when(gameCollectionService.findGameCopiesFromGame(42)).thenReturn(Arrays.asList(gameCopy));
+        when(gameCopyRepository.findByGameId(42)).thenReturn(Arrays.asList(gameCopy));
 
         //Act
         List<GameCopy> gameCopies = gameCollectionService.findGameCopiesFromGame(42);
