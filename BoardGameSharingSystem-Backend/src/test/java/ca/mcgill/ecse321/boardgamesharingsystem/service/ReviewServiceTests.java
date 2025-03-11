@@ -77,9 +77,6 @@ public class ReviewServiceTests {
         //Arrange
         when(userAccountRepository.findUserAccountById(10)).thenReturn(null);
         
-        //Act
-        UserAccount userAccount = userAccountRepository.findUserAccountById(10);
-
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findUserAccountById(10));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
@@ -110,9 +107,7 @@ public class ReviewServiceTests {
         //Arrange
         when(gameRepository.findGameById(10)).thenReturn(null);
 
-        //Act
-
-        //Assert
+        //Act + Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findGameById(10));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
 
@@ -258,9 +253,6 @@ public class ReviewServiceTests {
          when(gameRepository.findGameById(11)).thenReturn(monopoly);
          UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
          when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
-         Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
-
-         
          //Act
          ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, 10, 11, 5);
  
@@ -360,7 +352,4 @@ public class ReviewServiceTests {
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.deleteReview(1));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
-
-
-    
 }
