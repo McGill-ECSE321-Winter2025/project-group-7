@@ -97,7 +97,7 @@ public class EventServiceTests {
     @Test
     public void testFindUserAccountThatDoesntExist()
     {
-        //Arrange/Act/Assert
+        //Arrange + Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> eventService.findUserAccountById(42));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("no userAccount found with ID 42", exception.getMessage());
@@ -135,7 +135,7 @@ public class EventServiceTests {
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
         EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, Date.valueOf("2026-02-10"), VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
-        //Act/Assert
+        //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class,() -> eventService.createEvent(eventDto));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Start Date and Time must be before End Date and Time", exception.getMessage());
@@ -148,7 +148,7 @@ public class EventServiceTests {
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
         EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_START_DATE, Time.valueOf("10:00:00"), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
-        //Act/Assert
+        //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class,() -> eventService.createEvent(eventDto));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Start Date and Time must be before End Date and Time", exception.getMessage());
@@ -161,7 +161,7 @@ public class EventServiceTests {
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
         EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_START_DATE, VALID_START_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
-        //Act/Assert
+        //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class,() -> eventService.createEvent(eventDto));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Start Date and Time must be before End Date and Time", exception.getMessage());
@@ -170,7 +170,7 @@ public class EventServiceTests {
     @Test
     public void testCreateInvalidEventDto()
     {
-        //Arrange/Act
+        //Arrange + Act
         EventDto event = new EventDto(Date.valueOf("2020-10-10"), VALID_START_TIME, Date.valueOf("2020-10-11"), VALID_END_TIME, 0, null, null, null, 42);
         List<String> expectedConstraintViolations = new ArrayList<>();
         expectedConstraintViolations.add("max number of participants must be at least 1");
@@ -218,7 +218,7 @@ public class EventServiceTests {
     @Test
     public void testFindEventThatDoesntExist()
     {
-        //Arrange/Act/Assert
+        //Arrange + Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> eventService.findEventById(42));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("no event found with ID 42", exception.getMessage());
