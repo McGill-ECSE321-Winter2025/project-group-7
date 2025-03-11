@@ -111,14 +111,15 @@ public class GameCollectionService {
         }
         int minNumPlayers = gameToUpdate.getMinNumPlayers();
         int maxNumPlayers = gameToUpdate.getMaxNumPlayers();
-        if (minNumPlayers < maxNumPlayers) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(
+        if (minNumPlayers > maxNumPlayers) {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
                     "The minNumPlayers %d is greater than the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         game.setTitle(gameToUpdate.getTitle());
         game.setMaxNumPlayers(maxNumPlayers);
         game.setMinNumPlayers(minNumPlayers);
         game.setDescription(gameToUpdate.getDescription());
+        game.setPictureURL(gameToUpdate.getPictureURL());
         return gameRepo.save(game);
     }
 }

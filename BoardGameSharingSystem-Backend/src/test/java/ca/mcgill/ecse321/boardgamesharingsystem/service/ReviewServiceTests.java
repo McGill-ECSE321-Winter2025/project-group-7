@@ -110,9 +110,7 @@ public class ReviewServiceTests {
         //Arrange
         when(gameRepository.findGameById(10)).thenReturn(null);
 
-        //Act
-
-        //Assert
+        //Act + Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findGameById(10));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
 
@@ -360,7 +358,4 @@ public class ReviewServiceTests {
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.deleteReview(1));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
-
-
-    
 }

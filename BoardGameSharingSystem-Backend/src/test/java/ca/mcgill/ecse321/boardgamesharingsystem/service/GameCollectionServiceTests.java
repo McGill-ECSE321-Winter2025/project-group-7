@@ -56,6 +56,12 @@ public class GameCollectionServiceTests {
     private GameCopy gameCopy;
     private static final int GT_MAX_MIN_NUM_PLAYERS = 8;
 
+    private static final String UPDATED_TITLE = "MONOPOLY PREMIUM";
+    private static final int UPDATED_MIN_NUM_PLAYERS = 3;
+    private static final int UPDATED_MAX_NUM_PLAYERS = 4;
+    private static final String UPDATED_PICTURE_URL = "monopoly_premium.png";
+    private static final String UPDATED_DESCRIPTION = "Monopoly is a game released by Hasbro in 1960 and fun for kids of all ages!"; 
+
     @BeforeEach
     void setup(){
         game = new Game(VALID_TITLE_2, VALID_MIN_NUM_PLAYERS_2,VALID_MAX_NUM_PLAYERS_2
@@ -67,14 +73,14 @@ public class GameCollectionServiceTests {
     }
     @Test
     public void testFindGameById() {
-        // Arrange
+        //Arrange
         when(gameRepository.findGameById(42)).thenReturn(new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS,
                 VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION));
 
-        // Act
+        //Act
         Game game = gameRepository.findGameById(42);
 
-        // Assert
+        //Assert
         assertNotNull(game);
         assertEquals(VALID_TITLE,game.getTitle());
         assertEquals(VALID_MIN_NUM_PLAYERS, game.getMinNumPlayers());
@@ -162,15 +168,15 @@ public class GameCollectionServiceTests {
 
     @Test
     public void testCreateValidGame() {
-        // Arrange
+        //Arrange
         GameRequestDto gameDto = new GameRequestDto(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS,
                 VALID_PICTURE_URL, VALID_DESCRIPTION);
         when(gameRepository.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
 
-        // Act
+        //Act
         Game createdGame = gameCollectionService.createGame(gameDto);
 
-        // Assert
+        //Assert
         assertNotNull(createdGame);
         assertEquals(VALID_TITLE, createdGame.getTitle());
         assertEquals(VALID_MIN_NUM_PLAYERS, createdGame.getMinNumPlayers());
@@ -183,15 +189,36 @@ public class GameCollectionServiceTests {
 
     @Test
     public void testCreateGame_MinPlayersGTMaxPlayers() {
-        // Arrange
-        GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE, GT_MAX_MIN_NUM_PLAYERS,VALID_MAX_NUM_PLAYERS,
+        //Arrange
+        GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE, GT_MAX_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS,
                 VALID_PICTURE_URL, VALID_DESCRIPTION);
 
-        // Act + Assert
+        //Act + Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
                 () -> gameCollectionService.createGame(gameRequestDto));
 
         assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
         assertEquals("The minNumPlayers 8 is greater than the maxNumPlayers 7", e.getMessage().trim());
     }
+
+     
+    @Test 
+    public void testUpdateValidGame(){
+        //Arrange
+        GameRequestDto gameRequestDto = new GameRequestDto(UPDATED_TITLE, UPDATED_MIN_NUM_PLAYERS, UPDATED_MAX_NUM_PLAYERS,
+                UPDATED_PICTURE_URL, UPDATED_DESCRIPTION);
+        when(gameRepository.save(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        //Act 
+        when(gameRepository.findGameById(42)).thenReturn(game);
+        Game updatedGame = gameCollectionService.updateGame(42, gameRequestDto);
+
+        //Assert
+        assertNotNull(updatedGame);
+        assertEquals(UPDATED_TITLE, updatedGame.getTitle());
+        assertEquals(UPDATED_MIN_NUM_PLAYERS, updatedGame.getMinNumPlayers());
+        assertEquals(UPDATED_MAX_NUM_PLAYERS, updatedGame.getMaxNumPlayers());
+        assertEquals(UPDATED_PICTURE_URL, updatedGame.getPictureURL());
+        assertEquals(UPDATED_DESCRIPTION, updatedGame.getDescription());       
+    }   
 }
