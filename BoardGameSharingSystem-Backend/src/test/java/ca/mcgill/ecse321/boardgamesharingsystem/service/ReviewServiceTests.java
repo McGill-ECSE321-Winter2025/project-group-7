@@ -81,7 +81,7 @@ public class ReviewServiceTests {
         UserAccount userAccount = userAccountRepository.findUserAccountById(10);
 
         //Assert
-        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> userAccountRepository.findUserAccountById(10));
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findUserAccountById(10));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
     }
 
@@ -105,7 +105,7 @@ public class ReviewServiceTests {
 
     }
 
-    @Test
+     @Test
     public void findGameByInvalidId(){
         //Arrange
         when(gameRepository.findGameById(10)).thenReturn(null);
@@ -113,7 +113,7 @@ public class ReviewServiceTests {
         //Act
 
         //Assert
-        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> gameRepository.findGameById(10));
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findGameById(10));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
 
     }
@@ -136,8 +136,8 @@ public class ReviewServiceTests {
         assertNotNull(review);
         assertEquals(VALID_RATING, review.getRating());
         assertEquals(VALID_COMMENT, review.getComment());
-        assertEquals(10, review.getReviewer().getId());
-        assertEquals(11, review.getGame().getId());
+        assertEquals(review.getReviewer().getId(), miffy.getId());
+        assertEquals(review.getGame().getId(), monopoly.getId());
         verify(reviewRepository, times(1)).save(any(Review.class));
 
     }
@@ -166,7 +166,8 @@ public class ReviewServiceTests {
         when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
         UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
         Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
-        when(reviewRepository.findReviewById(12)).thenReturn(new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly));
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        when(reviewRepository.findReviewById(12)).thenReturn(review);
         int newRating = 4;
         String newComment = "Wow great game!!!!!";
 
@@ -177,7 +178,7 @@ public class ReviewServiceTests {
         assertNotNull(updatedReview);
         assertEquals(newComment, updatedReview.getComment());
         assertEquals(newRating, updatedReview.getRating());
-        assertEquals(12, updatedReview.getId());
+        assertEquals(updatedReview.getId(), review.getId());
         assertEquals(updatedReview.getReviewer().getId(), miffy.getId());
         assertEquals(updatedReview.getGame().getId(), monopoly.getId());
     }
@@ -185,6 +186,8 @@ public class ReviewServiceTests {
     @Test
     public void testUpdateInvalidReview(){
         //Arrange
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
 
         //Act
 
@@ -192,12 +195,33 @@ public class ReviewServiceTests {
     }
 
     @Test
-    public void testUpdateReviewWithInvalidRating(){
+    public void testUpdateReviewWithInvalidHighRating(){
         //Arrange
+        when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        when(reviewRepository.findReviewById(12)).thenReturn(review);
+        int newRating = 101;
+        String newComment = "Wow great game!!!!!";
 
         //Act
+        Review updatedReview = reviewService.updateReview(newRating, newComment, 12);
+    }
 
-        //Assert
+    @Test
+    public void testUpdateReviewWithInvalidLowRating(){
+        //Arrange
+        when(reviewRepository.save(any(Review.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        when(reviewRepository.findReviewById(12)).thenReturn(review);
+        int newRating = -1;
+        String newComment = "Wow great game!!!!!";
+
+        //Act
+        Review updatedReview = reviewService.updateReview(newRating, newComment, 12);
     }
 
     @Test

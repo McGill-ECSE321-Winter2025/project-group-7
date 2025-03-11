@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.hibernate.service.JavaServiceLoadable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Review;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
@@ -33,24 +35,24 @@ public class ReviewService {
     public Review createReview(int rating, String comment, int userID, int gameID){
         UserAccount user = userRepo.findUserAccountById(userID);
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user with the ID " + userID);
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "There is no user with the ID " + userID);
 
         }
 
         Game game = gameRepo.findGameById(gameID);
 
         if (game  == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no game with the ID "+ gameID);
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no game with the ID "+ gameID);
 
         }
 
         if (rating < 0 || rating > 100){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"The rating must be between 0 to 100");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"The rating must be between 0 to 100");
 
         }
 
         if (comment == null) {
-            throw new IllegalArgumentException("The comment cannot be empty");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "The comment cannot be empty");
 
         }
 
@@ -67,7 +69,7 @@ public class ReviewService {
         Review review = reviewRepo.findReviewById(id);
 
         if (review == null){
-            throw new IllegalArgumentException("There is no review with the ID" + id);
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no review with the ID" + id);
 
         }
 
@@ -79,17 +81,17 @@ public class ReviewService {
     public Review updateReview(int rating, String comment, int reviewID) {
         Review review = reviewRepo.findReviewById(reviewID);
         if (review == null) {
-            throw new IllegalArgumentException("There is no review with the ID "+ reviewID);
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no review with the ID "+ reviewID);
 
         }
 
         if (rating < 0 || rating > 100){
-            throw new IllegalArgumentException("The rating must be between 0 to 100");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"The rating must be between 0 to 100");
 
         }
 
         if (comment == null) {
-            throw new IllegalArgumentException("The comment cannotbe empty");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"The comment cannotbe empty");
 
         }
         review.setComment(comment);
@@ -104,11 +106,34 @@ public class ReviewService {
     public List<Review> findReviewsForGame(int gameId){
         Game game = gameRepo.findGameById(gameId);
         if (game == null) {
-            throw new IllegalArgumentException("There is no game with the ID "+ gameId);
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no game with the ID "+ gameId);
 
         }
         List<Review> allReviews = reviewRepo.findByGameId(gameId);
         return allReviews;
+    }
+
+    @Transactional
+    public UserAccount findUserAccountById(int id) {
+        UserAccount user = userRepo.findUserAccountById(id);
+
+        if (user == null) {
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "A user with the ID" + id + " does not exist.");
+
+        }
+        return user;
+
+    }
+
+    @Transactional
+    public Game findGameById(int id) {
+        Game game = gameRepo.findGameById(id);
+
+        if (game == null) {
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"A game with the ID " +id+ "does not exist.");
+        }
+        return game;
+        
     }
 
     
