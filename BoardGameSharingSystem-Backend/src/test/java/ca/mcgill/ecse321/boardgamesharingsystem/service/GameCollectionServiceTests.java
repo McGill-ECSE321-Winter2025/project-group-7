@@ -9,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 
@@ -52,7 +50,6 @@ public class GameCollectionServiceTests {
     private static final String VALID_PICTURE_URL_2 = "uno.jpeg";
     private static final String VALID_DESCRIPTION_2 = "UNO is a fun game to be played with friends";
     private Game game;
-    private GameCopy gameCopy;
     private static final int GT_MAX_MIN_NUM_PLAYERS = 8;
 
     @BeforeEach
@@ -133,7 +130,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testCreateGame_MinPlayersGTMaxPlayers() {
         // Arrange
-        GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE, VALID_MAX_NUM_PLAYERS, GT_MAX_MIN_NUM_PLAYERS,
+        GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE, GT_MAX_MIN_NUM_PLAYERS,VALID_MAX_NUM_PLAYERS,
                 VALID_PICTURE_URL, VALID_DESCRIPTION);
 
         // Act + Assert

@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
-import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameCopyDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameCopyResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.GameOwningService;
