@@ -188,6 +188,27 @@ public class GameCollectionServiceTests {
     }
 
     @Test
+    public void testCreateGame_MinPLayersEqMaxPlayers(){
+        //Arrange
+        GameRequestDto gameDto = new GameRequestDto(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MIN_NUM_PLAYERS,
+        VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.save(any(Game.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+
+        //Act
+        Game createdGame = gameCollectionService.createGame(gameDto);
+ 
+        //Assert
+        assertNotNull(createdGame);
+        assertEquals(VALID_TITLE, createdGame.getTitle());
+        assertEquals(VALID_MIN_NUM_PLAYERS, createdGame.getMinNumPlayers());
+        assertEquals(VALID_MIN_NUM_PLAYERS, createdGame.getMaxNumPlayers());
+        assertEquals(VALID_PICTURE_URL, createdGame.getPictureURL());
+        assertEquals(VALID_DESCRIPTION, createdGame.getDescription());
+
+        verify(gameRepository, times(1)).save(any(Game.class));        
+    }
+
+    @Test
     public void testCreateGame_MinPlayersGTMaxPlayers() {
         //Arrange
         GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE, GT_MAX_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS,

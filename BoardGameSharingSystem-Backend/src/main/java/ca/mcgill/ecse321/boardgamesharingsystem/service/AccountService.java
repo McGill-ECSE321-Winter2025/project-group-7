@@ -14,7 +14,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
-import ca.mcgill.ecse321.boardgamesharingsystem.requests.AuthRequest;
+import ca.mcgill.ecse321.boardgamesharingsystem.dto.AuthRequest;
 
 import java.util.List;
 
