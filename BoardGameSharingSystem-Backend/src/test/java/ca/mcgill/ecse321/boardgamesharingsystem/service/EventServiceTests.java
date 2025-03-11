@@ -669,4 +669,32 @@ public class EventServiceTests {
         assertEquals(HttpStatus.EXPECTATION_FAILED, exception.getStatus());
         assertEquals("event 42 has already ended", exception.getMessage());
     }
+
+    @Test
+    public void testDeregisterUserToEvent()
+    {
+        //Arrange
+        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
+        Date RegistrationDate = Date.valueOf("2020-10-10");
+        Time RegistrationTime = Time.valueOf("11:00:00");
+        Event event = new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
+        Registration registration = new Registration(new Registration.RegistrationKey(user, event), RegistrationDate, RegistrationTime );
+
+        when(userAccountRepository.findUserAccountById(42)).thenReturn(user);
+        when(eventRepository.findEventById(42)).thenReturn(event);
+        when(registrationRepository.findRegistrationByKey(any(Registration.RegistrationKey.class))).thenReturn(registration);
+
+        //Act
+        Registration deletedRegistration = eventService.deregisterParticipantFromEvent(42, 42);
+
+        //Assert
+        assertNotNull(deletedRegistration);
+        assertNotNull(deletedRegistration.getKey());
+        assertNotNull(deletedRegistration.getKey().getUser());
+        assertNotNull(deletedRegistration.getKey().getEvent());
+        assertEquals(deletedRegistration.getRegistrationDate(), registration.getRegistrationDate());
+        assertEquals(deletedRegistration.getKey().getEvent().getDescription(), registration.getKey().getEvent().getDescription());
+        assertEquals(deletedRegistration.getKey().getUser().getName(), registration.getKey().getUser().getName());
+        verify(registrationRepository, times(1)).delete(registration);
+    }
 }
