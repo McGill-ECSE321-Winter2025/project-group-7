@@ -4,13 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.server.ResponseStatusException;
-
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
@@ -106,7 +103,7 @@ public class GameCollectionService {
     public Game updateGame(int gameId, @Valid GameRequestDto gameToUpdate) {
         Game game = gameRepo.findGameById(gameId);
         if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
                     String.format("Could not update game because a game with id %d does not exist ", gameId));
         }
         int minNumPlayers = gameToUpdate.getMinNumPlayers();
