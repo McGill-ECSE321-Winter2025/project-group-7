@@ -8,7 +8,6 @@ import jakarta.persistence.OneToOne;
 @Entity
 public class GameOwner {
     @Id 
-    @GeneratedValue 
     private int id;
 
     @OneToOne 
@@ -20,6 +19,7 @@ public class GameOwner {
 
     public GameOwner(UserAccount user){
         this.user = user;
+        this.id = user.getId();
     }
 
     public int getId(){
