@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
+import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
@@ -34,7 +35,7 @@ public class GameCollectionService {
         Game game = gameRepo.findGameById(gameId);
 
         if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
                     String.format("Could not find a game with id %d", gameId));
         }
         return game;
@@ -78,13 +79,13 @@ public class GameCollectionService {
         int minNumPlayers = gameToCreate.getMinNumPlayers();
         int maxNumPlayers = gameToCreate.getMaxNumPlayers();
         if (maxNumPlayers < minNumPlayers) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(
-                    "The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
+                    "The minNumPlayers %d is greater than the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         Game game = new Game(
                 gameToCreate.getTitle(),
-                gameToCreate.getMaxNumPlayers(),
                 gameToCreate.getMinNumPlayers(),
+                gameToCreate.getMaxNumPlayers(),
                 gameToCreate.getPictureURL(),
                 gameToCreate.getDescription());
         return gameRepo.save(game);
@@ -107,7 +108,7 @@ public class GameCollectionService {
         int maxNumPlayers = gameToUpdate.getMaxNumPlayers();
         if (minNumPlayers < maxNumPlayers) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(
-                    "The minNumPlayers %d is greater then the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
+                    "The minNumPlayers %d is greater than the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
         }
         game.setTitle(gameToUpdate.getTitle());
         game.setMaxNumPlayers(maxNumPlayers);

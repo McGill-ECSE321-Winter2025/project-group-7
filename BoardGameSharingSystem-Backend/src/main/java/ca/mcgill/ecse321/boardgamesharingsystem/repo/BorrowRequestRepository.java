@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.repo;
 
-import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import org.springframework.data.repository.CrudRepository;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
