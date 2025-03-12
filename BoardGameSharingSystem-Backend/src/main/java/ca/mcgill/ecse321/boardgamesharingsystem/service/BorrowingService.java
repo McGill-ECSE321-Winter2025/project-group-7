@@ -86,7 +86,7 @@ public class BorrowingService
     @Transactional(readOnly = true)
     public List<BorrowRequest> findPendingBorrowingRequests(int gameCopyId)
     {
-        GameCopy foundGameCopy = gameCopyRepository
+        gameCopyRepository
                 .findById(gameCopyId)
                 .orElseThrow(() -> new IllegalArgumentException("Game copy not found."));
 
@@ -112,7 +112,7 @@ public class BorrowingService
     @Transactional(readOnly = true)
     public List<BorrowRequest> findAcceptedBorrowingRequests(int gameCopyId)
     {
-        GameCopy foundGameCopy = gameCopyRepository
+        gameCopyRepository
                 .findById(gameCopyId)
                 .orElseThrow(() -> new IllegalArgumentException("Game copy not found."));
 
