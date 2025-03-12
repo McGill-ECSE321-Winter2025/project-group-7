@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
@@ -33,28 +32,14 @@ public class GameOwningService {
     private GameCopyRepository gameCopyRepo;
 
     /**
-     * Finds all GameCopies associated with a specific Game.
-     * @param gameId the ID of the Game
-     * @return a list of GameCopies
-     */
-    @Transactional(readOnly = true)
-    public List<GameCopy> findGameCopiesFromGame(int gameId) {
-        return gameCopyRepo.findByGameId(gameId);
-    }
-
-    /**
      * Create a GameOwner from an existing UserAccount
      */
     @Transactional
     public GameOwner createGameOwner(int userId) {
         // Retrieve the UserAccount using the provided userId
         UserAccount user = userAccountRepo.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "UserAccount not found"));
-
-        // Check if the user is already a GameOwner
-        if (gameOwnerRepo.findGameOwnerById(userId) != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already a GameOwner");
-        }
+                .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+                 String.format("Could not create gameOwner since user with id %d does not exist",userId)));
 
         // Create a new GameOwner and persist it
         GameOwner gameOwner = new GameOwner(user);
@@ -66,7 +51,12 @@ public class GameOwningService {
      */
     @Transactional
     public GameOwner findGameOwner(int userId) {
-        return gameOwnerRepo.findGameOwnerById(userId);
+        GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(userId);
+        if (gameOwner==null){
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+            String.format("Could not find gameOwner with id %d",userId) );
+        }
+        return gameOwner;
     }
 
     /**
@@ -77,19 +67,32 @@ public class GameOwningService {
         // Find the GameOwner
         GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(gameOwnerId);
         if (gameOwner == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GameOwner not found");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+            String.format("Could not add game copy to game owner because gameOwner with id %d does not exist",
+            gameOwnerId));
         }
 
         // Find the Game
         Game game = gameRepo.findGameById(gameId);
         if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+            String.format("Could not add game copy to game owner because game with id %d does not exist",
+            gameId));
         }
 
         // Check if the GameCopy already exists
         List<GameCopy> existingCopies = gameCopyRepo.findByGameIdAndOwnerId(gameId, gameOwnerId);
+        if (existingCopies== null){
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+            String.format("Could not find the list of game copies for game with id %d and gameOwner with id %d",
+            gameId,
+            gameOwnerId));
+        }
         if (!existingCopies.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "GameCopy already exists for this owner");
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST,
+             String.format("Could not add game copy for game owner with id %d and game with id %d because it already exists",
+              gameOwnerId, 
+              gameId));
         }
 
         // Create and save a new GameCopy
@@ -103,8 +106,27 @@ public class GameOwningService {
     @Transactional
     public GameCopy removeGameCopyFromGameOwner(int gameCopyId) {
         GameCopy gameCopy = gameCopyRepo.findById(gameCopyId)
-                .orElseThrow(() -> new IllegalArgumentException("GameCopy not found with ID: " + gameCopyId));
+                .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+                 String.format("Could not find game copy with id %d", gameCopyId)));
 
+        GameOwner gameOwner = gameCopy.getGameOwner();
+        if (gameOwner == null){
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+            String.format("Could not find game owner when trying to remove game copy with id %d",
+            gameCopyId));
+        }         
+        List<GameCopy> gameCopies = gameCopyRepo.findByOwnerId(gameOwner.getId());
+        if (gameCopies==null){
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, 
+            String.format("Could not find gameCopies from game owner with id %d",
+            gameOwner.getId()));
+        }
+        if (gameCopies.size()<=1){
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, 
+            String.format("Cannot remove game copy with id %d since game owner with id %d has one game copy remaining",
+            gameCopyId, 
+            gameOwner.getId()));
+        }         
         gameCopyRepo.delete(gameCopy);
         return gameCopy;
     }
@@ -116,12 +138,15 @@ public class GameOwningService {
     public List<GameCopy> findGameCopiesForGameOwner(int gameOwnerId) {
         GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(gameOwnerId);
         if (gameOwner == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "GameOwner not found");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
+             String.format("Could not find game copies since gameOwner with id %d does not exist", 
+             gameOwnerId));
         }
 
         List<GameCopy> copies = gameCopyRepo.findByOwnerId(gameOwnerId);
-        if (copies == null || copies.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No GameCopies found for this owner");
+        if (copies == null) {
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, 
+            String.format("Could not find game copies for game owner with id %d", gameOwnerId));
         }
 
         return copies;
