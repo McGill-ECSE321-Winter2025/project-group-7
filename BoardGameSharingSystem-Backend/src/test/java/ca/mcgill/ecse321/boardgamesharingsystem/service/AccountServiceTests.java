@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ import org.springframework.http.HttpStatus;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.AuthRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
@@ -218,6 +223,96 @@ public class AccountServiceTests {
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> accountService.toggleUserToPlayer(42));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("User with id 42 is already a player", exception.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulToggleToGameOwner() {
+        // Arrange
+        UserAccount realUser = new UserAccount(NAME, EMAIL, PASSWORD);
+
+        UserAccount user = spy(realUser);
+
+        when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
+
+        GameOwner gameOwner = new GameOwner(null);
+        when(gameOwnerRepository.findById(42)).thenReturn(Optional.of(new GameOwner(null)));
+        
+        Game chess = new Game("chess",2,2,"Example/url","its chess");
+        GameCopy chessCopy = new GameCopy(chess,gameOwner);
+        List<GameCopy> validGameCopyList = Arrays.asList(chessCopy);
+        when(gameCopyRepository.findByOwnerId(42)).thenReturn(validGameCopyList);
+
+        when(gameOwnerRepository.save(any(GameOwner.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        
+        // Act
+        GameOwner newGameOwner = accountService.toggleUserToGameOwner(42);
+
+        // Assert
+        assertNotNull(newGameOwner);
+        assertEquals(user, newGameOwner.getUser());
+        verify(gameOwnerRepository, times(1)).save(any(GameOwner.class));
+    }
+
+    @Test 
+    public void testToggleToGameOwnerWithNonexistentUserAccount() {
+        // Arrange
+        when(userAccountRepository.findById(42)).thenReturn(Optional.empty());
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> accountService.toggleUserToGameOwner(42));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("No userAccount found with id 42", exception.getMessage());
+    }
+
+    @Test 
+    public void testToggleToGameOwnerWithNonexistentGameOwner() {
+        // Arrange
+        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
+        when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
+        when(gameOwnerRepository.findById(42)).thenReturn(Optional.empty());
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> accountService.toggleUserToGameOwner(42));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("No gameOwner found with id 42", exception.getMessage());
+    }
+
+    @Test 
+    public void testToggleToGameOwnerWithNoAssociatedGames() {
+        //Arrange
+        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
+        when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
+
+        GameOwner owner = new GameOwner(user);
+        when(gameOwnerRepository.findById(42)).thenReturn(Optional.of(owner));
+
+        when(gameCopyRepository.findByOwnerId(42)).thenReturn(Collections.emptyList());
+        
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> accountService.toggleUserToGameOwner(42));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("gameOwner has no associated games", exception.getMessage());
+    }
+
+    @Test
+    public void testToggleToGameOwnerAlreadyAssociatedToUser() {
+        // Arrange
+        UserAccount user = spy(new UserAccount(NAME, EMAIL, PASSWORD));
+        when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
+        doReturn(42).when(user).getId();
+        
+        GameOwner owner = new GameOwner(user);
+        when(gameOwnerRepository.findById(42)).thenReturn(Optional.of(owner));
+        
+        Game chess = new Game("chess",2,2,"Example/url","its chess");
+        GameCopy chessCopy = new GameCopy(chess,owner);
+        List<GameCopy> validGameCopyList = Arrays.asList(chessCopy);
+        when(gameCopyRepository.findByOwnerId(42)).thenReturn(validGameCopyList);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> accountService.toggleUserToGameOwner(42));
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("GameOwner already associated with userAccount with id 42", exception.getMessage());
     }
 
 }

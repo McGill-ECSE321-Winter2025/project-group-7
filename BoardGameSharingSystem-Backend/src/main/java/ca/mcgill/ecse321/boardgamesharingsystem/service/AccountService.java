@@ -120,7 +120,7 @@ public class AccountService {
     /** 
      * Toggles a User from GameOwner to Player
      * @param UserAccountId the ID of the UserAccount to toggle
-     * @return the GameOwner if toggled
+     * @return the UserAccount if toggled
      */
     public UserAccount toggleUserToPlayer(int UserAccountId) {
         UserAccount user = userRepo
@@ -142,7 +142,7 @@ public class AccountService {
     /** 
      * Toggles a User from Player to GameOwner
      * @param UserAccountId the ID of the UserAccount to toggle
-     * @return the UserAccount if toggled
+     * @return the GameOwner if toggled
      */
     public GameOwner toggleUserToGameOwner (int UserAccountId) {
         UserAccount user = userRepo
@@ -162,8 +162,9 @@ public class AccountService {
                 "gameOwner has no associated games"));
         }
 
-        if (!gameOwner.getUser().equals(user)) {
+        if (gameOwner.getUser() == null || !gameOwner.getUser().equals(user)) {
             gameOwner.setUser(user);
+            gameOwner = gameOwnerRepo.save(gameOwner);
             return gameOwner;
         }
         else {
