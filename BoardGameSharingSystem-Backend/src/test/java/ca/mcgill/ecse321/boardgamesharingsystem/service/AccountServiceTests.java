@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -50,13 +49,7 @@ public class AccountServiceTests {
     
     private static final String NAME = "Mila";
     private static final String EMAIL = "mila@bunnymail.com";
-    private static final String PASSWORD = "bunnies123";
-    private UserAccount testUser;
-
-    @BeforeEach
-    void setup(){
-        testUser = new UserAccount(NAME, EMAIL, PASSWORD);
-    }    
+    private static final String PASSWORD = "bunnies123"; 
     
     @Test
     public void testFindUserAccountByValidId() {
