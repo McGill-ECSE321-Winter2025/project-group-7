@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameCopyResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+import ca.mcgill.ecse321.boardgamesharingsystem.service.GameCollectionService;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.GameOwningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ public class GameCopiesController {
 
     @Autowired
     private GameOwningService gameOwningService;
+    @Autowired
+    private GameCollectionService gameCollectionService;
 
     /**
      * Adds a GameCopy for a specific GameOwner and Game.
@@ -78,7 +81,7 @@ public class GameCopiesController {
      * @return list of GameCopies
      */
     private List<GameCopyResponseDto> findGameCopiesFromGame(int gameId) {
-        List<GameCopy> gameCopies = gameOwningService.findGameCopiesFromGame(gameId);
+        List<GameCopy> gameCopies = gameCollectionService.findGameCopiesFromGame(gameId);
         List<GameCopyResponseDto> responses = new ArrayList<>();
         gameCopies.forEach(copy -> responses.add(new GameCopyResponseDto(copy)));
         return responses;
