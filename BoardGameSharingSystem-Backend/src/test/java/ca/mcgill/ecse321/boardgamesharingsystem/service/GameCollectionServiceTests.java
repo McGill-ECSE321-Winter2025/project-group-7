@@ -256,4 +256,18 @@ public class GameCollectionServiceTests {
         assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
         assertEquals("The minNumPlayers 4 is greater than the maxNumPlayers 3", e.getMessage().trim());
     } 
+
+    @Test 
+    public void testUpdateGameWithIdThatDoesntExist(){
+        //Arrange
+        GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE_2, 2, 3,
+                VALID_PICTURE_URL_2, UPDATED_DESCRIPTION);
+ 
+        //Act + Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
+                () -> gameCollectionService.updateGame(42, gameRequestDto));
+ 
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("Could not update game because a game with id 42 does not exist", e.getMessage().trim());
+    } 
 }
