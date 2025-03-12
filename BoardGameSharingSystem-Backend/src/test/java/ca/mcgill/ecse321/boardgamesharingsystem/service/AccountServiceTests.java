@@ -144,14 +144,14 @@ public class AccountServiceTests {
     @Test
     public void testValidLogin() {
         //Arrange 
-        when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
+        when(userAccountRepository.findUserAccountByName(NAME)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
         AuthRequest request = new AuthRequest();
         request.setUsername(NAME);
         request.setEmail(EMAIL);
         request.setPassword(PASSWORD);
 
         //Act
-        UserAccount loggedInUser = accountService.findUserAccountById(42);
+        UserAccount loggedInUser = accountService.login(request);
 
         //Assert
         assertNotNull(loggedInUser);
@@ -321,4 +321,183 @@ public class AccountServiceTests {
         assertEquals("GameOwner already associated with userAccount with id 42", exception.getMessage());
     }
 
+    @Test
+    void testCreateUserAccountWithEmptyUsername() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername("");
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.createUserAccount(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Username cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserAccountWithEmptyEmail() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail("");
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.createUserAccount(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Email cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserAccountWithEmptyPassword() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword("");
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.createUserAccount(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Password cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserAccountWithNullUsername() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(null);
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.createUserAccount(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Username cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserAccountWithNullEmail() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail(null);
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.createUserAccount(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Email cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserAccountWithNullPassword() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword(null);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.createUserAccount(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Password cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testLoginWithEmptyUsername() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername("");
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.login(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Username cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testLoginWithEmptyEmail() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail("");
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.login(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Email cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testLoginWithEmptyPassword() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword("");
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.login(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Password cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testLoginWithNullUsername() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(null);
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.login(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Username cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testLoginWithNullEmail() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail(null);
+        invalidRequest.setPassword(PASSWORD);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.login(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Email cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    void testLoginWithNullPassword() {
+        AuthRequest invalidRequest = new AuthRequest();
+        invalidRequest.setUsername(NAME);
+        invalidRequest.setEmail(EMAIL);
+        invalidRequest.setPassword(null);
+
+        // Act + Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->
+        accountService.login(invalidRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Password cannot be empty", exception.getMessage());
+    }
 }

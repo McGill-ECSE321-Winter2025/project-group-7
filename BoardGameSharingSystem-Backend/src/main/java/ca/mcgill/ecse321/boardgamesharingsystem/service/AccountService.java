@@ -20,6 +20,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * This service class implements functionalities related to the UserAccount,
+ * including creating, login, deleting, and toggling between Player and GameOwner, as well
+ * as retrieving UserAccounts.
+ */
 @Service
 @Validated
 public class AccountService {
@@ -32,15 +37,15 @@ public class AccountService {
     
     /** 
      * Searches the database for a UserAccount given an ID and returns it if found
-     * @param UserAccountId the ID of the requested UserAccount
+     * @param userAccountId the ID of the requested UserAccount
      * @return the UserAccount if found
      */
     @Transactional
-    public UserAccount findUserAccountById(int UserAccountId) {
-        UserAccount user = userRepo.findUserAccountById(UserAccountId);
+    public UserAccount findUserAccountById(int userAccountId) {
+        UserAccount user = userRepo.findUserAccountById(userAccountId);
 
         if (user == null) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format("No userAccount found with id %d", UserAccountId));
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format("No userAccount found with id %d", userAccountId));
         }
 
         return user;
@@ -75,15 +80,15 @@ public class AccountService {
 
     /** 
      * Deletes a UserAccount given a valid ID
-     * @param UserAccountId the ID of the UserAccount to be deleted
+     * @param userAccountId the ID of the UserAccount to be deleted
      * @return the UserAccount if deleted
      */
     @Transactional
-    public UserAccount deleteUserAccount(int UserAccountId){
+    public UserAccount deleteUserAccount(int userAccountId){
         UserAccount user = userRepo
-            .findById(UserAccountId)
+            .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
-                "No userAccount found with id %d", UserAccountId)));
+                "No userAccount found with id %d", userAccountId)));
 
         userRepo.delete(user);
         return user;
@@ -119,19 +124,19 @@ public class AccountService {
     
     /** 
      * Toggles a User from GameOwner to Player
-     * @param UserAccountId the ID of the UserAccount to toggle
+     * @param userAccountId the ID of the UserAccount to toggle
      * @return the UserAccount if toggled
      */
-    public UserAccount toggleUserToPlayer(int UserAccountId) {
+    public UserAccount toggleUserToPlayer(int userAccountId) {
         UserAccount user = userRepo
-            .findById(UserAccountId)
+            .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
-                "No userAccount found with id %d", UserAccountId)));
+                "No userAccount found with id %d", userAccountId)));
         
         GameOwner gameOwner = gameOwnerRepo
-            .findById(UserAccountId)
+            .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
-                "User with id %d is already a player", UserAccountId)));
+                "User with id %d is already a player", userAccountId)));
 
         gameOwner.setUser(null);
         gameOwnerRepo.save(gameOwner);
@@ -141,28 +146,28 @@ public class AccountService {
     
     /** 
      * Toggles a User from Player to GameOwner
-     * @param UserAccountId the ID of the UserAccount to toggle
+     * @param userAccountId the ID of the UserAccount to toggle
      * @return the GameOwner if toggled
      */
-    public GameOwner toggleUserToGameOwner (int UserAccountId) {
+    public GameOwner toggleUserToGameOwner (int userAccountId) {
         UserAccount user = userRepo
-            .findById(UserAccountId)
+            .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
-                "No userAccount found with id %d", UserAccountId)));
+                "No userAccount found with id %d", userAccountId)));
         
         GameOwner gameOwner = gameOwnerRepo
-            .findById(UserAccountId)
+            .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
-                "No gameOwner found with id %d", UserAccountId)));
+                "No gameOwner found with id %d", userAccountId)));
         
-        List<GameCopy> games = gameCopyRepo.findByOwnerId(UserAccountId);
+        List<GameCopy> games = gameCopyRepo.findByOwnerId(userAccountId);
 
         if (games.isEmpty()) {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "gameOwner has no associated games"));
         }
 
-        if (gameOwner.getUser() == null || !gameOwner.getUser().equals(user)) {
+        if (gameOwner.getUser() == null) {
             gameOwner.setUser(user);
             gameOwner = gameOwnerRepo.save(gameOwner);
             return gameOwner;
@@ -186,13 +191,13 @@ public class AccountService {
         String cleanPassword = StringUtils.trimToNull(password);
 
         if (cleanUsername == null) {
-            throw new IllegalArgumentException("Username cannot be empty");
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Username cannot be empty");
         }
         if (cleanEmail == null) {
-            throw new IllegalArgumentException("Email cannot be empty");
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Email cannot be empty");
         }
         if (cleanPassword == null) {
-            throw new IllegalArgumentException("Password cannot be empty");
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Password cannot be empty"); 
         }
     }
 }
