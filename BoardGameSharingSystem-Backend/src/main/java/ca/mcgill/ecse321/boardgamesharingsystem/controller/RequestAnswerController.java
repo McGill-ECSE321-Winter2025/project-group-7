@@ -3,7 +3,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.RequestAnswerDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.RequestAnswerResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
-import ca.mcgill.ecse321.boardgamesharingsystem.service.RequestAnswerService;
+import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class RequestAnswerController {
 
     @Autowired
-    private RequestAnswerService requestAnswerService;
+    private BorrowingService borrowingService;
 
     /**
      * Creates a new RequestAnswer for a given BorrowingRequest.
@@ -28,7 +28,7 @@ public class RequestAnswerController {
             @RequestBody RequestAnswerDto requestAnswerDto
     ) {
         return new RequestAnswerResponseDto(
-                requestAnswerService.createRequestAnswer(
+                borrowingService.createRequestAnswer(
                         borrowingRequestId,
                         requestAnswerDto.getDropoffDate(),
                         requestAnswerDto.getDropoffTime(),
@@ -52,7 +52,7 @@ public class RequestAnswerController {
             @RequestBody RequestAnswerDto requestAnswerDto
     ) {
         return new RequestAnswerResponseDto(
-                requestAnswerService.updateRequestAnswer(
+                borrowingService.updateRequestAnswer(
                         requestAnswerId,
                         requestAnswerDto.getDropoffDate(),
                         requestAnswerDto.getDropoffTime(),
@@ -69,7 +69,7 @@ public class RequestAnswerController {
     @DeleteMapping("/{requestAnswerId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteRequestAnswer(@PathVariable int requestAnswerId) {
-        requestAnswerService.deleteRequestAnswer(requestAnswerId);
+        borrowingService.deleteRequestAnswer(requestAnswerId);
     }
 
     /**
@@ -79,7 +79,7 @@ public class RequestAnswerController {
      */
     @GetMapping("/")
     public RequestAnswerResponseDto findRequestAnswerForBorrowingRequest(@RequestParam("borrowingRequestId") int borrowingRequestId) {
-        RequestAnswer requestAnswer = requestAnswerService.findRequestAnswerForBorrowingRequest(borrowingRequestId);
+        RequestAnswer requestAnswer = borrowingService.findRequestAnswerForBorrowingRequest(borrowingRequestId);
         return new RequestAnswerResponseDto(requestAnswer);
     }
 }

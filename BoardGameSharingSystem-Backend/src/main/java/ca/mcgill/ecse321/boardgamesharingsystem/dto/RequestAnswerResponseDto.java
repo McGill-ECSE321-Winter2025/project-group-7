@@ -16,6 +16,12 @@ public class RequestAnswerResponseDto {
     private String location;
     private String contactEmail;
 
+    //No args constructor for Jackson
+    @SuppressWarnings("unused")
+    private RequestAnswerResponseDto()
+    {
+
+    }
     /**
      * Constructor for the RequestAnswerResponseDto.
      */

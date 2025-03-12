@@ -46,7 +46,7 @@ public class BorrowingService
      * @return            The newly created BorrowingRequest.
      */
     @Transactional
-    public BorrowRequest CreateBorrowingRequest(
+    public BorrowRequest createBorrowingRequest(
         int gameCopyId,
         int borrowerId,
         Date startDate,
@@ -84,7 +84,7 @@ public class BorrowingService
      * @return           A list of pending BorrowingRequest entities.
      */
     @Transactional(readOnly = true)
-    public List<BorrowRequest> FindPendingBorrowingRequests(int gameCopyId)
+    public List<BorrowRequest> findPendingBorrowingRequests(int gameCopyId)
     {
         GameCopy foundGameCopy = gameCopyRepository
                 .findById(gameCopyId)
@@ -110,7 +110,7 @@ public class BorrowingService
      * @return           A list of accepted BorrowingRequest entities.
      */
     @Transactional(readOnly = true)
-    public List<BorrowRequest> FindAcceptedBorrowingRequests(int gameCopyId)
+    public List<BorrowRequest> findAcceptedBorrowingRequests(int gameCopyId)
     {
         GameCopy foundGameCopy = gameCopyRepository
                 .findById(gameCopyId)
@@ -136,7 +136,7 @@ public class BorrowingService
      * @return                   The deleted BorrowingRequest entity.
      */
     @Transactional
-    public BorrowRequest DeclinePendingBorrowingRequest(int borrowingRequestId)
+    public BorrowRequest declinePendingBorrowingRequest(int borrowingRequestId)
     {
         BorrowRequest foundRequest = borrowingRequestRepository
             .findById(borrowingRequestId)
@@ -159,7 +159,7 @@ public class BorrowingService
      * @return                   The updated BorrowingRequest entity with ACCEPTED status.
      */
     @Transactional
-    public BorrowRequest AcceptPendingBorrowingRequest(int borrowingRequestId)
+    public BorrowRequest acceptPendingBorrowingRequest(int borrowingRequestId)
     {
         BorrowRequest foundRequest = borrowingRequestRepository
             .findById(borrowingRequestId)
@@ -180,7 +180,7 @@ public class BorrowingService
      * @param dropoffLocation    The proposed drop-off location.
      */
     @Transactional
-    public void CreateRequestAnswer(
+    public RequestAnswer createRequestAnswer(
             int borrowingRequestId,
             Date dropoffDate,
             Time dropoffTime,
@@ -197,7 +197,7 @@ public class BorrowingService
 
         RequestAnswer requestAnswer = new RequestAnswer(dropoffDate, dropoffTime, dropoffLocation, foundRequest, contactEmail);
 
-        requestAnswerRepository.save(requestAnswer);
+        return requestAnswerRepository.save(requestAnswer);
     }
 
     /**
@@ -209,7 +209,7 @@ public class BorrowingService
      * @param dropoffLocation   The new drop-off location.
      */
     @Transactional
-    public void UpdateRequestAnswer(
+    public RequestAnswer updateRequestAnswer(
         int requestAnswerId,
         Date dropoffDate,
         Time dropoffTime,
@@ -229,7 +229,7 @@ public class BorrowingService
         foundAnswer.setDropOffTime(dropoffTime);
         foundAnswer.setLocation(dropoffLocation);
 
-        requestAnswerRepository.save(foundAnswer);
+        return requestAnswerRepository.save(foundAnswer);
     }
 
     /**
@@ -238,7 +238,7 @@ public class BorrowingService
      * @param requestAnswerId The ID of the RequestAnswer to delete.
      */
     @Transactional
-    public void DeleteRequestAnswer(int requestAnswerId)
+    public void deleteRequestAnswer(int requestAnswerId)
     {
         RequestAnswer foundAnswer = requestAnswerRepository
             .findById(requestAnswerId)
@@ -254,7 +254,7 @@ public class BorrowingService
      * @return                   The found RequestAnswer entity if the BorrowingRequest is accepted.
      */
     @Transactional(readOnly = true)
-    public RequestAnswer FindRequestAnswerForBorrowingRequest(int borrowingRequestId)
+    public RequestAnswer findRequestAnswerForBorrowingRequest(int borrowingRequestId)
     {
         BorrowRequest foundRequest = borrowingRequestRepository
                 .findById(borrowingRequestId)
