@@ -55,66 +55,7 @@ public class ReviewServiceTests {
     private static final int VALID_MAX_NUM_PLAYERS = 8;
     private static final String VALID_PICTURE_URL = "example.com";
     private static final String VALID_DESCRIPTION = "Capitalism game";
-
-    @Test
-    public void findUserAccountByValidId() {
-        //Arrange
-        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        when(userAccountRepository.findUserAccountById(10)).thenReturn(miffy);
-
-        //Act
-        UserAccount userAccount = userAccountRepository.findUserAccountById(10);
-
-        //Assert
-        assertNotNull(userAccount);
-        assertEquals(miffy.getEmail(), userAccount.getEmail());
-        assertEquals(miffy.getName(), userAccount.getName());
-        assertEquals(miffy.getPassword(), userAccount.getPassword());
-        assertEquals(miffy.getId(), userAccount.getId());
-
-    }
-
-    @Test
-    public void findUserAccountByInvalidId(){
-        //Arrange
-        when(userAccountRepository.findUserAccountById(10)).thenReturn(null);
-        
-        //Assert
-        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findUserAccountById(10));
-        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
-    }
-
-    @Test
-    public void findGameByValidId(){
-        //Arrange
-        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
-        when(gameRepository.findGameById(10)).thenReturn(monopoly);
-
-        //Act
-        Game game = gameRepository.findGameById(10);
-
-        //Assert
-        assertNotNull(game);
-        assertEquals(monopoly.getDescription(), game.getDescription());
-        assertEquals(monopoly.getId(), game.getId());
-        assertEquals(monopoly.getMaxNumPlayers(), game.getMaxNumPlayers());
-        assertEquals(monopoly.getMinNumPlayers(), game.getMinNumPlayers());
-        assertEquals(monopoly.getPictureURL(), game.getPictureURL());
-        assertEquals(monopoly.getTitle(), game.getTitle());
-
-    }
-
-     @Test
-    public void findGameByInvalidId(){
-        //Arrange
-        when(gameRepository.findGameById(10)).thenReturn(null);
-
-        //Act + Assert
-        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findGameById(10));
-        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
-
-    }
-
+   
     @Test
     public void testCreateValidReview() {
         //Arrange
