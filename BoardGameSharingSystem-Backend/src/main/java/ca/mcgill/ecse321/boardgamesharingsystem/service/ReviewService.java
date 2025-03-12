@@ -116,29 +116,6 @@ public class ReviewService {
         return allReviews;
     }
 
-    @Transactional
-    public UserAccount findUserAccountById(int id) {
-        UserAccount user = userRepo.findUserAccountById(id);
-
-        if (user == null) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "A user with the ID" + id + " does not exist.");
-
-        }
-        return user;
-
-    }
-
-    @Transactional
-    public Game findGameById(int id) {
-        Game game = gameRepo.findGameById(id);
-
-        if (game == null) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"A game with the ID " +id+ "does not exist.");
-        }
-        return game;
-        
-    }
-
     
 
 }
