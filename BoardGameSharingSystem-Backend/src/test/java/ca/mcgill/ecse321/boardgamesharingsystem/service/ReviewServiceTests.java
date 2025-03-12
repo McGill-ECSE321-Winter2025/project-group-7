@@ -10,6 +10,8 @@ import static org.mockito.Mockito.times;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -312,6 +314,84 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+    }
+
+    @Test
+    public void testFindReviewsForValidGame() {
+        //Arrange
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        UserAccount boris = new UserAccount("cool_boris", "boris@gmail.com", VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review1 = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        Review review2 = new Review(Date.valueOf(LocalDate.now()), 5, "soooooo bad omfg", boris, monopoly);
+        when(gameRepository.findGameById(12)).thenReturn(monopoly);
+        when(reviewRepository.findReviewById(11)).thenReturn(review1);
+        when(reviewRepository.findReviewById(10)).thenReturn(review2);
+        List<Review> r = new ArrayList<>();
+        r.add(review1);
+        r.add(review2);
+        when(reviewRepository.findByGameId(12)).thenReturn(r);
+
+        //Act
+        List<Review> reviews = reviewService.findReviewsForGame(12);
+
+        //Assert
+        assertNotNull(reviews);
+        assertEquals(review1.getComment(), reviews.get(0).getComment());
+        assertEquals(reviews.get(0).getId(), review1.getId());
+        assertEquals(reviews.get(0).getRating(), review1.getRating());
+        assertEquals(reviews.get(0).getReviewDate(), review1.getReviewDate());
+        assertEquals(reviews.get(0).getReviewer().getId(), review1.getReviewer().getId());
+        assertEquals(reviews.get(0).getGame().getId(), review1.getGame().getId());
+        assertEquals(reviews.get(1).getComment(), review2.getComment());
+        assertEquals(reviews.get(1).getId(), review2.getId());
+        assertEquals(reviews.get(1).getRating(), review2.getRating());
+        assertEquals(reviews.get(1).getReviewDate(), review2.getReviewDate());
+        assertEquals(reviews.get(1).getReviewer().getId(), review2.getReviewer().getId());
+        assertEquals(reviews.get(1).getGame().getId(), review2.getGame().getId());
+
+    }
+
+    @Test
+    public void testFindReviewsForInvalidGame() {
+        //Arrange
+        UserAccount miffy = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        UserAccount boris = new UserAccount("cool_boris", "boris@gmail.com", VALID_PASSWORD);
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        Review review1 = new Review(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, miffy, monopoly);
+        Review review2 = new Review(Date.valueOf(LocalDate.now()), 5, "soooooo bad omfg", boris, monopoly);
+        when(gameRepository.findGameById(12)).thenReturn(monopoly);
+        when(reviewRepository.findReviewById(11)).thenReturn(review1);
+        when(reviewRepository.findReviewById(10)).thenReturn(review2);
+        List<Review> r = new ArrayList<>();
+        r.add(review1);
+        r.add(review2);
+        when(reviewRepository.findByGameId(12)).thenReturn(r);
+
+        //Act
+
+        //Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findReviewsForGame(13));
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+
+
+    }
+
+    @Test
+    public void testFindReviewsForGameWithNoReviews(){
+        //Arrange
+        Game monopoly = new Game(VALID_TITLE, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+        when(gameRepository.findGameById(12)).thenReturn(monopoly);
+        List<Review> r = new ArrayList<>();
+        when(reviewRepository.findByGameId(12)).thenReturn(r);
+
+        //Act
+        List<Review> reviews = reviewService.findReviewsForGame(12);
+
+        //Assert
+        assertNotNull(reviews);
+        assertEquals(reviews.size(), r.size());
+
     }
 
     @Test
