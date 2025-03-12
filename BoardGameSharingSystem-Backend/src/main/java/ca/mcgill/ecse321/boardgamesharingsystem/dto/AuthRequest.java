@@ -1,4 +1,4 @@
-package ca.mcgill.ecse321.boardgamesharingsystem.requests;
+package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 import lombok.Data;
 
 @Data
