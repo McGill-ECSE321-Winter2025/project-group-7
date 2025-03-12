@@ -16,6 +16,7 @@ public class RegistrationResponseDto {
     private Time responseTime;
 
     //No args constructor for Jackson
+    @SuppressWarnings("unused")
     private RegistrationResponseDto()
     {
 
