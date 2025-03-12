@@ -15,6 +15,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
+
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -119,7 +120,7 @@ public class AccountService {
     /** 
      * Toggles a User from GameOwner to Player
      * @param UserAccountId the ID of the UserAccount to toggle
-     * @return the UserAccount if toggled
+     * @return the GameOwner if toggled
      */
     public UserAccount toggleUserToPlayer(int UserAccountId) {
         UserAccount user = userRepo
@@ -133,6 +134,7 @@ public class AccountService {
                 "User with id %d is already a player", UserAccountId)));
 
         gameOwner.setUser(null);
+        gameOwnerRepo.save(gameOwner);
 
         return user;
     }
@@ -142,7 +144,7 @@ public class AccountService {
      * @param UserAccountId the ID of the UserAccount to toggle
      * @return the UserAccount if toggled
      */
-    public UserAccount toggleUserToGameOwner (int UserAccountId) {
+    public GameOwner toggleUserToGameOwner (int UserAccountId) {
         UserAccount user = userRepo
             .findById(UserAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
@@ -162,7 +164,7 @@ public class AccountService {
 
         if (!gameOwner.getUser().equals(user)) {
             gameOwner.setUser(user);
-            return user;
+            return gameOwner;
         }
         else {
             throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("GameOwner already associated with userAccount with id %d",
