@@ -221,4 +221,39 @@ public class GameCollectionServiceTests {
         assertEquals(UPDATED_PICTURE_URL, updatedGame.getPictureURL());
         assertEquals(UPDATED_DESCRIPTION, updatedGame.getDescription());       
     }   
+
+    @Test 
+    public void testUpdateValidGame_MinPlayersEQMaxPlayers(){
+        //Arrange
+        GameRequestDto gameRequestDto = new GameRequestDto(UPDATED_TITLE, 3, 3,
+                UPDATED_PICTURE_URL, UPDATED_DESCRIPTION);
+        when(gameRepository.save(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
+ 
+        //Act 
+        when(gameRepository.findGameById(42)).thenReturn(game);
+        Game updatedGame = gameCollectionService.updateGame(42, gameRequestDto);
+ 
+        //Assert
+        assertNotNull(updatedGame);
+        assertEquals(UPDATED_TITLE, updatedGame.getTitle());
+        assertEquals(3, updatedGame.getMinNumPlayers());
+        assertEquals(3, updatedGame.getMaxNumPlayers());
+        assertEquals(UPDATED_PICTURE_URL, updatedGame.getPictureURL());
+        assertEquals(UPDATED_DESCRIPTION, updatedGame.getDescription());       
+    }   
+ 
+    @Test 
+    public void testUpdateGame_MinPlayersGTMaxPlayers(){
+        //Arrange
+        GameRequestDto gameRequestDto = new GameRequestDto(VALID_TITLE_2, 4, 3,
+                VALID_PICTURE_URL_2, VALID_DESCRIPTION_2);
+        when(gameRepository.findGameById(42)).thenReturn(game);
+ 
+        //Act + Assert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
+                () -> gameCollectionService.updateGame(42, gameRequestDto));
+ 
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+        assertEquals("The minNumPlayers 4 is greater than the maxNumPlayers 3", e.getMessage().trim());
+    } 
 }
