@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +27,7 @@ public class RegistrationController {
      * @param participantId the user to register
      * @return the registration of the user including the response's timestamp
      */
-    @PostMapping("/registrations/{eventId}/{participantId}")
+    @PutMapping("/registrations/{eventId}/{participantId}")
     @ResponseStatus(HttpStatus.CREATED)
     public RegistrationResponseDto registerUserToEvent(@PathVariable int eventId, @PathVariable int participantId)
     {
@@ -40,7 +40,7 @@ public class RegistrationController {
      * @param participantId the UserAccount associated to the registration
      * @return the Registration including the timestamp of the response
      */
-    @GetMapping("registrations/{eventId}/{participantId}")
+    @GetMapping("/registrations/{eventId}/{participantId}")
     public RegistrationResponseDto findRegistrationByEventAndParticipant(@PathVariable("eventId") int eventId, @PathVariable("participantId") int participantId)
     {
         return new RegistrationResponseDto(eventService.findRegistrationByEventAndParticipant(participantId, eventId));
@@ -51,7 +51,7 @@ public class RegistrationController {
      * @param eventId the Event associated to the Registration
      * @return the Registration including the timestamp of the response
      */
-    @GetMapping("registrations/{eventId}")
+    @GetMapping("/registrations/{eventId}")
     public List<RegistrationResponseDto> findRegistrationByEvent(@PathVariable("eventId") int eventId)
     {
         List<Registration> registrationsFound = eventService.findRegistrationsByEvent(eventId);
@@ -65,7 +65,7 @@ public class RegistrationController {
      * @param participantId the UserAccount associated to the Registration
      * @return the Registration including the timestamp of the response
      */
-    @GetMapping("registrations/{participantId}")
+    @GetMapping("/registrations/{participantId}")
     public List<RegistrationResponseDto> findRegistrationByParticipant(@PathVariable("participantId") int participantId)
     {
         List<Registration> registrationsFound = eventService.findRegistrationsByParticipant(participantId);

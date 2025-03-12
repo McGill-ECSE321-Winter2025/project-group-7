@@ -29,7 +29,7 @@ public class EventController {
      * @param event the Event to create
      * @return the created Event including their generated id and the response's timestamp
      */
-    @PostMapping("events")
+    @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
     public EventResponseDto createEvent(@RequestBody EventDto event)
     {
@@ -40,7 +40,7 @@ public class EventController {
      * Returns a list of all Events
      * @return a list of all Events
      */
-    @GetMapping("events")
+    @GetMapping("/events")
     public List<EventResponseDto> findAllEvents()
     {
         List<Event> events = eventService.findAllEvents();
@@ -55,7 +55,7 @@ public class EventController {
      * @param event the informationt to update to
      * @return the updated Event including id and response timestamp
      */
-    @PutMapping("events/{id}")
+    @PutMapping("/events/{id}")
     public EventResponseDto updateEvent(@PathVariable int id, @RequestBody EventDto event)
     {
         return new EventResponseDto(eventService.updateEvent(id, event));
@@ -66,7 +66,7 @@ public class EventController {
      * @param id the ID of the event to delete
      * @return the deleted Event including id and response timestamp
      */
-    @DeleteMapping("events/{id}")
+    @DeleteMapping("/events/{id}")
     public EventResponseDto deleteEvent(@PathVariable int id)
     {
         return new EventResponseDto(eventService.deleteEvent(id));

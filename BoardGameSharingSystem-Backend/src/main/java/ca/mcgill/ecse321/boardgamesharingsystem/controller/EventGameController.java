@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +28,7 @@ public class EventGameController {
      * @param gameId the Id of the Game to add to the Event
      * @return the EventGame created, including a timestamp of the response
      */
-    @PostMapping("eventGames/{eventId}/{gameId}")
+    @PutMapping("/eventGames/{eventId}/{gameId}")
     @ResponseStatus(HttpStatus.CREATED)
     public EventGameResponseDto addGameToEvent(@PathVariable int eventId, @PathVariable int gameId)
     {
@@ -41,7 +41,7 @@ public class EventGameController {
      * @param gameId the Id of the Game to remove from the event
      * @return the EventGame deleted, including a timestamp of the response
      */
-    @DeleteMapping("eventGames/{eventId}/{gameId}")
+    @DeleteMapping("/eventGames/{eventId}/{gameId}")
     public EventGameResponseDto removeGameFromEvent(@PathVariable int eventId, @PathVariable int gameId)
     {
         return new EventGameResponseDto(eventService.removeGameFromEvent(new EventGameDto(eventId, gameId)));
@@ -52,7 +52,7 @@ public class EventGameController {
      * @param eventId the Event associated to the EventGames
      * @return the list of found EventGames
      */
-    @GetMapping("eventGames/{eventId}")
+    @GetMapping("/eventGames/{eventId}")
     public List<EventGameResponseDto> findEventGamesbyEvent(@PathVariable("eventId") int eventId)
     {
         List<EventGame> eventGamesFound = eventService.findEventGamesByEvent(eventId);
@@ -66,7 +66,7 @@ public class EventGameController {
      * @param gameId the Game associated to the EventGames
      * @return the list of found EventGames
      */
-    @GetMapping("eventGames/{gameId}")
+    @GetMapping("/eventGames/{gameId}")
     public List<EventGameResponseDto> findEventGamesbyGame(@PathVariable("gameId") int gameId)
     {
         List<EventGame> eventGamesFound = eventService.findEventGamesByGame(gameId);
