@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -50,6 +51,12 @@ public class AccountServiceTests {
     private static final String NAME = "Mila";
     private static final String EMAIL = "mila@bunnymail.com";
     private static final String PASSWORD = "bunnies123";
+    private UserAccount testUser;
+
+    @BeforeEach
+    void setup(){
+        testUser = new UserAccount(NAME, EMAIL, PASSWORD);
+    }    
     
     @Test
     public void testFindUserAccountByValidId() {
@@ -230,12 +237,11 @@ public class AccountServiceTests {
         // Arrange
         UserAccount realUser = new UserAccount(NAME, EMAIL, PASSWORD);
 
-        UserAccount user = spy(realUser);
+        when(userAccountRepository.findById(42)).thenReturn(Optional.of(realUser));
 
-        when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
-
-        GameOwner gameOwner = new GameOwner(null);
-        when(gameOwnerRepository.findById(42)).thenReturn(Optional.of(new GameOwner(null)));
+        GameOwner gameOwner = new GameOwner(realUser);
+        gameOwner.setUser(null);
+        when(gameOwnerRepository.findById(42)).thenReturn(Optional.of(gameOwner));
         
         Game chess = new Game("chess",2,2,"Example/url","its chess");
         GameCopy chessCopy = new GameCopy(chess,gameOwner);
@@ -249,7 +255,7 @@ public class AccountServiceTests {
 
         // Assert
         assertNotNull(newGameOwner);
-        assertEquals(user, newGameOwner.getUser());
+        assertEquals(realUser, newGameOwner.getUser());
         verify(gameOwnerRepository, times(1)).save(any(GameOwner.class));
     }
 
