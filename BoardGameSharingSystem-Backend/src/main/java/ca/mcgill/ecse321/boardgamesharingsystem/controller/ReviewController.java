@@ -25,14 +25,14 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/reviews/{reviewerId}/{gameId}")
+    @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewResponseDto createReviewForGame(@RequestBody ReviewDto review) {
-        return new ReviewResponseDto(reviewService.createReview(review, review.getUserId(), review.getGameId()));
+    public ReviewResponseDto createReviewForGame(@RequestParam int reviewerId,@RequestParam int gameId,@RequestBody ReviewDto review) {
+        return new ReviewResponseDto(reviewService.createReview(review,reviewerId,gameId));
 
     }
 
-    @GetMapping("/reviews/")
+    @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewResponseDto> findReviewsForGame(@RequestParam int gameId) {
         List <Review> reviewsFound = reviewService.findReviewsForGame(gameId);
