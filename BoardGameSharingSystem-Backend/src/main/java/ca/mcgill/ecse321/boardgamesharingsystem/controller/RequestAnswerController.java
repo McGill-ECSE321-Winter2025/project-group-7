@@ -21,10 +21,10 @@ public class RequestAnswerController {
      * @param requestAnswerDto contains drop-off date, time, and location
      * @return the created RequestAnswer
      */
-    @PostMapping("/{borrowingRequestId}")
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public RequestAnswerResponseDto createRequestAnswer(
-            @PathVariable int borrowingRequestId,
+            @RequestParam int borrowingRequestId,
             @RequestBody RequestAnswerDto requestAnswerDto
     ) {
         return new RequestAnswerResponseDto(
@@ -45,7 +45,7 @@ public class RequestAnswerController {
      * @param requestAnswerDto contains updated drop-off date, time, and location
      * @return the updated RequestAnswer
      */
-    @PutMapping("/{requestAnswerId}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RequestAnswerResponseDto updateRequestAnswer(
             @PathVariable int requestAnswerId,
@@ -66,7 +66,7 @@ public class RequestAnswerController {
      * @param requestAnswerId the ID of the RequestAnswer to delete
      * @return the deleted RequestAnswer
      */
-    @DeleteMapping("/{requestAnswerId}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteRequestAnswer(@PathVariable int requestAnswerId) {
         borrowingService.deleteRequestAnswer(requestAnswerId);
@@ -77,7 +77,7 @@ public class RequestAnswerController {
      * @param borrowingRequestId the ID of the BorrowingRequest
      * @return the RequestAnswer associated with the BorrowingRequest
      */
-    @GetMapping("/")
+    @GetMapping("")
     public RequestAnswerResponseDto findRequestAnswerForBorrowingRequest(@RequestParam("borrowingRequestId") int borrowingRequestId) {
         RequestAnswer requestAnswer = borrowingService.findRequestAnswerForBorrowingRequest(borrowingRequestId);
         return new RequestAnswerResponseDto(requestAnswer);

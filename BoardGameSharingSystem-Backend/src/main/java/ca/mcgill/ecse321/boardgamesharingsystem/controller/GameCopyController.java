@@ -44,31 +44,13 @@ public class GameCopyController {
         return new GameCopyResponseDto(deletedGameCopy);
     }
 
-
-    /**
-     * Retrieves a list of GameCopies, either by GameOwner or by Game.
-     * @param gameOwnerId (optional) the ID of the GameOwner
-     * @param gameId (optional) the ID of the Game
-     * @return a list of GameCopies matching the criteria
-     */
-    @GetMapping("/")
-    public List<GameCopyResponseDto> findGameCopies(@RequestParam(value="gameOwnerId", required=false) Integer gameOwnerId,
-                                                    @RequestParam(value="gameId", required=false) Integer gameId) {
-        List<GameCopyResponseDto> res = new ArrayList<>();
-        if (gameOwnerId != null) {
-            return findGameCopiesForGameOwner(gameOwnerId);
-        } else if (gameId != null) {
-            return findGameCopiesFromGame(gameId);
-        }
-        return res;
-    }
-
     /**
      * Finds all GameCopies owned by a specific GameOwner.
      * @param gameOwnerId the ID of the GameOwner
      * @return list of GameCopies
      */
-    private List<GameCopyResponseDto> findGameCopiesForGameOwner(int gameOwnerId) {
+    @GetMapping("/forOwner")
+    public List<GameCopyResponseDto> findGameCopiesForGameOwner(int gameOwnerId) {
         List<GameCopy> gameCopies = gameOwningService.findGameCopiesForGameOwner(gameOwnerId);
         List<GameCopyResponseDto> responses = new ArrayList<>();
         gameCopies.forEach(copy -> responses.add(new GameCopyResponseDto(copy)));
@@ -80,7 +62,8 @@ public class GameCopyController {
      * @param gameId the ID of the Game
      * @return list of GameCopies
      */
-    private List<GameCopyResponseDto> findGameCopiesFromGame(int gameId) {
+    @GetMapping("/forGame")
+    public List<GameCopyResponseDto> findGameCopiesFromGame(int gameId) {
         List<GameCopy> gameCopies = gameCollectionService.findGameCopiesFromGame(gameId);
         List<GameCopyResponseDto> responses = new ArrayList<>();
         gameCopies.forEach(copy -> responses.add(new GameCopyResponseDto(copy)));
