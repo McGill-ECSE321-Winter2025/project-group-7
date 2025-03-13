@@ -17,9 +17,9 @@ import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 import jakarta.validation.Valid;
 
 /**
- * This service class implements functionalities related to the game owner's game collection,
- * such as creating and updating their games, as well as finding all games and finding all copies of a game. 
- * It essentially manages the GameCopy class.
+ * This service class implements functionalities related to the games in the system,
+ * such as creating, updating and finding the games, as well as finding all copies of a game. 
+ * It essentially manages the Game class.
  */
 @Service
 @Validated
