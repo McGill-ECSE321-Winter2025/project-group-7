@@ -8,7 +8,7 @@ public class GameOwnerResponseDto {
     private int userId;
     private String userName;
     private String userEmail;
-    private int accountType; 
+    private boolean isGameOwner; 
 
     @SuppressWarnings("unused")
     private GameOwnerResponseDto(){
@@ -22,12 +22,12 @@ public class GameOwnerResponseDto {
             this.userId = -1;
             this.userName="";
             this.userEmail="";
-            this.accountType=0;
+            this.isGameOwner=false;
         }else{
             this.userId = user.getId();
             this.userName = user.getName();
             this.userEmail = user.getEmail();
-            this.accountType = 1;
+            this.isGameOwner = true;
         }
     }
 
@@ -47,7 +47,7 @@ public class GameOwnerResponseDto {
         return userEmail;
     }
 
-    public int getAccountType() {
-        return accountType;
+    public boolean getIsGameOwner(){
+        return isGameOwner;
     }
 }
