@@ -45,13 +45,28 @@ public class GameOwningServiceTests {
         assertNotNull(result);
         assertEquals(user, result.getUser());
     }
-
     @Test
     public void testCreateGameOwnerUserNotFound() {
         when(userAccountRepository.findById(1)).thenReturn(Optional.empty());
 
         BoardGameSharingSystemException ex = assertThrows(BoardGameSharingSystemException.class, () -> gameOwningService.createGameOwner(1));
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+    }
+
+    @Test
+    public void testCreatGameOwnerAlreadyPresent(){
+        UserAccount testUser = new UserAccount("test", "test@outlook.com", "hello12345678");
+        GameOwner gameOwner = new GameOwner(testUser);
+        when(userAccountRepository.findById(42)).thenReturn(Optional.of(testUser));
+        when(gameOwnerRepository.findGameOwnerById(42)).thenReturn(gameOwner);
+
+        //Act+Asert
+        BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
+         ()-> gameOwningService.createGameOwner(42));
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatus()); 
+        assertEquals(
+            "The user with id 42 already has a game owner with the same id created",
+             e.getMessage());
     }
 
     @Test

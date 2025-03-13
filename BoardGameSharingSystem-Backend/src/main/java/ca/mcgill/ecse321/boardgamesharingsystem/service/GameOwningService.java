@@ -41,6 +41,14 @@ public class GameOwningService {
                 .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
                  String.format("Could not create gameOwner since user with id %d does not exist",userId)));
 
+        // Check if the user is already a GameOwner
+        if (gameOwnerRepo.findGameOwnerById(userId) != null) {
+            throw new BoardGameSharingSystemException(
+            HttpStatus.BAD_REQUEST,
+             String.format(
+                "The user with id %d already has a game owner with the same id created",
+                userId));
+        }         
         // Create a new GameOwner and persist it
         GameOwner gameOwner = new GameOwner(user);
         return gameOwnerRepo.save(gameOwner);
