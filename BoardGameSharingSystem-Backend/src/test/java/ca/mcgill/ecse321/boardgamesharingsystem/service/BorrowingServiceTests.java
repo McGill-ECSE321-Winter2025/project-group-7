@@ -58,10 +58,10 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testCreateBorrowingRequest() {
-        // Arrange
+        //Arrange
         UserAccount borrower = new UserAccount("John", "john@test.com", "password");
         UserAccount owner = new UserAccount("Owner", "owner@test.com", "ownerPass");
-        // 模型要求 GameCopy 使用构造方法(Game, GameOwner)
+
         Game game = new Game("Chess", 2, 2, "chess.com", "Chess game description");
         GameOwner gameOwner = new GameOwner(owner);
         GameCopy gameCopy = new GameCopy(game, gameOwner);
@@ -71,10 +71,10 @@ public class BorrowingServiceTests {
         when(borrowRequestRepository.save(any(BorrowRequest.class)))
                 .thenAnswer((InvocationOnMock invocation) -> invocation.getArgument(0));
 
-        // Act
+        //Act
         BorrowRequest request = borrowingService.createBorrowingRequest(2, 1, START_DATE, END_DATE);
 
-        // Assert
+        //Assert
         assertNotNull(request);
         assertEquals(START_DATE, request.getStartDate());
         assertEquals(END_DATE, request.getEndDate());
@@ -88,11 +88,11 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testCreateBorrowingRequestWithNullDates() {
-        // Arrange
+        //Arrange
         when(userAccountRepository.findById(1)).thenReturn(Optional.of(new UserAccount("John", "john@test.com", "password")));
         when(gameCopyRepository.findById(2)).thenReturn(Optional.of(new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"), new GameOwner(new UserAccount("Owner", "owner@test.com", "ownerPass")))));
 
-        // Act & Assert
+        //Act & Assert
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> borrowingService.createBorrowingRequest(2, 1, null, END_DATE));
         assertEquals("Dates cannot be null.", ex.getMessage());
@@ -103,11 +103,11 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testCreateBorrowingRequestWithInvalidDates() {
-        // Arrange
+        //Arrange
         when(userAccountRepository.findById(1)).thenReturn(Optional.of(new UserAccount("John", "john@test.com", "password")));
         when(gameCopyRepository.findById(2)).thenReturn(Optional.of(new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"), new GameOwner(new UserAccount("Owner", "owner@test.com", "ownerPass")))));
 
-        // Act & Assert
+        //Act & Assert
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> borrowingService.createBorrowingRequest(2, 1, END_DATE, START_DATE));
         assertEquals("End date must be after start date.", ex.getMessage());
@@ -118,8 +118,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testFindPendingBorrowingRequests() {
-        // Arrange
-        // 创建 Game, GameOwner, GameCopy
+        //Arrange
         Game game = new Game("Chess", 2, 2, "chess.com", "Chess game description");
         UserAccount owner = new UserAccount("Owner", "owner@test.com", "ownerPass");
         GameOwner gameOwner = new GameOwner(owner);
@@ -129,14 +128,13 @@ public class BorrowingServiceTests {
         List<BorrowRequest> requests = new ArrayList<>();
         BorrowRequest pendingRequest = new BorrowRequest(START_DATE, END_DATE,
                 new UserAccount("Alice", "alice@test.com", "alicePass"), gameCopy);
-        // Status is automatically set to Pending in constructor
         requests.add(pendingRequest);
         when(borrowRequestRepository.findByGameCopyId(2)).thenReturn(requests);
 
-        // Act
+        //Act
         List<BorrowRequest> result = borrowingService.findPendingBorrowingRequests(2);
 
-        // Assert
+        //Assert
         assertEquals(1, result.size());
         assertEquals(RequestStatus.Pending, result.get(0).getRequestStatus());
     }
@@ -146,8 +144,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testFindAcceptedBorrowingRequests() {
-        // Arrange
-        // 初始化 GameCopy 同上
+        //Arrange
         Game game = new Game("Chess", 2, 2, "chess.com", "Chess game description");
         UserAccount owner = new UserAccount("Owner", "owner@test.com", "ownerPass");
         GameOwner gameOwner = new GameOwner(owner);
@@ -161,10 +158,10 @@ public class BorrowingServiceTests {
         requests.add(acceptedRequest);
         when(borrowRequestRepository.findByGameCopyId(2)).thenReturn(requests);
 
-        // Act
+        //Act
         List<BorrowRequest> result = borrowingService.findAcceptedBorrowingRequests(2);
 
-        // Assert
+        //Assert
         assertEquals(1, result.size());
         assertEquals(RequestStatus.Accepted, result.get(0).getRequestStatus());
     }
@@ -174,7 +171,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testAcceptBorrowingRequest() {
-        // Arrange
+        //Arrange
         BorrowRequest request = new BorrowRequest(START_DATE, END_DATE,
                 new UserAccount("John", "john@test.com", "password"),
                 new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"),
@@ -183,10 +180,10 @@ public class BorrowingServiceTests {
         when(borrowRequestRepository.save(any(BorrowRequest.class)))
                 .thenAnswer((InvocationOnMock invocation) -> invocation.getArgument(0));
 
-        // Act
+        //Act
         BorrowRequest result = borrowingService.acceptPendingBorrowingRequest(1);
 
-        // Assert
+        //Assert
         assertEquals(RequestStatus.Accepted, result.getRequestStatus());
     }
 
@@ -195,18 +192,18 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testDeclinePendingBorrowingRequest() {
-        // Arrange
+        //Arrange
         BorrowRequest request = new BorrowRequest(START_DATE, END_DATE,
                 new UserAccount("John", "john@test.com", "password"),
                 new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"),
                         new GameOwner(new UserAccount("Owner", "owner@test.com", "ownerPass"))));
-        // Ensure request is Pending by default
+        
         when(borrowRequestRepository.findById(1)).thenReturn(Optional.of(request));
 
-        // Act
+        //Act
         BorrowRequest declined = borrowingService.declinePendingBorrowingRequest(1);
 
-        // Assert
+        //Assert
         assertNotNull(declined);
         verify(borrowRequestRepository, times(1)).delete(request);
     }
@@ -216,7 +213,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testCreateRequestAnswer() {
-        // Arrange
+        //Arrange
         BorrowRequest request = new BorrowRequest(START_DATE, END_DATE,
                 new UserAccount("John", "john@test.com", "password"),
                 new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"),
@@ -225,10 +222,10 @@ public class BorrowingServiceTests {
         when(requestAnswerRepository.save(any(RequestAnswer.class)))
                 .thenAnswer((InvocationOnMock invocation) -> invocation.getArgument(0));
 
-        // Act
+        //Act
         RequestAnswer answer = borrowingService.createRequestAnswer(1, DROP_OFF_DATE, DROP_OFF_TIME, LOCATION, CONTACT_EMAIL);
 
-        // Assert
+        //Assert
         assertNotNull(answer);
         assertEquals(DROP_OFF_DATE, answer.getDropOffDate());
         assertEquals(DROP_OFF_TIME, answer.getDropOffTime());
@@ -242,7 +239,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testUpdateRequestAnswer() {
-        // Arrange
+        //Arrange
         RequestAnswer answer = new RequestAnswer(DROP_OFF_DATE, DROP_OFF_TIME, LOCATION,
                 new BorrowRequest(START_DATE, END_DATE,
                         new UserAccount("John", "john@test.com", "password"),
@@ -252,10 +249,10 @@ public class BorrowingServiceTests {
         when(requestAnswerRepository.save(any(RequestAnswer.class)))
                 .thenAnswer((InvocationOnMock invocation) -> invocation.getArgument(0));
 
-        // Act
+        //Act
         RequestAnswer updated = borrowingService.updateRequestAnswer(1, DROP_OFF_DATE, DROP_OFF_TIME, LOCATION);
 
-        // Assert
+        //Assert
         assertEquals(DROP_OFF_DATE, updated.getDropOffDate());
         assertEquals(DROP_OFF_TIME, updated.getDropOffTime());
         assertEquals(LOCATION, updated.getLocation());
@@ -266,7 +263,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testDeleteRequestAnswer() {
-        // Arrange
+        //Arrange
         RequestAnswer answer = new RequestAnswer(DROP_OFF_DATE, DROP_OFF_TIME, LOCATION,
                 new BorrowRequest(START_DATE, END_DATE,
                         new UserAccount("John", "john@test.com", "password"),
@@ -274,10 +271,10 @@ public class BorrowingServiceTests {
                                 new GameOwner(new UserAccount("Owner", "owner@test.com", "ownerPass")))), CONTACT_EMAIL);
         when(requestAnswerRepository.findById(1)).thenReturn(Optional.of(answer));
 
-        // Act
+        //Act
         borrowingService.deleteRequestAnswer(1);
 
-        // Assert
+        //Assert
         verify(requestAnswerRepository, times(1)).delete(answer);
     }
 
@@ -286,7 +283,7 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testFindRequestAnswerForAcceptedBorrowingRequest() {
-        // Arrange
+        //Arrange
         BorrowRequest request = new BorrowRequest(START_DATE, END_DATE,
                 new UserAccount("John", "john@test.com", "password"),
                 new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"),
@@ -296,10 +293,10 @@ public class BorrowingServiceTests {
         RequestAnswer answer = new RequestAnswer(DROP_OFF_DATE, DROP_OFF_TIME, LOCATION, request, CONTACT_EMAIL);
         when(requestAnswerRepository.findRequestAnswerByRequestId(1)).thenReturn(answer);
 
-        // Act
+        //Act
         RequestAnswer foundAnswer = borrowingService.findRequestAnswerForBorrowingRequest(1);
 
-        // Assert
+        //Assert
         assertNotNull(foundAnswer);
     }
 
@@ -309,17 +306,16 @@ public class BorrowingServiceTests {
      */
     @Test
     public void testFindPendingBorrowingRequestsWhenEmpty() {
-        // Arrange
+        //Arrange
         Game game = new Game("Chess", 2, 2, "chess.com", "desc");
         UserAccount owner = new UserAccount("Owner", "owner@test.com", "ownerPass");
         GameOwner gameOwner = new GameOwner(owner);
         GameCopy gameCopy = new GameCopy(game, gameOwner);
         when(gameCopyRepository.findById(2)).thenReturn(Optional.of(gameCopy));
         List<BorrowRequest> requests = new ArrayList<>();
-        // 模拟没有待处理的请求
         when(borrowRequestRepository.findByGameCopyId(2)).thenReturn(requests);
 
-        // Act & Assert
+        //Act & Assert
         IllegalStateException ex = assertThrows(IllegalStateException.class,
                 () -> borrowingService.findPendingBorrowingRequests(2));
         assertEquals("No pending borrowing requests found for this game copy.", ex.getMessage());
