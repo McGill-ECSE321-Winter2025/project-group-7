@@ -20,7 +20,7 @@ public class GameOwnerController {
     /**
      * Create a new game owner.
      * @param id The id of the game owner to create
-     * @return The game owner with id, the user id, name, email,(-1, "","" when not present) account type (0 player, 1 game owner)
+     * @return The game owner with id, the user id, name, email,(-1, "","" when not present) account type (false player, true game owner)
      */
     @PutMapping("/gameowners/{id}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,7 +32,7 @@ public class GameOwnerController {
     /**
      * Find a game owner.
      * @param id The id of the game owner
-     * @return The game owner with id, the user id, name, email,(-1, "","" when not present) account type (0 player, 1 game owner)
+     * @return The game owner with id, the user id, name, email,(-1, "","" when not present) account type (false player, true game owner)
      */
     @GetMapping("/gameowners/{id}")
     @ResponseStatus(HttpStatus.OK)
