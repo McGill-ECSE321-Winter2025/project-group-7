@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("gameCopies")
 public class GameCopyController {
-
     @Autowired
     private GameOwningService gameOwningService;
     @Autowired

@@ -21,7 +21,6 @@ public class ReviewResponseDto {
         this.comment = review.getComment();
         this.userId = review.getReviewer().getId();
         this.gameId = review.getGame().getId();
-
     }
 
     public int getId() {
@@ -54,28 +53,21 @@ public class ReviewResponseDto {
 
     public void setComment(String comment){
         this.comment = comment;
-
     }
 
     public void setRating(int rating) {
         this.rating = rating;
-
     }
     
     public void setReviewDate(Date reviewDate) {
         this.reviewDate = reviewDate;
-
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-
     }
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
-
-    }
-
-    
+    }   
 }

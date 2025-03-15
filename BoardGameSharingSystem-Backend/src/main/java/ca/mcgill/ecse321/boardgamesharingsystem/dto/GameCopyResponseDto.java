@@ -21,7 +21,6 @@ public class GameCopyResponseDto {
         this.gameMinNumPlayers = gameCopy.getGame().getMinNumPlayers();
         this.gamePicture = gameCopy.getGame().getPictureURL();
         this.gameTitle = gameCopy.getGame().getTitle();
-
     }
 
     public int getId() {

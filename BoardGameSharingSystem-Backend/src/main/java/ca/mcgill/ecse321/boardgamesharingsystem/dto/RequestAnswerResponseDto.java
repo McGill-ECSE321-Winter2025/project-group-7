@@ -22,6 +22,7 @@ public class RequestAnswerResponseDto {
     {
 
     }
+    
     /**
      * Constructor for the RequestAnswerResponseDto.
      */

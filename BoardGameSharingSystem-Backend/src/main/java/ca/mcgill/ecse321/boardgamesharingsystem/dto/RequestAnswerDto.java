@@ -24,21 +24,51 @@ public class RequestAnswerDto {
     }
 
     // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() { 
+        return id; 
+    }
 
-    public int getBorrowingRequestId() { return borrowingRequestId; }
-    public void setBorrowingRequestId(int borrowingRequestId) { this.borrowingRequestId = borrowingRequestId; }
+    public void setId(int id) { 
+        this.id = id; 
+    }
 
-    public Date getDropoffDate() { return dropoffDate; }
-    public void setDropoffDate(Date dropoffDate) { this.dropoffDate = dropoffDate; }
+    public int getBorrowingRequestId() { 
+        return borrowingRequestId; 
+    }
 
-    public Time getDropoffTime() { return dropoffTime; }
-    public void setDropoffTime(Time dropoffTime) { this.dropoffTime = dropoffTime; }
+    public void setBorrowingRequestId(int borrowingRequestId) { 
+        this.borrowingRequestId = borrowingRequestId; 
+    }
 
-    public String getDropoffLocation() { return dropoffLocation; }
-    public void setDropoffLocation(String dropoffLocation) { this.dropoffLocation = dropoffLocation; }
+    public Date getDropoffDate() { 
+        return dropoffDate; 
+    }
 
-    public String getContactEmail() { return contactEmail; }
-    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
+    public void setDropoffDate(Date dropoffDate) { 
+        this.dropoffDate = dropoffDate; 
+    }
+
+    public Time getDropoffTime() { 
+        return dropoffTime; 
+    }
+
+    public void setDropoffTime(Time dropoffTime) { 
+        this.dropoffTime = dropoffTime; 
+    }
+
+    public String getDropoffLocation() { 
+        return dropoffLocation; 
+    }
+
+    public void setDropoffLocation(String dropoffLocation) { 
+        this.dropoffLocation = dropoffLocation; 
+    }
+
+    public String getContactEmail() { 
+        return contactEmail; 
+    }
+
+    public void setContactEmail(String contactEmail) { 
+        this.contactEmail = contactEmail; 
+    }
 }

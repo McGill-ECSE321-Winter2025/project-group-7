@@ -29,7 +29,6 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewResponseDto createReviewForGame(@RequestParam int reviewerId, @RequestBody ReviewDto review) {
         return new ReviewResponseDto(reviewService.createReview(review, review.getUserId(),review.getGameId()));
-
     }
 
     @GetMapping("/reviews")
@@ -39,7 +38,6 @@ public class ReviewController {
         List <ReviewResponseDto> responses = new ArrayList<>();
         reviewsFound.forEach(review -> responses.add(new ReviewResponseDto(review)));
         return responses;
-
     }
 
     @PutMapping("/reviews/{id}")
@@ -52,7 +50,6 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.OK)
     public ReviewResponseDto deleteReview(@PathVariable int reviewId) {
         return new ReviewResponseDto(reviewService.deleteReview(reviewId));
-
     }
 
 }
