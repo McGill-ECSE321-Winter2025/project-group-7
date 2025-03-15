@@ -12,6 +12,8 @@ public class ReviewResponseDto {
     int gameId;
     int userId;
 
+    public ReviewResponseDto(){}
+
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
         this.reviewDate = review.getReviewDate();

@@ -27,8 +27,8 @@ public class ReviewController {
 
     @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewResponseDto createReviewForGame(@RequestParam int reviewerId,@RequestParam int gameId,@RequestBody ReviewDto review) {
-        return new ReviewResponseDto(reviewService.createReview(review,reviewerId,gameId));
+    public ReviewResponseDto createReviewForGame(@RequestParam int reviewerId, @RequestBody ReviewDto review) {
+        return new ReviewResponseDto(reviewService.createReview(review, review.getUserId(),review.getGameId()));
 
     }
 
