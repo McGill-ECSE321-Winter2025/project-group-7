@@ -366,6 +366,7 @@ public class EventServiceTests {
         Game game = new Game(TITLE, MIN_NUM_PLAYERS, MAX_NUM_PLAYERS, PICTURE_URL, DESCRIPTION);
         when(gameRepository.findGameById(42)).thenReturn(game);
         when(eventGameRepository.save(any(EventGame.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(eventGameRepository.findEventGameByKey(any(EventGame.Key.class))).thenReturn(null);
         EventGameDto eventDetails = new EventGameDto(42, 42);
 
         //Act
@@ -381,6 +382,26 @@ public class EventServiceTests {
         assertNotNull(foundGame);
         assertEquals(VALID_DESCRIPTION, foundEvent.getDescription());
         assertEquals(TITLE, foundGame.getTitle());
+    }
+
+    @Test
+    public void testAddGameToEventAlreadyAdded()
+    {
+        //Arrange
+        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
+        Event event = new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
+        when(eventRepository.findEventById(42)).thenReturn(event);
+        Game game = new Game(TITLE, MIN_NUM_PLAYERS, MAX_NUM_PLAYERS, PICTURE_URL, DESCRIPTION);
+        when(gameRepository.findGameById(42)).thenReturn(game);
+        EventGame eventGame = new EventGame(new EventGame.Key(event, game));
+        when(eventGameRepository.findEventGameByKey(any(EventGame.Key.class))).thenReturn(eventGame);
+        EventGameDto eventDetails = new EventGameDto(42, 42);
+
+        //Act/Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () ->  eventService.addGameToEvent(eventDetails));
+        assertNotNull(exception);
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Cannot add game 42 to event 42 since it is already added", exception.getMessage());
     }
 
     @Test
@@ -616,6 +637,7 @@ public class EventServiceTests {
         when(eventRepository.findEventById(42)).thenReturn(event);
         when(registrationRepository.findByKey_Event(any(Event.class))).thenReturn(registrations);
         when(registrationRepository.save(any(Registration.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
+        when(registrationRepository.findRegistrationByKey(any(Registration.RegistrationKey.class))).thenReturn(null);
 
         //Act
         Registration createdRegistration = eventService.registerUserToEvent(42, 42);
@@ -641,6 +663,7 @@ public class EventServiceTests {
         when(userAccountRepository.findUserAccountById(42)).thenReturn(user);
         when(eventRepository.findEventById(42)).thenReturn(event);
         when(registrationRepository.findByKey_Event(any(Event.class))).thenReturn(registrations);
+        when(registrationRepository.findRegistrationByKey(any(Registration.RegistrationKey.class))).thenReturn(null);
 
         //Act/Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> eventService.registerUserToEvent(42, 42));
@@ -662,12 +685,36 @@ public class EventServiceTests {
         when(userAccountRepository.findUserAccountById(42)).thenReturn(user);
         when(eventRepository.findEventById(42)).thenReturn(event);
         when(registrationRepository.findByKey_Event(any(Event.class))).thenReturn(registrations);
+        when(registrationRepository.findRegistrationByKey(any(Registration.RegistrationKey.class))).thenReturn(null);
 
         //Act/Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> eventService.registerUserToEvent(42, 42));
         assertNotNull(exception);
         assertEquals(HttpStatus.EXPECTATION_FAILED, exception.getStatus());
         assertEquals("event 42 has already ended", exception.getMessage());
+    }
+
+    @Test
+    public void testRegisterUserToEventAlreadyRegistered()
+    {
+        //Arrange
+        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
+        Date StartDate = Date.valueOf("2020-10-10");
+        Date EndDate = Date.valueOf("2020-10-11");
+        Event event = new Event(StartDate, VALID_START_TIME, EndDate, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
+        Registration registration = new Registration(new Registration.RegistrationKey(user, event), VALID_START_DATE, VALID_START_TIME);
+        List<Registration> registrations = new ArrayList<>();
+        registrations.add(registration);
+
+        when(userAccountRepository.findUserAccountById(42)).thenReturn(user);
+        when(eventRepository.findEventById(42)).thenReturn(event);
+        when(registrationRepository.findRegistrationByKey(any(Registration.RegistrationKey.class))).thenReturn(registration);
+
+        //Act/Assert
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> eventService.registerUserToEvent(42, 42));
+        assertNotNull(exception);
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Registration already exists for user with id 42 and event id 42", exception.getMessage());
     }
 
     @Test
