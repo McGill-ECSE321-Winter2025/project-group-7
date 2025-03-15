@@ -20,6 +20,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.EventGame;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Registration;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.Registration.RegistrationKey;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.EventGameRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.EventRepository;
@@ -47,7 +48,6 @@ public class EventService {
      * @param userID the ID of the requested UserAccount
      * @return the UserAccount if found
      */
-    @Transactional
     public UserAccount findUserAccountById(int userID)
     {
         UserAccount user = userAccountRepository.findUserAccountById(userID);
@@ -67,6 +67,13 @@ public class EventService {
     public Event createEvent(@Valid EventDto eventToCreate)
     {
         UserAccount creator = findUserAccountById(eventToCreate.getCreatorId());
+        if (creator == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                    "Could not create event because creator with id %d could not be found", 
+                    eventToCreate.getCreatorId()));
+        }
         validateEventTimes(eventToCreate);
         Event event = new Event(
             eventToCreate.getStartDate(),
@@ -92,6 +99,14 @@ public class EventService {
     public Event updateEvent(int eventID, @Valid EventDto updatedEventDetails)
     {
         Event eventToUpdate = findEventById(eventID);
+        if (eventToUpdate == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                    "Could not find the event with id %d to update",
+                    eventID
+                    ));
+        }
         validateEventTimes(updatedEventDetails);
         eventToUpdate.setStartDate(updatedEventDetails.getStartDate());
         eventToUpdate.setStartTime(updatedEventDetails.getStartTime());
@@ -108,13 +123,15 @@ public class EventService {
      * Returns all Events in the database as a List
      * @return Events found as List<Event>
      */
-    @Transactional(readOnly=true)
     public List<Event> findAllEvents()
     {
-        List<Event> res = new ArrayList<>();
-        Iterable<Event> iterableEvents = eventRepository.findAll();
-        iterableEvents.forEach(res::add);
-        return res;
+        List<Event> events = eventRepository.findAll();
+        if (events == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                "Could not find the list of all events");
+        }
+        return events;
     }
 
     /**
@@ -122,7 +139,6 @@ public class EventService {
      * @param eventID the ID of the Event
      * @return the Event if found
      */
-    @Transactional(readOnly=true)
     public Event findEventById(int eventID)
     {
         Event event = eventRepository.findEventById(eventID);
@@ -142,6 +158,11 @@ public class EventService {
     public Event deleteEvent(int eventID)
     {
         Event eventToDelete = findEventById(eventID);
+        if (eventToDelete == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format("Coul not find event to delete with ID %d", eventID));
+        }
         registrationRepository.deleteByKey_Event(eventToDelete);
         eventRepository.delete(eventToDelete);
         return eventToDelete;
@@ -152,7 +173,6 @@ public class EventService {
      * @param gameID the ID of the Game
      * @return the Game if found
      */
-    @Transactional(readOnly=true)
     Game findGameById(int gameID)
     {
         Game game = gameRepository.findGameById(gameID);
@@ -172,7 +192,29 @@ public class EventService {
     public EventGame addGameToEvent(EventGameDto eventGameToAdd)
     {
         Event event = findEventById(eventGameToAdd.getEventId());
+        if (event == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not add game to event with id %d since it does not exist",
+                eventGameToAdd.getEventId()));
+        }
         Game game = findGameById(eventGameToAdd.getGameId());
+        if (game == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                 "Could not add game %d to event since it does not exist",
+                eventGameToAdd.getGameId()));
+        }
+        EventGame eventGameDB = eventGameRepository.findEventGameByKey(new EventGame.Key(event,game));
+        if (eventGameDB != null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.BAD_REQUEST,
+                String.format("Cannot add game %d to event %d since it is already added",
+                game.getId(),
+                event.getId()));
+        }
         EventGame eventGame = new EventGame(new EventGame.Key(event, game));
         return eventGameRepository.save(eventGame);
     }
@@ -186,7 +228,21 @@ public class EventService {
     public EventGame removeGameFromEvent(EventGameDto eventGameToRemove)
     {
         Event event = findEventById(eventGameToRemove.getEventId());
+        if (event == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not remove game from event with id %d since it does not exist",
+                eventGameToRemove.getEventId()));
+        }        
         Game game = findGameById(eventGameToRemove.getGameId());
+        if (game == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                 "Could not remove game %d from event since it does not exist",
+                eventGameToRemove.getGameId()));
+        }        
         EventGame eventGame = eventGameRepository.findEventGameByKey(new EventGame.Key(event, game));
         if(eventGame == null)
         {
@@ -203,12 +259,23 @@ public class EventService {
      * @param eventID the ID of the Event
      * @return a list of all EventGames found
      */
-    @Transactional(readOnly=true)
     public List<EventGame> findEventGamesByEvent(int eventID)
     {
         Event event = findEventById(eventID);
+        if (event == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not find event games for event id %d does not exist",
+                eventID));
+        }         
         List<EventGame> res = new ArrayList<>();
         Iterable<EventGame> iterableEventGames = eventGameRepository.findByKey_Event(event);
+        if (iterableEventGames == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND, 
+                "Could not find event games for event "+eventID);
+        }
         iterableEventGames.forEach(res::add);
         return res;
     }
@@ -218,12 +285,23 @@ public class EventService {
      * @param gameID the ID of the Game
      * @return a list of all EventGames found
      */
-    @Transactional(readOnly=true)
     public List<EventGame> findEventGamesByGame(int gameID)
     {
         Game game = findGameById(gameID);
+        if (game == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                 "Could not find game %d to find event games" ,
+                gameID));
+        }         
         List<EventGame> res = new ArrayList<>();
         Iterable<EventGame> iterableEventGames = eventGameRepository.findByKey_GamePlayed(game);
+        if (iterableEventGames == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND, 
+                "Could not find event games for game "+gameID);
+        }
         iterableEventGames.forEach(res::add);
         return res;
     }
@@ -234,11 +312,24 @@ public class EventService {
      * @param eventID the Event's ID
      * @return the Registration if found
      */
-    @Transactional(readOnly=true)
     public Registration findRegistrationByEventAndParticipant(int userID, int eventID)
     {
         Event event = findEventById(eventID);
+        if (event == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not find registrations for event id %d does not exist",
+                eventID));
+        }          
         UserAccount user = findUserAccountById(userID);
+        if (user == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                    "Could not find registrations for user id %d does not exist",
+                    userID));
+        }
         Registration registration = registrationRepository.findRegistrationByKey(new Registration.RegistrationKey(user, event));
         if(registration == null)
         {
@@ -254,12 +345,25 @@ public class EventService {
      * @param eventID the ID of the Event
      * @return a list of all Registrations found
      */
-    @Transactional(readOnly=true)
     public List<Registration> findRegistrationsByEvent(int eventID)
     {
         Event event = findEventById(eventID);
+        if (event == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not find registrations for event id %d does not exist",
+                eventID));
+        }         
         List<Registration> res = new ArrayList<>();
         Iterable<Registration> iterableRegistrations = registrationRepository.findByKey_Event(event);
+        if (iterableRegistrations == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not find registrations for event id %d",
+                eventID));
+        }           
         iterableRegistrations.forEach(res::add);
         return res;
     }
@@ -269,12 +373,25 @@ public class EventService {
      * @param userId the ID of the UserAccount
      * @return a list of all Registrations found
      */
-    @Transactional(readOnly=true)
     public List<Registration> findRegistrationsByParticipant(int userId)
     {
         UserAccount user = findUserAccountById(userId);
+        if (user == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                    "Could not find registrations for user id %d does not exist",
+                    userId));
+        }        
         List<Registration> res = new ArrayList<>();
         Iterable<Registration> iterableRegistrations = registrationRepository.findByKey_Participant(user);
+        if (iterableRegistrations == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not find registrations for event id %d",
+                userId));
+        }         
         iterableRegistrations.forEach(res::add);
         return res;
     }
@@ -290,7 +407,30 @@ public class EventService {
     public Registration registerUserToEvent(int userID, int eventID)
     {
         Event event = findEventById(eventID);
+        if (event == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                "Could not register for event with id %d does not exist",
+                eventID));
+        }          
         UserAccount user = findUserAccountById(userID);
+        if (user == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                    "Could not register for user with id %d. Does not exist",
+                    userID));
+        }
+        Registration registration = registrationRepository.findRegistrationByKey(new RegistrationKey(user, event));
+        if (registration != null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.BAD_REQUEST,
+                String.format(
+                "Registration already exists for user with id %d and event id %d",
+                userID,
+                eventID));
+        }              
         if(event.getMaxNumParticipants() <= findRegistrationsByEvent(eventID).size())
         {
             throw new BoardGameSharingSystemException(HttpStatus.EXPECTATION_FAILED, String.format("event %d is already at maximum capacity", eventID));
@@ -315,6 +455,15 @@ public class EventService {
     public Registration deregisterParticipantFromEvent(int userID, int eventID)
     {
         Registration registrationtoDelete = findRegistrationByEventAndParticipant(userID, eventID);
+        if (registrationtoDelete == null){
+            throw new BoardGameSharingSystemException(
+                HttpStatus.NOT_FOUND,
+                String.format(
+                    "Could not find registration to delete with key userID %d, eventID %d", 
+                    userID, eventID
+                    )
+            );
+        }
         registrationRepository.delete(registrationtoDelete);
         return registrationtoDelete;
     }
