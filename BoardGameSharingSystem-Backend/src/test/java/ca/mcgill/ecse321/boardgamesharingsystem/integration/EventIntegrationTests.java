@@ -97,21 +97,6 @@ public class EventIntegrationTests {
 
     }
 
-
-    @Test
-    @Order(100)
-    public void startDate()
-    {
-        //Arrange
-        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
-        user = userAccountRepository.save(user);
-        EventDto eventRequest = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user.getId());
-
-        assertEquals(VALID_START_DATE,eventRequest.getStartDate());
-
-        ResponseEntity<EventResponseDto> response = client.postForEntity("/events", eventRequest, EventResponseDto.class);
-    }
-
     @Test
     @Order(1)
     public void testCreateValidEvent()
