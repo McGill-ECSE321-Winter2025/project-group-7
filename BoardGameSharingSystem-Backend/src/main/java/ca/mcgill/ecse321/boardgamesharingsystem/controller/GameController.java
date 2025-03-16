@@ -41,7 +41,7 @@ public class GameController {
      * @param gameToUpdate contains title, minNumPlayers, maxNumPlayers, pictureURL,and description
      * @return the updated Game 
      */
-    @PutMapping("/games/{id}")
+    @PutMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     public GameResponseDto updateGame(@PathVariable int gameId, @RequestBody GameRequestDto gameToUpdate) 
     {
@@ -68,7 +68,7 @@ public class GameController {
      * @param gameId the ID of the game
      * @return the game in question
      */
-    @GetMapping("/games/{id}")
+    @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     public GameResponseDto findGameById(@PathVariable int gameId) 
     {
