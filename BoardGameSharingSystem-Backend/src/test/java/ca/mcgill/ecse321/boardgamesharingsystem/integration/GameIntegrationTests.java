@@ -17,6 +17,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import ca.mcgill.ecse321.boardgamesharingsystem.dto.ErrorDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameResponseDto;
 
@@ -27,12 +28,14 @@ public class GameIntegrationTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String VALID_TITLE = "Scrabble";
+    private static final String VALID_TITLE = "Connect4";
     private static final int VALID_MIN_NUM_PLAYERS = 2;
-    private static final int VALID_MAX_NUM_PLAYERS = 4;
-    private static final String VALID_PICTURE_URL = "https://toysrus.com/Scrabble.jpg";
-    private static final String VALID_DESCRIPTION = "Scrabble is a fun and easy word game for people of all ages to enjoy!";
+    private static final int VALID_MAX_NUM_PLAYERS = 2;
+    private static final String VALID_PICTURE_URL = "https://toysrus.com/Connect4.jpg";
+    private static final String VALID_DESCRIPTION = "Connect4 is a fast turn-based game, perfect to play with friends or family!";
+
     private int testGameId;
+
     @Test
     @Order(1)
     public void testCreateValidGame(){
@@ -59,6 +62,38 @@ public class GameIntegrationTests {
 
     @Test
     @Order(2)
+    public void testCreateInvalidGame_MinPlayerGTMaxPlayer(){
+        //Arrange
+        GameRequestDto request = new GameRequestDto(VALID_TITLE, 8, 4, VALID_PICTURE_URL, VALID_DESCRIPTION);
+
+        //Act
+        ResponseEntity<ErrorDto> response = restTemplate.postForEntity("/games", request, ErrorDto.class);
+    
+        //Assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("The minNumPlayers 8 is greater than the maxNumPlayers 4 ", response.getBody().getErrors().get(0));
+    }
+
+    @Test
+    @Order(2)
+    public void testCreateInvalidGame_EmptyTitle(){
+        //Arrange
+        GameRequestDto request = new GameRequestDto(null, VALID_MIN_NUM_PLAYERS, VALID_MAX_NUM_PLAYERS, VALID_PICTURE_URL, VALID_DESCRIPTION);
+
+        //Act
+        ResponseEntity<ErrorDto> response = restTemplate.postForEntity("/games", request, ErrorDto.class);
+    
+        //Assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("The game must have a title.", response.getBody().getErrors().get(0));
+    }
+
+    @Test
+    @Order(3)
     public void testFindValidGameById(){
         //Arrange
         String url = "/games/" + this.testGameId;
@@ -77,5 +112,21 @@ public class GameIntegrationTests {
         assertEquals(VALID_MAX_NUM_PLAYERS, game.getMaxNumPlayers());
         assertEquals(VALID_PICTURE_URL, game.getPictureURL());
         assertEquals(VALID_DESCRIPTION, game.getDescription());
+    }
+
+    @Test
+    @Order(4)
+    public void testFindGameThatDoesntExist(){
+        //Arrange
+        String url = "/games/" + 400;
+
+        //Act
+        ResponseEntity<ErrorDto> response = restTemplate.getForEntity(url, ErrorDto.class);
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Could not find a game with id 400", response.getBody().getErrors().get(0));
     }
 }
