@@ -44,8 +44,8 @@ public class RegistrationResponseDto {
         this.eventId = registration.getKey().getEvent().getId();
         this.registrationDate = registration.getRegistrationDate();
         this.registrationTime = registration.getRegistrationTime();
-        registrationDate = Date.valueOf(LocalDate.now());
-        registrationTime = Time.valueOf(LocalTime.now());
+        responseDate = Date.valueOf(LocalDate.now());
+        responseTime = Time.valueOf(LocalTime.now());
 
         Event event = registration.getKey().getEvent();
         this.eventStartDate = event.getStartDate();
