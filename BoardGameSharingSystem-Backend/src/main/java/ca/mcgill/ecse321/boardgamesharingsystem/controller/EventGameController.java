@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,8 +53,8 @@ public class EventGameController {
      * @param eventId the Event associated to the EventGames
      * @return the list of found EventGames
      */
-    @GetMapping("/eventGames/{eventId}")
-    public List<EventGameResponseDto> findEventGamesbyEvent(@PathVariable("eventId") int eventId)
+    @GetMapping("/eventGames/fromEvent")
+    public List<EventGameResponseDto> findEventGamesbyEvent(@RequestParam("eventId") int eventId)
     {
         List<EventGame> eventGamesFound = eventService.findEventGamesByEvent(eventId);
         List<EventGameResponseDto> responses = new ArrayList<>();
@@ -66,8 +67,8 @@ public class EventGameController {
      * @param gameId the Game associated to the EventGames
      * @return the list of found EventGames
      */
-    @GetMapping("/eventGames/{gameId}")
-    public List<EventGameResponseDto> findEventGamesbyGame(@PathVariable("gameId") int gameId)
+    @GetMapping("/eventGames/fromGame")
+    public List<EventGameResponseDto> findEventGamesbyGame(@RequestParam("gameId") int gameId)
     {
         List<EventGame> eventGamesFound = eventService.findEventGamesByGame(gameId);
         List<EventGameResponseDto> responses = new ArrayList<>();

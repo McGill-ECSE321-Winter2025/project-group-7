@@ -111,11 +111,6 @@ public class EventService {
     public List<Event> findAllEvents()
     {
         List<Event> events = eventRepository.findAll();
-        if (events == null){
-            throw new BoardGameSharingSystemException(
-                HttpStatus.NOT_FOUND,
-                "Could not find the list of all events");
-        }
         return events;
     }
 

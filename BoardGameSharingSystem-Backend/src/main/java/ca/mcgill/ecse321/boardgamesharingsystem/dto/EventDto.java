@@ -2,19 +2,17 @@ package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDate;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class EventDto {
-    //Using LocalDate internally since jakarta constraints do not work well on sql.Date
     @FutureOrPresent(message = "startDate must not be in the past")
-    private LocalDate startDate;
+    private Date startDate;
     private Time startTime;
     @FutureOrPresent(message = "endDate must not be in the past")
-    private LocalDate endDate;
+    private Date endDate;
     private Time endTime;
     @Min(value = 1, message = "max number of participants must be at least 1")
     private int maxNumParticipants;
@@ -28,9 +26,9 @@ public class EventDto {
 
     public EventDto(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, String contactEmail, int creatorId)
     {
-        this.startDate = startDate.toLocalDate();
+        this.startDate = startDate;
         this.startTime = startTime;
-        this.endDate = endDate.toLocalDate();
+        this.endDate = endDate;
         this.endTime = endTime;
         this.maxNumParticipants = maxNumParticipants;
         this.location = location;
@@ -41,7 +39,7 @@ public class EventDto {
 
     public Date getStartDate() 
     {
-        return Date.valueOf(startDate);
+        return startDate;
     }
 
     public Time getStartTime() 
@@ -51,7 +49,7 @@ public class EventDto {
 
     public Date getEndDate() 
     {
-        return Date.valueOf(endDate);
+        return endDate;
     }
 
     public Time getEndTime() 
