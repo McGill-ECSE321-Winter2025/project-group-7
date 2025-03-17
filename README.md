@@ -48,15 +48,14 @@ Shengyi | <ul><li>Full Stack Developer | <ul><li>Work on class diagram</li><li>P
 Snigdha | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer| <ul><li>Work on class diagram</li><li>Persistence Layer and Testing</li><li>Lab report: minutes of meeting recorded</li><li>Arrange task deadlines</li></ul> | 22
 
 
-Table 2 : Roles of each team member Deliverable 1.5
+Table 2 : Roles of each team member Deliverable 2
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice |  | <ul></ul> | X
-Brian |  | <ul></ul> | X
-Doddy |  | <ul></ul> | X
-Jyothsna |  | <ul><li>Maintain Backlog (issue creation)</li></ul> | X
-Mary |  | <ul></ul> | X
-Shengyi |  | <ul></ul> | X
-Snigdha |  | <ul><li>Maintain Backlog (issue creation)</li></ul> | X
-
+Artimice |  <ul><li>Full Stack Developer | <ul><li>Work on class diagram</li><li>Persistence Layer and Testing</li><li>Validate backlog in GitHub Projects</li></ul> | 20
+Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer | <ul><li>Design of updated persistence, service, RESTAPI </li><li>Implement and test service methods to manage game collection</li><li>Implement and test REST API endpoints for game owner</li><li>Persistence Layer and Testing</li><li>Maintain backlog in GitHub Projects</li><li>Provide project deliverable on wiki</li></ul> | 60
+Doddy | <ul><li>GitHub Backlog Contributor</li><li>Full Stack Developer | <ul><li>Work on class diagram</li><li>Refine class diagram</li><li>Persistence Layer and Testing</li><li>Validate backlog in GitHub Projects</li></ul> | 20
+Jyothsna | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer | <ul><li>Work on class diagram</li><li>Outline scope of project</li><li>Persistence Layer and Testing</li><li>ReadME: welcome page</li></ul> | 20
+Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack Developer  | <ul><li>Work on class diagram</li><li>Persistence Layer and Testing</li><li>Lab report: design decisions recorded</li><li>Arrange weekly meetings and task deadlines</li></ul> | 20
+Shengyi | <ul><li>Full Stack Developer | <ul><li>Work on class diagram</li><li>Persistence Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | 20
+Snigdha | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer| <ul><li>Work on class diagram</li><li>Persistence Layer and Testing</li><li>Lab report: minutes of meeting recorded</li><li>Arrange task deadlines</li></ul> | 22
 
