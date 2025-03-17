@@ -1,7 +1,5 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -12,15 +10,15 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 public class RegistrationResponseDto {
     private int userId;
     private int eventId;
-    private Date registrationDate;
-    private Time registrationTime;
-    private Date responseDate;
-    private Time responseTime;
+    private LocalDate registrationDate;
+    private LocalTime registrationTime;
+    private LocalDate responseDate;
+    private LocalTime responseTime;
 
-    private Date eventStartDate;
-    private Time eventStartTime;
-    private Date eventEndDate;
-    private Time eventEndTime;
+    private LocalDate eventStartDate;
+    private LocalTime eventStartTime;
+    private LocalDate eventEndDate;
+    private LocalTime eventEndTime;
     private int eventMaxNumParticipants;
     private String eventLocation;
     private String eventDescription;
@@ -42,16 +40,16 @@ public class RegistrationResponseDto {
     {
         this.userId = registration.getKey().getUser().getId();
         this.eventId = registration.getKey().getEvent().getId();
-        this.registrationDate = registration.getRegistrationDate();
-        this.registrationTime = registration.getRegistrationTime();
-        responseDate = Date.valueOf(LocalDate.now());
-        responseTime = Time.valueOf(LocalTime.now());
+        this.registrationDate = registration.getRegistrationDate().toLocalDate();
+        this.registrationTime = registration.getRegistrationTime().toLocalTime();
+        responseDate = LocalDate.now();
+        responseTime = LocalTime.now();
 
         Event event = registration.getKey().getEvent();
-        this.eventStartDate = event.getStartDate();
-        this.eventStartTime = event.getStartTime();
-        this.eventEndDate = event.getEndDate();
-        this.eventEndTime = event.getEndTime();
+        this.eventStartDate = event.getStartDate().toLocalDate();
+        this.eventStartTime = event.getStartTime().toLocalTime();
+        this.eventEndDate = event.getEndDate().toLocalDate();
+        this.eventEndTime = event.getEndTime().toLocalTime();
         this.eventMaxNumParticipants = event.getMaxNumParticipants();
         this.eventLocation = event.getLocation();
         this.eventDescription = event.getDescription();
@@ -72,35 +70,35 @@ public class RegistrationResponseDto {
         return eventId;
     }
     
-    public Date getRegistrationDate() {
+    public LocalDate getRegistrationDate() {
         return registrationDate;
     }
     
-    public Time getRegistrationTime() {
+    public LocalTime getRegistrationTime() {
         return registrationTime;
     }
     
-    public Date getResponseDate() {
+    public LocalDate getResponseDate() {
         return responseDate;
     }
     
-    public Time getResponseTime() {
+    public LocalTime getResponseTime() {
         return responseTime;
     }    
 
-    public Date getEventStartDate() {
+    public LocalDate getEventStartDate() {
         return eventStartDate;
     }
     
-    public Time getEventStartTime() {
+    public LocalTime getEventStartTime() {
         return eventStartTime;
     }
     
-    public Date getEventEndDate() {
+    public LocalDate getEventEndDate() {
         return eventEndDate;
     }
     
-    public Time getEventEndTime() {
+    public LocalTime getEventEndTime() {
         return eventEndTime;
     }
     

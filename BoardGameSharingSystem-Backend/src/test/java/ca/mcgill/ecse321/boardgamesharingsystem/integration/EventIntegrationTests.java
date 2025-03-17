@@ -1,9 +1,9 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.integration;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,9 +67,9 @@ public class EventIntegrationTests {
     private static final String PASSWORD = "mikePassword";
 
     
-    private static final Date VALID_START_DATE = Date.valueOf("2026-02-11");
+    private static final Date VALID_START_DATE = Date.valueOf("2026-2-11");
     private static final Time VALID_START_TIME = Time.valueOf("11:00:00");
-    private static final Date VALID_END_DATE = Date.valueOf("2026-02-12");
+    private static final Date VALID_END_DATE = Date.valueOf("2026-2-12");
     private static final Time VALID_END_TIME = Time.valueOf("11:00:00");
     private static final int VALID_MAX_NUM_PARTICIPANTS = 2;
     private static final String VALID_LOCATION = "Stewart Bio N2/2";
@@ -104,7 +104,7 @@ public class EventIntegrationTests {
         //Arrange
         UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
         user = userAccountRepository.save(user);
-        EventDto eventRequest = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user.getId());
+        EventDto eventRequest = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_END_DATE.toLocalDate(), VALID_END_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user.getId());
 
         //Act
         ResponseEntity<EventResponseDto> response = client.postForEntity("/events", eventRequest, EventResponseDto.class);
@@ -114,10 +114,10 @@ public class EventIntegrationTests {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         EventResponseDto createEventDto = response.getBody();
         assertNotNull(createEventDto);
-        assertEquals(VALID_START_DATE, createEventDto.getStartDate());
-        assertEquals(VALID_START_TIME, createEventDto.getStartTime());
-        assertEquals(VALID_END_DATE, createEventDto.getEndDate());
-        assertEquals(VALID_END_TIME, createEventDto.getEndTime());
+        assertEquals(VALID_START_DATE.toLocalDate(), createEventDto.getStartDate());
+        assertEquals(VALID_START_TIME.toLocalTime(), createEventDto.getStartTime());
+        assertEquals(VALID_END_DATE.toLocalDate(), createEventDto.getEndDate());
+        assertEquals(VALID_END_TIME.toLocalTime(), createEventDto.getEndTime());
         assertEquals(VALID_MAX_NUM_PARTICIPANTS, createEventDto.getMaxNumParticipants());
         assertEquals(VALID_LOCATION, createEventDto.getLocation());
         assertEquals(VALID_DESCRIPTION, createEventDto.getDescription());
@@ -130,7 +130,7 @@ public class EventIntegrationTests {
     public void testCreateEventWithInvalidUserId()
     {
         //Arrange
-        EventDto eventRequest = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, -1);
+        EventDto eventRequest = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_END_DATE.toLocalDate(), VALID_END_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, -1);
 
         //Act
         ResponseEntity<ErrorDto> response = client.postForEntity("/events", eventRequest, ErrorDto.class);
@@ -158,7 +158,7 @@ public class EventIntegrationTests {
         e3 = eventRepository.save(e3);
         List<Integer> expectedEvents = Arrays.asList(e1.getId(), e2.getId(), e3.getId());
 
-        EventDto eventRequest = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user.getId());
+        EventDto eventRequest = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_END_DATE.toLocalDate(), VALID_END_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user.getId());
         
         //Act
         ResponseEntity<List<EventResponseDto>> response = client.exchange(
@@ -190,7 +190,7 @@ public class EventIntegrationTests {
         user = userAccountRepository.save(user);
         Event e1 = new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
         e1 = eventRepository.save(e1);
-        EventDto request = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, 200, "Vancouver", "International Board Game Conference", "IBGC@mail.com", user.getId());
+        EventDto request = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_END_DATE.toLocalDate(), VALID_END_TIME.toLocalTime(), 200, "Vancouver", "International Board Game Conference", "IBGC@mail.com", user.getId());
 
         //Act
         ResponseEntity<EventResponseDto> response = client.exchange(
@@ -206,10 +206,10 @@ public class EventIntegrationTests {
         EventResponseDto updatedEvent = response.getBody();
         assertNotNull(updatedEvent);
         assertEquals(e1.getId(), updatedEvent.getId());
-        assertEquals(VALID_START_DATE, updatedEvent.getStartDate());
-        assertEquals(VALID_START_TIME, updatedEvent.getStartTime());
-        assertEquals(VALID_END_DATE, updatedEvent.getEndDate());
-        assertEquals(VALID_END_TIME, updatedEvent.getEndTime());
+        assertEquals(VALID_START_DATE.toLocalDate(), updatedEvent.getStartDate());
+        assertEquals(VALID_START_TIME.toLocalTime(), updatedEvent.getStartTime());
+        assertEquals(VALID_END_DATE.toLocalDate(), updatedEvent.getEndDate());
+        assertEquals(VALID_END_TIME.toLocalTime(), updatedEvent.getEndTime());
         assertEquals(200, updatedEvent.getMaxNumParticipants());
         assertEquals("Vancouver", updatedEvent.getLocation());
         assertEquals("International Board Game Conference", updatedEvent.getDescription());
@@ -226,7 +226,7 @@ public class EventIntegrationTests {
         user = userAccountRepository.save(user);
         Event e1 = new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
         e1 = eventRepository.save(e1);
-        EventDto request = new EventDto(Date.valueOf("2030-10-10"), VALID_START_TIME, Date.valueOf("2030-10-8"), VALID_END_TIME, 200, "Vancouver", "International Board Game Conference", "IBGC@mail.com", user.getId());
+        EventDto request = new EventDto(LocalDate.of(2030, 10, 10), VALID_START_TIME.toLocalTime(), LocalDate.of(2030, 10, 8), VALID_END_TIME.toLocalTime(), 200, "Vancouver", "International Board Game Conference", "IBGC@mail.com", user.getId());
 
         //Act
         ResponseEntity<ErrorDto> response = client.exchange(
@@ -266,10 +266,10 @@ public class EventIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         EventResponseDto deletedEvent = response.getBody();
         assertNotNull(deletedEvent);
-        assertEquals(VALID_START_DATE, deletedEvent.getStartDate());
-        assertEquals(VALID_START_TIME, deletedEvent.getStartTime());
-        assertEquals(VALID_END_DATE, deletedEvent.getEndDate());
-        assertEquals(VALID_END_TIME, deletedEvent.getEndTime());
+        assertEquals(VALID_START_DATE.toLocalDate(), deletedEvent.getStartDate());
+        assertEquals(VALID_START_TIME.toLocalTime(), deletedEvent.getStartTime());
+        assertEquals(VALID_END_DATE.toLocalDate(), deletedEvent.getEndDate());
+        assertEquals(VALID_END_TIME.toLocalTime(), deletedEvent.getEndTime());
         assertEquals(VALID_MAX_NUM_PARTICIPANTS, deletedEvent.getMaxNumParticipants());
         assertEquals(VALID_LOCATION, deletedEvent.getLocation());
         assertEquals(VALID_DESCRIPTION, deletedEvent.getDescription());
@@ -325,10 +325,10 @@ public class EventIntegrationTests {
         EventGameResponseDto createdEventGame = response.getBody();
         assertNotNull(createdEventGame);
         assertEquals(e1.getId(), createdEventGame.getEventId());
-        assertEquals(e1.getStartDate(), createdEventGame.getEventStartDate());
-        assertEquals(e1.getStartTime(), createdEventGame.getEventStartTime());
-        assertEquals(e1.getEndDate(), createdEventGame.getEventEndDate());
-        assertEquals(e1.getEndTime(), createdEventGame.getEventEndTime());
+        assertEquals(e1.getStartDate().toLocalDate(), createdEventGame.getEventStartDate());
+        assertEquals(e1.getStartTime().toLocalTime(), createdEventGame.getEventStartTime());
+        assertEquals(e1.getEndDate().toLocalDate(), createdEventGame.getEventEndDate());
+        assertEquals(e1.getEndTime().toLocalTime(), createdEventGame.getEventEndTime());
         assertEquals(e1.getMaxNumParticipants(), createdEventGame.getEventMaxNumParticipants());
         assertEquals(e1.getLocation(), createdEventGame.getEventLocation());
         assertEquals(e1.getDescription(), createdEventGame.getEventDescription());
@@ -407,10 +407,10 @@ public class EventIntegrationTests {
         assertEquals(e1.getId(), deletedEventGame.getEventId());
         assertEquals(game.getId(), deletedEventGame.getGameId());
 
-        assertEquals(e1.getStartDate(), deletedEventGame.getEventStartDate());
-        assertEquals(e1.getStartTime(), deletedEventGame.getEventStartTime());
-        assertEquals(e1.getEndDate(), deletedEventGame.getEventEndDate());
-        assertEquals(e1.getEndTime(), deletedEventGame.getEventEndTime());
+        assertEquals(e1.getStartDate().toLocalDate(), deletedEventGame.getEventStartDate());
+        assertEquals(e1.getStartTime().toLocalTime(), deletedEventGame.getEventStartTime());
+        assertEquals(e1.getEndDate().toLocalDate(), deletedEventGame.getEventEndDate());
+        assertEquals(e1.getEndTime().toLocalTime(), deletedEventGame.getEventEndTime());
         assertEquals(e1.getMaxNumParticipants(), deletedEventGame.getEventMaxNumParticipants());
         assertEquals(e1.getLocation(), deletedEventGame.getEventLocation());
         assertEquals(e1.getDescription(), deletedEventGame.getEventDescription());
@@ -612,10 +612,10 @@ public class EventIntegrationTests {
         assertNotNull(foundRegistration.getResponseDate());
         assertNotNull(foundRegistration.getResponseTime());
 
-        assertEquals(e1.getStartDate(), foundRegistration.getEventStartDate());
-        assertEquals(e1.getStartTime(), foundRegistration.getEventStartTime());
-        assertEquals(e1.getEndDate(), foundRegistration.getEventEndDate());
-        assertEquals(e1.getEndTime(), foundRegistration.getEventEndTime());
+        assertEquals(e1.getStartDate().toLocalDate(), foundRegistration.getEventStartDate());
+        assertEquals(e1.getStartTime().toLocalTime(), foundRegistration.getEventStartTime());
+        assertEquals(e1.getEndDate().toLocalDate(), foundRegistration.getEventEndDate());
+        assertEquals(e1.getEndTime().toLocalTime(), foundRegistration.getEventEndTime());
         assertEquals(e1.getMaxNumParticipants(), foundRegistration.getEventMaxNumParticipants());
         assertEquals(e1.getLocation(), foundRegistration.getEventLocation());
         assertEquals(e1.getDescription(), foundRegistration.getEventDescription());
@@ -688,10 +688,10 @@ public class EventIntegrationTests {
         assertNotNull(foundRegistration.getResponseDate());
         assertNotNull(foundRegistration.getResponseTime());
 
-        assertEquals(e1.getStartDate(), foundRegistration.getEventStartDate());
-        assertEquals(e1.getStartTime(), foundRegistration.getEventStartTime());
-        assertEquals(e1.getEndDate(), foundRegistration.getEventEndDate());
-        assertEquals(e1.getEndTime(), foundRegistration.getEventEndTime());
+        assertEquals(e1.getStartDate().toLocalDate(), foundRegistration.getEventStartDate());
+        assertEquals(e1.getStartTime().toLocalTime(), foundRegistration.getEventStartTime());
+        assertEquals(e1.getEndDate().toLocalDate(), foundRegistration.getEventEndDate());
+        assertEquals(e1.getEndTime().toLocalTime(), foundRegistration.getEventEndTime());
         assertEquals(e1.getMaxNumParticipants(), foundRegistration.getEventMaxNumParticipants());
         assertEquals(e1.getLocation(), foundRegistration.getEventLocation());
         assertEquals(e1.getDescription(), foundRegistration.getEventDescription());
@@ -880,10 +880,10 @@ public class EventIntegrationTests {
         assertNotNull(foundRegistration.getResponseDate());
         assertNotNull(foundRegistration.getResponseTime());
 
-        assertEquals(e1.getStartDate(), foundRegistration.getEventStartDate());
-        assertEquals(e1.getStartTime(), foundRegistration.getEventStartTime());
-        assertEquals(e1.getEndDate(), foundRegistration.getEventEndDate());
-        assertEquals(e1.getEndTime(), foundRegistration.getEventEndTime());
+        assertEquals(e1.getStartDate().toLocalDate(), foundRegistration.getEventStartDate());
+        assertEquals(e1.getStartTime().toLocalTime(), foundRegistration.getEventStartTime());
+        assertEquals(e1.getEndDate().toLocalDate(), foundRegistration.getEventEndDate());
+        assertEquals(e1.getEndTime().toLocalTime(), foundRegistration.getEventEndTime());
         assertEquals(e1.getMaxNumParticipants(), foundRegistration.getEventMaxNumParticipants());
         assertEquals(e1.getLocation(), foundRegistration.getEventLocation());
         assertEquals(e1.getDescription(), foundRegistration.getEventDescription());

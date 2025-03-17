@@ -2,6 +2,8 @@ package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -109,7 +111,7 @@ public class EventServiceTests {
         //Arrange
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
         when(eventRepository.save(any(Event.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
-        EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
+        EventDto eventDto = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_END_DATE.toLocalDate(), VALID_END_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
         //Act
         Event createdEvent = eventService.createEvent(eventDto);
@@ -133,7 +135,7 @@ public class EventServiceTests {
     {
         //Arrange
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
-        EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, Date.valueOf("2026-02-10"), VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
+        EventDto eventDto = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), LocalDate.of(2026,02,10), VALID_END_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
         //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class,() -> eventService.createEvent(eventDto));
@@ -146,7 +148,7 @@ public class EventServiceTests {
     {
         //Arrange
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
-        EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_START_DATE, Time.valueOf("10:00:00"), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
+        EventDto eventDto = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_START_DATE.toLocalDate(), LocalTime.of(10,00,00), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
         //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class,() -> eventService.createEvent(eventDto));
@@ -159,7 +161,7 @@ public class EventServiceTests {
     {
         //Arrange
         when(userAccountRepository.findUserAccountById(42)).thenReturn(new UserAccount(NAME, EMAIL, PASSWORD));
-        EventDto eventDto = new EventDto(VALID_START_DATE, VALID_START_TIME, VALID_START_DATE, VALID_START_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
+        EventDto eventDto = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, 42);
 
         //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class,() -> eventService.createEvent(eventDto));
@@ -171,7 +173,7 @@ public class EventServiceTests {
     public void testCreateInvalidEventDto()
     {
         //Arrange + Act
-        EventDto event = new EventDto(Date.valueOf("2020-10-10"), VALID_START_TIME, Date.valueOf("2020-10-11"), VALID_END_TIME, 0, null, null, null, 42);
+        EventDto event = new EventDto(LocalDate.of(2020,10,10), VALID_START_TIME.toLocalTime(), LocalDate.of(2020,10,11), VALID_END_TIME.toLocalTime(), 0, null, null, null, 42);
         List<String> expectedConstraintViolations = new ArrayList<>();
         expectedConstraintViolations.add("max number of participants must be at least 1");
         expectedConstraintViolations.add("endDate must not be in the past");
@@ -276,10 +278,10 @@ public class EventServiceTests {
         when(eventRepository.save(any(Event.class))).thenAnswer((InvocationOnMock iom) -> iom.getArgument(0));
         UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
         when(eventRepository.findEventById(42)).thenReturn(new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user));
-        Date newStartDate = Date.valueOf("2040-10-10");
-        Time newStarTime = Time.valueOf("14:00:00");
-        Date newEndDate = Date.valueOf("2040-10-11");
-        Time newEndTime = Time.valueOf("15:00:00");
+        LocalDate newStartDate = LocalDate.of(2040,10,10);
+        LocalTime newStarTime = LocalTime.of(14,00,00);
+        LocalDate newEndDate = LocalDate.of(2040,10,11);
+        LocalTime newEndTime = LocalTime.of(15,00,00);
         int newMaxNumParticipants = 5;
         String newLocation = "Concordia";
         String newDescription = "Taking a break";
@@ -291,10 +293,10 @@ public class EventServiceTests {
 
         //Assert
         assertNotNull(updatedEvent);
-        assertEquals(newStartDate, updatedEvent.getStartDate());
-        assertEquals(newStarTime, updatedEvent.getStartTime());
-        assertEquals(newEndDate, updatedEvent.getEndDate());
-        assertEquals(newEndTime, updatedEvent.getEndTime());
+        assertEquals(newStartDate, updatedEvent.getStartDate().toLocalDate());
+        assertEquals(newStarTime, updatedEvent.getStartTime().toLocalTime());
+        assertEquals(newEndDate, updatedEvent.getEndDate().toLocalDate());
+        assertEquals(newEndTime, updatedEvent.getEndTime().toLocalTime());
         assertEquals(newMaxNumParticipants, updatedEvent.getMaxNumParticipants());
         assertEquals(newLocation, updatedEvent.getLocation());
         assertEquals(newDescription, updatedEvent.getDescription());
@@ -725,7 +727,7 @@ public class EventServiceTests {
         Date RegistrationDate = Date.valueOf("2020-10-10");
         Time RegistrationTime = Time.valueOf("11:00:00");
         Event event = new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
-        Registration registration = new Registration(new Registration.RegistrationKey(user, event), RegistrationDate, RegistrationTime );
+        Registration registration = new Registration(new Registration.RegistrationKey(user, event), RegistrationDate, RegistrationTime);
 
         when(userAccountRepository.findUserAccountById(42)).thenReturn(user);
         when(eventRepository.findEventById(42)).thenReturn(event);

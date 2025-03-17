@@ -1,7 +1,5 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -9,17 +7,17 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 
 public class EventResponseDto {
     private int id;
-    private Date startDate;
-    private Time startTime;
-    private Date endDate;
-    private Time endTime;
+    private LocalDate startDate;
+    private LocalTime startTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
     private int maxNumParticipants;
     private String location;
     private String description;
     private String contactEmail;
     private int creatorId;
-    private Date requestDate;
-    private Time requestTime;
+    private LocalDate requestDate;
+    private LocalTime requestTime;
 
     // No args constructor necessary for Jackson
     @SuppressWarnings("unused")
@@ -31,17 +29,17 @@ public class EventResponseDto {
     public EventResponseDto(Event event)
     {
         this.id = event.getId();
-        this.startDate = event.getStartDate();
-        this.startTime = event.getStartTime();
-        this.endDate = event.getEndDate();
-        this.endTime = event.getEndTime();
+        this.startDate = event.getStartDate().toLocalDate();
+        this.startTime = event.getStartTime().toLocalTime();
+        this.endDate = event.getEndDate().toLocalDate();
+        this.endTime = event.getEndTime().toLocalTime();
         this.maxNumParticipants = event.getMaxNumParticipants();
         this.location = event.getLocation();
         this.description = event.getDescription();
         this.contactEmail = event.getContactEmail();
         this.creatorId = event.getCreator().getId();
-        requestDate = Date.valueOf(LocalDate.now());
-        requestTime = Time.valueOf(LocalTime.now());
+        requestDate = LocalDate.now();
+        requestTime = LocalTime.now();
     }
 
     public int getId() 
@@ -49,22 +47,22 @@ public class EventResponseDto {
         return id;
     }
     
-    public Date getStartDate() 
+    public LocalDate getStartDate() 
     {
         return startDate;
     }
     
-    public Time getStartTime() 
+    public LocalTime getStartTime() 
     {
         return startTime;
     }
     
-    public Date getEndDate() 
+    public LocalDate getEndDate() 
     {
         return endDate;
     }
     
-    public Time getEndTime() 
+    public LocalTime getEndTime() 
     {
         return endTime;
     }
@@ -94,12 +92,12 @@ public class EventResponseDto {
         return creatorId;
     }
     
-    public Date getRequestDate() 
+    public LocalDate getRequestDate() 
     {
         return requestDate;
     }
     
-    public Time getRequestTime() 
+    public LocalTime getRequestTime() 
     {
         return requestTime;
     }

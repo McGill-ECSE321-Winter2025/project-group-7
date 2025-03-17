@@ -69,10 +69,10 @@ public class EventService {
         UserAccount creator = findUserAccountById(eventToCreate.getCreatorId());
         validateEventTimes(eventToCreate);
         Event event = new Event(
-            eventToCreate.getStartDate(),
-            eventToCreate.getStartTime(),
-            eventToCreate.getEndDate(),
-            eventToCreate.getEndTime(),
+            Date.valueOf(eventToCreate.getStartDate()),
+            Time.valueOf(eventToCreate.getStartTime()),
+            Date.valueOf(eventToCreate.getEndDate()),
+            Time.valueOf(eventToCreate.getEndTime()),
             eventToCreate.getMaxNumParticipants(),
             eventToCreate.getLocation(),
             eventToCreate.getDescription(),
@@ -93,10 +93,10 @@ public class EventService {
     {
         Event eventToUpdate = findEventById(eventID);
         validateEventTimes(updatedEventDetails);
-        eventToUpdate.setStartDate(updatedEventDetails.getStartDate());
-        eventToUpdate.setStartTime(updatedEventDetails.getStartTime());
-        eventToUpdate.setEndDate(updatedEventDetails.getEndDate());
-        eventToUpdate.setEndTime(updatedEventDetails.getEndTime());
+        eventToUpdate.setStartDate(Date.valueOf(updatedEventDetails.getStartDate()));
+        eventToUpdate.setStartTime(Time.valueOf(updatedEventDetails.getStartTime()));
+        eventToUpdate.setEndDate(Date.valueOf(updatedEventDetails.getEndDate()));
+        eventToUpdate.setEndTime(Time.valueOf(updatedEventDetails.getEndTime()));
         eventToUpdate.setMaxNumParticipants(updatedEventDetails.getMaxNumParticipants());
         eventToUpdate.setLocation(updatedEventDetails.getLocation());
         eventToUpdate.setDescription(updatedEventDetails.getDescription());
@@ -344,8 +344,8 @@ public class EventService {
      */
     private void validateEventTimes(@Valid EventDto event)
     {
-        if(event.getStartDate().after(event.getEndDate()) || 
-        (event.getStartDate().equals(event.getEndDate()) && !event.getStartTime().before(event.getEndTime())))
+        if(event.getStartDate().isAfter(event.getEndDate()) || 
+        (event.getStartDate().equals(event.getEndDate()) && !event.getStartTime().isBefore(event.getEndTime())))
         {
             throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Start Date and Time must be before End Date and Time");
         }
