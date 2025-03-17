@@ -11,6 +11,9 @@ public class GameCopyResponseDto {
     private int gameMinNumPlayers;
     private String gamePicture;
     private String gameTitle;
+    private String userEmail;
+    private String userName;
+    private int userId;
 
     public GameCopyResponseDto(GameCopy gameCopy) {
         this.id = gameCopy.getId();
@@ -21,6 +24,9 @@ public class GameCopyResponseDto {
         this.gameMinNumPlayers = gameCopy.getGame().getMinNumPlayers();
         this.gamePicture = gameCopy.getGame().getPictureURL();
         this.gameTitle = gameCopy.getGame().getTitle();
+        this.userEmail = gameCopy.getGameOwner().getUser().getEmail();
+        this.userName = gameCopy.getGameOwner().getUser().getName();
+        this.userId = gameCopy.getGameOwner().getUser().getId();
     }
 
     public int getId() {
@@ -50,5 +56,14 @@ public class GameCopyResponseDto {
     }
     public String getGameTitle() {
         return gameTitle;
+    }
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public String getUserName() {
+        return userName;
+    }
+    public int getUserId() {
+        return userId;
     }
 }
