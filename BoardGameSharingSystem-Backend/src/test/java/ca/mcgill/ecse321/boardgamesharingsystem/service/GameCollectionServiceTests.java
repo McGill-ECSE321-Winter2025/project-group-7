@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -118,12 +119,12 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindAllGamesIfReturnedListNull(){
         //Arrange
-        when(gameRepository.findAll()).thenReturn(null);
+        when(gameRepository.findAll()).thenReturn(Collections.emptyList());
         //Act+Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
         ()-> gameCollectionService.findAllGames());
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
-        assertEquals("Could not find the list of games", e.getMessage().trim());
+        assertEquals("Could not find a list of games", e.getMessage().trim());
     }
 
     @Test

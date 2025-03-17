@@ -51,8 +51,8 @@ public class GameCollectionService {
      */
     public List<Game> findAllGames() {
         List<Game> games = gameRepo.findAll();
-        if (games == null) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Could not find the list of games");
+        if (games.isEmpty()) {
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Could not find a list of games");
         }
         return games;
     }
@@ -87,7 +87,7 @@ public class GameCollectionService {
         int maxNumPlayers = gameToCreate.getMaxNumPlayers();
         if (maxNumPlayers < minNumPlayers) {
             throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
-                    "The minNumPlayers %d is greater than the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
+                    "The minNumPlayers %d is greater than the maxNumPlayers %d", minNumPlayers, maxNumPlayers));
         }
         Game game = new Game(
                 gameToCreate.getTitle(),
@@ -109,13 +109,13 @@ public class GameCollectionService {
         Game game = gameRepo.findGameById(gameId);
         if (game == null) {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
-                    String.format("Could not update game because a game with id %d does not exist ", gameId));
+                    String.format("Could not update game because a game with id %d does not exist", gameId));
         }
         int minNumPlayers = gameToUpdate.getMinNumPlayers();
         int maxNumPlayers = gameToUpdate.getMaxNumPlayers();
         if (minNumPlayers > maxNumPlayers) {
             throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
-                    "The minNumPlayers %d is greater than the maxNumPlayers %d ", minNumPlayers, maxNumPlayers));
+                    "The minNumPlayers %d is greater than the maxNumPlayers %d", minNumPlayers, maxNumPlayers));
         }
         game.setTitle(gameToUpdate.getTitle());
         game.setMaxNumPlayers(maxNumPlayers);
