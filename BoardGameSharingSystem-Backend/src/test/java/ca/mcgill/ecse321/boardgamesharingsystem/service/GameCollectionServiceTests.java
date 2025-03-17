@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -130,6 +132,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindGameCopiesFromGame(){
         //Arrange
+        when(gameRepository.findById(42)).thenReturn(Optional.of(game));
         when(gameCopyRepository.findByGameId(42)).thenReturn(Arrays.asList(gameCopy));
 
         //Act
@@ -141,6 +144,19 @@ public class GameCollectionServiceTests {
         assertEquals(1, gameCopies.size());
         assertEquals(gameCopy, gameCopies.get(0));
 
+    }
+    @Test
+    public void testFindGameCopiesFromGameValidGameOwner(){
+        //Arrange
+        when(gameRepository.findById(42)).thenReturn(Optional.of(game));        
+        when(gameCopyRepository.findByGameId(42)).thenReturn(Arrays.asList(gameCopy));
+        gameCopy.getGameOwner().setUser(null);
+        
+        //Act
+        List<GameCopy> gameCopies = gameCollectionService.findGameCopiesFromGame(42);
+        //Assert
+        assertNotNull(gameCopies);
+        assertTrue(gameCopies.isEmpty());               
     }
 
     @Test

@@ -72,6 +72,7 @@ public class GameCollectionService {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
                     String.format("Could not find the list of game copies for game with id %d", gameId));
         }
+        gameCopies = gameCopies.stream().filter(gc -> gc.getGameOwner().getUser() != null).toList();
         return gameCopies;
     }
 
