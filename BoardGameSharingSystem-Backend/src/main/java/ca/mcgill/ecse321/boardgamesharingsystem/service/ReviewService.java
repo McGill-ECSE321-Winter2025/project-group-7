@@ -17,7 +17,10 @@ import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.ReviewRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
 import jakarta.transaction.Transactional;
-
+/**
+ * This service class implements functionalities related to Review,
+ * including creating, updating, deleting, and retrieving Reviews for any Game in the system.
+ */
 @Service
 public class ReviewService {
     @Autowired
@@ -29,6 +32,13 @@ public class ReviewService {
     @Autowired
     private UserAccountRepository userRepo;
 
+    /**
+     * Creates a review for a game
+     * @param reviewDto Request for the creation
+     * @param userID    ID of the user creating the review
+     * @param gameID    ID of the game for which the review is made 
+     * @return          The created review
+     */
     @Transactional
     public Review createReview(ReviewDto reviewDto, int userID, int gameID){
         int rating = reviewDto.getRating();
@@ -64,12 +74,17 @@ public class ReviewService {
 
     }
 
+    /**
+     * Deletes the review if it exists.
+     * @param id ID of the review being deleted
+     * @return The successfully deleted review
+     */
     @Transactional
     public Review deleteReview(int id){
         Review review = reviewRepo.findReviewById(id);
 
         if (review == null){
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no review with the ID" + id);
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"There is no review with the ID " + id);
 
         }
 
@@ -77,6 +92,11 @@ public class ReviewService {
         return review;
     }
 
+    /**
+     * Updates the review's comment and rating
+     * @param reviewDto Request for the update
+     * @return  The successfully updated review
+     */
     @Transactional
     public Review updateReview(ReviewDto reviewDto) {
         int rating = reviewDto.getRating();
@@ -94,7 +114,7 @@ public class ReviewService {
         }
 
         if (comment == null) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"The comment cannotbe empty");
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,"The comment cannot be empty");
 
         }
         review.setComment(comment);
@@ -105,6 +125,11 @@ public class ReviewService {
 
     }
 
+    /**
+     * Find all the reviews for a game
+     * @param gameId ID of the game for which reviews are being searched
+     * @return List of all the reviews found for the game
+     */
     @Transactional
     public List<Review> findReviewsForGame(int gameId){
         Game game = gameRepo.findGameById(gameId);
