@@ -76,14 +76,22 @@ public class BorrowRequestController {
                             .toList();
     }
 
-
+    /**
+     * declines a pending borrowing request
+     * @param id the id of the borrowing request 
+     * @return the information about the declined borrowing request
+     */
     @DeleteMapping("/borrowrequests/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BorrowRequestResponseDto declinePendingBorrowingRequest(@PathVariable int id) 
     {
         return new BorrowRequestResponseDto(borrowingService.declinePendingBorrowingRequest(id));
     }
-
+    /**
+     * accepts pending borrowing request 
+     * @param id the id of the borrowing request 
+     * @return the accepted borrowing 
+     */
     @PutMapping("/borrowrequests/{id}/accept")
     @ResponseStatus(HttpStatus.OK)
     public BorrowRequestResponseDto acceptPendingBorrowingRequest(@PathVariable int id)
