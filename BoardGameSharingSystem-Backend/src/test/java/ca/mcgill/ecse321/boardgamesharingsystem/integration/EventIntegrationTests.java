@@ -91,11 +91,6 @@ public class EventIntegrationTests {
         gameRepository.deleteAll();
         userAccountRepository.deleteAll();
     }
-    @BeforeEach
-    public void setup()
-    {
-
-    }
 
     @Test
     @Order(1)
