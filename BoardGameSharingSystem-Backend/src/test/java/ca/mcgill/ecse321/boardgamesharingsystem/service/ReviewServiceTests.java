@@ -94,6 +94,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 9, 11));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("There is no user with the ID 9", e.getMessage());
     }
 
     @Test
@@ -111,6 +112,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 9));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("There is no game with the ID "+ 9, e.getMessage());
 
     }
 
@@ -129,6 +131,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 11));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("The comment cannot be empty", e.getMessage());
     }
 
     @Test
@@ -146,6 +149,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 11));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("The rating must be between 0 to 100", e.getMessage());
     }
 
     @Test
@@ -163,6 +167,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.createReview(reviewDto, 10, 11));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("The rating must be between 0 to 100", e.getMessage());
     }
 
     @Test
@@ -202,6 +207,7 @@ public class ReviewServiceTests {
          //Assert
          BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
          assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+         assertEquals("There is no review with the ID 5", e.getMessage());
     }
 
     @Test
@@ -220,6 +226,7 @@ public class ReviewServiceTests {
         ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), newRating, newComment, miffy.getId(), monopoly.getId(), 12);
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("The rating must be between 0 to 100", e.getMessage());
     }
 
     @Test
@@ -237,6 +244,7 @@ public class ReviewServiceTests {
         ReviewDto reviewDto = new ReviewDto(Date.valueOf(LocalDate.now()), newRating, newComment, miffy.getId(), monopoly.getId(), 12);
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("The rating must be between 0 to 100", e.getMessage());
     }
 
     @Test
@@ -255,6 +263,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.updateReview(reviewDto));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("The comment cannot be empty", e.getMessage());
     }
 
     @Test
@@ -314,7 +323,7 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.findReviewsForGame(13));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
-
+        assertEquals("There is no game with the ID 13", e.getMessage());
 
     }
 
@@ -372,5 +381,6 @@ public class ReviewServiceTests {
         //Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class, () -> reviewService.deleteReview(1));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+        assertEquals("There is no review with the ID 1", e.getMessage());
     }
 }
