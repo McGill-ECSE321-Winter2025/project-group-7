@@ -2,6 +2,8 @@ package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.BorrowRequestResponseDto;
+import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 
@@ -33,23 +36,34 @@ public class BorrowRequestController {
     
     @GetMapping("/borrowrequests/{gameCopyId}/pending")
     @ResponseStatus(HttpStatus.OK)
-    public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@RequestParam int gameCopyId) 
-    {
+    public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable int gameCopyId) {
         List<BorrowRequest> pendingRequests = borrowingService.findPendingBorrowingRequests(gameCopyId);
-        List<BorrowRequestResponseDto> responses = new ArrayList<>();
-        pendingRequests.forEach(pendingRequest -> responses.add(new BorrowRequestResponseDto(pendingRequest)));
-        return responses;
+    
+        if (pendingRequests.isEmpty()) {
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, 
+                "No pending borrowing requests found for game copy with id " + gameCopyId);
+        }
+    
+        return pendingRequests.stream()
+                              .map(BorrowRequestResponseDto::new)
+                              .toList();
     }
-
+    
     @GetMapping("/borrowrequests/{gameCopyId}/accepted")
     @ResponseStatus(HttpStatus.OK)
-    public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@RequestBody BorrowRequestResponseDto borrowRequest) 
-    {
-        List<BorrowRequest> acceptedRequests = borrowingService.findAcceptedBorrowingRequests(borrowRequest.getGameCopy().getId());
-        List<BorrowRequestResponseDto> responses = new ArrayList<>();
-        acceptedRequests.forEach(acceptedRequest -> responses.add(new BorrowRequestResponseDto(acceptedRequest)));
-        return responses;
-    }    
+    public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable int gameCopyId) {
+        List<BorrowRequest> acceptedRequests = borrowingService.findAcceptedBorrowingRequests(gameCopyId);
+
+        if (acceptedRequests.isEmpty()) {
+            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, 
+                "No accepted borrowing requests found for game copy with id " + gameCopyId);
+        }
+
+        return acceptedRequests.stream()
+                            .map(BorrowRequestResponseDto::new)
+                            .toList();
+    }
+
 
     @DeleteMapping("/borrowrequests/{id}")
     @ResponseStatus(HttpStatus.OK)
