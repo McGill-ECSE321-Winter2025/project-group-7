@@ -16,7 +16,7 @@ public class GameCopyResponseDto {
     private int userId;
 
     @SuppressWarnings("unused")
-    public GameCopyResponseDto() {
+    private GameCopyResponseDto() {
 
     }
 

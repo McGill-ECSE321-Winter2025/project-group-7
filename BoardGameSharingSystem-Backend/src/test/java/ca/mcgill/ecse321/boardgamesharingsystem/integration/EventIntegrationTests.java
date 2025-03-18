@@ -158,8 +158,6 @@ public class EventIntegrationTests {
         e3 = eventRepository.save(e3);
         List<Integer> expectedEvents = Arrays.asList(e1.getId(), e2.getId(), e3.getId());
 
-        EventDto eventRequest = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_END_DATE.toLocalDate(), VALID_END_TIME.toLocalTime(), VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user.getId());
-        
         //Act
         ResponseEntity<List<EventResponseDto>> response = client.exchange(
             "/events",

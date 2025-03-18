@@ -12,7 +12,7 @@ public class RequestAnswerDto {
     private String contactEmail;
 
     @SuppressWarnings("unused")
-    public RequestAnswerDto() {
+    private RequestAnswerDto() {
 
     }
 
