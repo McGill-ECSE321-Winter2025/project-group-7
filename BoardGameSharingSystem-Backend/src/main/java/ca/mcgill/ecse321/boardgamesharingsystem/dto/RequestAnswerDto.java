@@ -11,8 +11,10 @@ public class RequestAnswerDto {
     private String dropoffLocation;
     private String contactEmail;
 
-    // Constructors
-    public RequestAnswerDto() {}
+    @SuppressWarnings("unused")
+    public RequestAnswerDto() {
+
+    }
 
     public RequestAnswerDto(int id, int borrowingRequestId, Date dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
         this.id = id;
