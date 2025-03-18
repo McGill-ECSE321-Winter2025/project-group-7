@@ -133,13 +133,15 @@ public class AccountService {
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "No userAccount found with id %d", userAccountId)));
         
-        GameOwner gameOwner = gameOwnerRepo
-            .findById(userAccountId)
-            .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
-                "User with id %d is already a player", userAccountId)));
-
-        gameOwner.setUser(null);
-        gameOwnerRepo.save(gameOwner);
+        if (gameOwnerRepo.findGameOwnerById(userAccountId).getUser() != null) {
+            GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(userAccountId);
+            gameOwner.setUser(null);
+            gameOwnerRepo.save(gameOwner);
+        }
+        else {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
+                "User with id %d is already a player", userAccountId));
+        }
 
         return user;
     }
