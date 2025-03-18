@@ -1,10 +1,6 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.sql.Date;
-import java.time.LocalDate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +23,13 @@ public class BorrowRequestController {
     @Autowired
     private BorrowingService borrowingService;
 
+    /**
+     * creates a new borrowing request 
+     * @param gameCopyId the id of the game copy 
+     * @param borrowerId the id of the borrower
+     * @param borrowRequest the Request DTO to create the borrow request
+     * @return information contained in a borrowing request 
+     */
     @PostMapping("/borrowrequests")
     @ResponseStatus(HttpStatus.CREATED)
     public BorrowRequestResponseDto createBorrowingRequest(@RequestParam int gameCopyId, @RequestParam int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
@@ -34,6 +37,11 @@ public class BorrowRequestController {
         return new BorrowRequestResponseDto(borrowingService.createBorrowingRequest(gameCopyId, borrowerId, borrowRequest.getStartDate(), borrowRequest.getEndDate()));
     }
     
+    /**
+     * finds all pending borrowing requests for a game copy 
+     * @param gameCopyId the id of the game copy 
+     * @return a list of information contained in a borrowing request
+     */
     @GetMapping("/borrowrequests/{gameCopyId}/pending")
     @ResponseStatus(HttpStatus.OK)
     public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable int gameCopyId) {
@@ -48,7 +56,11 @@ public class BorrowRequestController {
                               .map(BorrowRequestResponseDto::new)
                               .toList();
     }
-    
+    /**
+     * finds all accepted borrowing requests for a game copy 
+     * @param gameCopyId the id of the game copy 
+     * @return the list containing information about borrow request for the game copy 
+     */
     @GetMapping("/borrowrequests/{gameCopyId}/accepted")
     @ResponseStatus(HttpStatus.OK)
     public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable int gameCopyId) {
