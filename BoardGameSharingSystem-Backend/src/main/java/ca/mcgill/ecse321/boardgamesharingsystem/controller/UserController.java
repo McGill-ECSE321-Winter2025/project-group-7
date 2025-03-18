@@ -21,6 +21,11 @@ public class UserController {
     @Autowired
     private AccountService accountService;
 
+    /** 
+     * Creates a new UserAccount
+     * @param userRequest contains the username, email and password of the UserAccount
+     * @return the created UserAccount
+     */
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserAccountResponseDto createUserAccount(@RequestBody AuthRequest userRequest)
@@ -28,6 +33,11 @@ public class UserController {
         return new UserAccountResponseDto(accountService.createUserAccount(userRequest));
     }
 
+    /** 
+     * Retrieves an existing UserAccount
+     * @param id the ID of the UserAccount to be retrieved
+     * @return the UserAccount retrieved
+     */
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserAccountResponseDto findUserAccount(@PathVariable int id)
@@ -35,6 +45,11 @@ public class UserController {
         return new UserAccountResponseDto(accountService.findUserAccountById(id));
     }
 
+    /** 
+     * Deletes an existing UserAccount
+     * @param id the ID of the UserAccount to be deleted
+     * @return the deleted UserAccount
+     */
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserAccountResponseDto deleteUserAccount(@PathVariable int id)
@@ -42,13 +57,23 @@ public class UserController {
         return new UserAccountResponseDto(accountService.deleteUserAccount(id));
     }
 
+    /** 
+     * Verifies an existing UserAccount
+     * @param userRequest contains the username, email and password of the UserAccount
+     * @return the verified UserAccount
+     */
     @PostMapping("/users/login")
     @ResponseStatus(HttpStatus.OK)
     public UserAccountResponseDto login(@RequestBody AuthRequest userRequest)
     {
         return new UserAccountResponseDto(accountService.login(userRequest));
     }
-
+    
+    /** 
+     * Toggles a UserAccount from GameOwner to Player
+     * @param id the ID of the UserAccount to be toggled
+     * @return the toggled UserAccount
+     */
     @PutMapping("/users/{id}/toPlayer")
     @ResponseStatus(HttpStatus.OK)
     public UserAccountResponseDto toggleUserToPlayer(@PathVariable int id) 
@@ -56,6 +81,11 @@ public class UserController {
         return new UserAccountResponseDto(accountService.toggleUserToPlayer(id));
     }
 
+    /** 
+     * Toggles a UserAccount from Player to GameOwner
+     * @param id the ID of the UserAccount to be toggled
+     * @return the newly toggled GameOwner
+     */
     @PutMapping("/users/{id}/toGameOwner")
     @ResponseStatus(HttpStatus.OK)
     public GameOwnerResponseDto toggleUserToGameOwner(@PathVariable int id)

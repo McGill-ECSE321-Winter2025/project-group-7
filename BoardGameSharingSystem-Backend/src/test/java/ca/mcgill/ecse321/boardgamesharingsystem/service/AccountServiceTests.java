@@ -188,7 +188,7 @@ public class AccountServiceTests {
         UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
         when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
         GameOwner owner = new GameOwner(user);
-        when(gameOwnerRepository.findById(42)).thenReturn(Optional.of(owner));
+        when(gameOwnerRepository.findGameOwnerById(42)).thenReturn(owner);
 
         // Act
         UserAccount toggledAccount = accountService.toggleUserToPlayer(42);
@@ -217,7 +217,9 @@ public class AccountServiceTests {
         // Arrange
         UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
         when(userAccountRepository.findById(42)).thenReturn(Optional.of(user));
-        when(gameOwnerRepository.findById(42)).thenReturn(Optional.empty());
+        GameOwner gameOwner = new GameOwner(user);
+        gameOwner.setUser(null);
+        when(gameOwnerRepository.findGameOwnerById(42)).thenReturn(gameOwner);
 
         // Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> accountService.toggleUserToPlayer(42));
