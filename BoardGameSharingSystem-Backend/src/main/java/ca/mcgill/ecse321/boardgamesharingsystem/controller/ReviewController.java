@@ -25,12 +25,24 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    /**
+     * creates a review for a game
+     * @param reviewerId the id of the reviewer 
+     * @param gameId the id of the game
+     * @param review a request containing information about the review to be created
+     * @return information about the created review
+     */
     @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewResponseDto createReviewForGame(@RequestParam int reviewerId, @RequestParam int gameId, @RequestBody ReviewDto review) {
         return new ReviewResponseDto(reviewService.createReview(review, review.getUserId(),review.getGameId()));
     }
 
+    /**
+     * finds reviews for a particular game
+     * @param gameId the id of the game
+     * @return the list containing information about the review for the game
+     */
     @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewResponseDto> findReviewsForGame(@RequestParam int gameId) {
@@ -39,13 +51,22 @@ public class ReviewController {
         reviewsFound.forEach(review -> responses.add(new ReviewResponseDto(review)));
         return responses;
     }
-
+    /**
+     * updates information in a review 
+     * @param id the id of the review
+     * @param review the updated information for the review 
+     * @return the information contained in the updated review
+     */
     @PutMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody ReviewDto review) {
         return new ReviewResponseDto(reviewService.updateReview(review));
     }
-
+    /**
+     * deletes a review
+     * @param id the id of the review to be deleted
+     * @return the deleted review 
+     */
     @DeleteMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewResponseDto deleteReview(@PathVariable int id) {
