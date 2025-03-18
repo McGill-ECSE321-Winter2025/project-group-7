@@ -211,9 +211,6 @@ public class EventService {
         Event event = findEventById(eventID);
         List<EventGame> res = new ArrayList<>();
         Iterable<EventGame> iterableEventGames = eventGameRepository.findByKey_Event(event);
-        if (iterableEventGames == null){
-            return res;
-        }
         iterableEventGames.forEach(res::add);
         return res;
     }
@@ -228,9 +225,6 @@ public class EventService {
         Game game = findGameById(gameID);       
         List<EventGame> res = new ArrayList<>();
         Iterable<EventGame> iterableEventGames = eventGameRepository.findByKey_GamePlayed(game);
-        if (iterableEventGames == null){
-            return res;
-        }
         iterableEventGames.forEach(res::add);
         return res;
     }
@@ -265,9 +259,6 @@ public class EventService {
         Event event = findEventById(eventID);       
         List<Registration> res = new ArrayList<>();
         Iterable<Registration> iterableRegistrations = registrationRepository.findByKey_Event(event);
-        if (iterableRegistrations == null){
-            return res;
-        }           
         iterableRegistrations.forEach(res::add);
         return res;
     }
@@ -282,9 +273,6 @@ public class EventService {
         UserAccount user = findUserAccountById(userId);
         List<Registration> res = new ArrayList<>();
         Iterable<Registration> iterableRegistrations = registrationRepository.findByKey_Participant(user);
-        if (iterableRegistrations == null){
-            return res;
-        }         
         iterableRegistrations.forEach(res::add);
         return res;
     }

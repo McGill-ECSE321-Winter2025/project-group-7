@@ -238,6 +238,42 @@ public class EventIntegrationTests {
     }
 
     @Test
+    @Order(25)
+    public void updateEventWithValidStartEndTime()
+    {
+        //Arrange
+        UserAccount user = new UserAccount(NAME, EMAIL, PASSWORD);
+        user = userAccountRepository.save(user);
+        Event e1 = new Event(VALID_START_DATE, VALID_START_TIME, VALID_END_DATE, VALID_END_TIME, VALID_MAX_NUM_PARTICIPANTS, VALID_LOCATION, VALID_DESCRIPTION, VALID_CONTACT_EMAIL, user);
+        e1 = eventRepository.save(e1);
+        EventDto request = new EventDto(VALID_START_DATE.toLocalDate(), VALID_START_TIME.toLocalTime(), VALID_START_DATE.toLocalDate(), LocalTime.of(12, 00, 00), 200, "Vancouver", "International Board Game Conference", "IBGC@mail.com", user.getId());
+
+        //Act
+        ResponseEntity<EventResponseDto> response = client.exchange(
+            "/events/" + e1.getId(),
+            HttpMethod.PUT,
+            new HttpEntity<>(request),
+            EventResponseDto.class);
+        
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        EventResponseDto updatedEvent = response.getBody();
+        assertNotNull(updatedEvent);
+        assertEquals(e1.getId(), updatedEvent.getId());
+        assertEquals(VALID_START_DATE.toLocalDate(), updatedEvent.getStartDate());
+        assertEquals(VALID_START_TIME.toLocalTime(), updatedEvent.getStartTime());
+        assertEquals(VALID_START_DATE.toLocalDate(), updatedEvent.getEndDate());
+        assertEquals(LocalTime.of(12, 00, 00), updatedEvent.getEndTime());
+        assertEquals(200, updatedEvent.getMaxNumParticipants());
+        assertEquals("Vancouver", updatedEvent.getLocation());
+        assertEquals("International Board Game Conference", updatedEvent.getDescription());
+        assertEquals("IBGC@mail.com", updatedEvent.getContactEmail());
+        assertEquals(user.getId(), updatedEvent.getCreatorId());
+    }
+
+    @Test
     @Order(6)
     public void testDeleteValidEvent()
     {
