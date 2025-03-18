@@ -15,6 +15,11 @@ public class GameCopyResponseDto {
     private String userName;
     private int userId;
 
+    @SuppressWarnings("unused")
+    public GameCopyResponseDto() {
+
+    }
+
     public GameCopyResponseDto(GameCopy gameCopy) {
         this.id = gameCopy.getId();
         this.gameId = gameCopy.getGame().getId();

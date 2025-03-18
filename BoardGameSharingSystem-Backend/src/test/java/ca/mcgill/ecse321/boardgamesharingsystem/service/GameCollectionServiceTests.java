@@ -201,7 +201,7 @@ public class GameCollectionServiceTests {
         assertEquals(VALID_PICTURE_URL, createdGame.getPictureURL());
         assertEquals(VALID_DESCRIPTION, createdGame.getDescription());
 
-        verify(gameRepository, times(1)).save(any(Game.class));
+        verify(gameRepository, times(1)).save(any(Game.class)); //check game properly saved
     }
 
     @Test
@@ -222,7 +222,7 @@ public class GameCollectionServiceTests {
         assertEquals(VALID_PICTURE_URL, createdGame.getPictureURL());
         assertEquals(VALID_DESCRIPTION, createdGame.getDescription());
 
-        verify(gameRepository, times(1)).save(any(Game.class));
+        verify(gameRepository, times(1)).save(any(Game.class)); //check game properly saved
     }
 
     @Test

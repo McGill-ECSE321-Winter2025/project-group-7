@@ -44,7 +44,7 @@ public class RequestAnswerController {
      * @param requestAnswerDto contains updated drop-off date, time, and location
      * @return the updated RequestAnswer
      */
-    @PutMapping("/{id}")
+    @PutMapping("/{requestAnswerId}")
     @ResponseStatus(HttpStatus.OK)
     public RequestAnswerResponseDto updateRequestAnswer(
             @PathVariable int requestAnswerId,
@@ -65,7 +65,7 @@ public class RequestAnswerController {
      * @param requestAnswerId the ID of the RequestAnswer to delete
      * @return the deleted RequestAnswer
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{requestAnswerId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteRequestAnswer(@PathVariable int requestAnswerId) {
         borrowingService.deleteRequestAnswer(requestAnswerId);

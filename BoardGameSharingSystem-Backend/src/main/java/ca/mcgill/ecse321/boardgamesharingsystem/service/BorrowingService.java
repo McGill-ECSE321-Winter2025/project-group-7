@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
+import java.time.LocalDate;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
@@ -39,7 +40,7 @@ public class BorrowingService
     private GameCopyRepository gameCopyRepository;
 
     @Transactional
-    public BorrowRequest createBorrowingRequest(int gameCopyId, int borrowerId, Date startDate, Date endDate) {
+    public BorrowRequest createBorrowingRequest(int gameCopyId, int borrowerId, LocalDate startDate, LocalDate endDate) {
         GameCopy foundGameCopy = gameCopyRepository.findById(gameCopyId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Game copy not found."));
         
@@ -48,9 +49,9 @@ public class BorrowingService
 
         if (startDate == null || endDate == null) throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Dates cannot be null.");
 
-        if (!endDate.after(startDate)) throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "End date must be after start date.");
+        if (!endDate.isAfter(startDate)) throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "End date must be after start date.");
 
-        BorrowRequest newRequest = new BorrowRequest(startDate, endDate, foundBorrower, foundGameCopy);
+        BorrowRequest newRequest = new BorrowRequest(Date.valueOf(startDate), Date.valueOf(endDate), foundBorrower, foundGameCopy);
         borrowingRequestRepository.save(newRequest);
         return newRequest;
     }

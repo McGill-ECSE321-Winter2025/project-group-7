@@ -42,7 +42,7 @@ public class GameIntegrationTests {
     private static final String UPDATED_VALID_PICTURE_URL = "https://toysrus.com/Connect4-3D.jpg";
     private static final String UPDATED_VALID_DESCRIPTION = "A twist to the classic Connect4 game that can now be played with up to 4 players!";   
 
-    private int testGameId;
+    private int testGameId; //id of Connect4
 
     @Test
     @Order(2)
@@ -65,7 +65,7 @@ public class GameIntegrationTests {
         assertEquals(VALID_DESCRIPTION, createdGame.getDescription());
         assertNotNull(createdGame.getId());
         assertTrue(createdGame.getId() > 0, "Response should have a positive ID.");
-        this.testGameId = createdGame.getId();
+        this.testGameId = createdGame.getId(); //id of the created game
     }
 
     @Test
