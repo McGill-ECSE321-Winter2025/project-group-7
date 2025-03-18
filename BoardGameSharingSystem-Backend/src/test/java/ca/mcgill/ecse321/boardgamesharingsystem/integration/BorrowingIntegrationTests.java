@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.assertj.core.internal.Dates;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -92,7 +91,7 @@ public class BorrowingIntegrationTests {
     
         //Act
         ResponseEntity<BorrowRequestResponseDto> response = client.postForEntity(
-            "/borrowrequests?gameCopyId=" + gameCopyId + "&borrowerId=" + requestDto.getBorrower().getId(),
+            "/borrowrequests?gameCopyId=" + gameCopyId + "&borrowerId=" + requestDto.getBorrowerId(),
             requestDto, BorrowRequestResponseDto.class);
         
         //Assert
@@ -100,8 +99,8 @@ public class BorrowingIntegrationTests {
         assertNotNull(response.getBody());
         assertEquals(requestDto.getStartDate(), response.getBody().getStartDate());
         assertEquals(requestDto.getEndDate(), response.getBody().getEndDate());
-        assertEquals(requestDto.getBorrower().getId(), response.getBody().getBorrower().getId());
-        assertEquals(requestDto.getGameCopy().getId(), response.getBody().getGameCopy().getId());
+        assertEquals(requestDto.getBorrowerId(), response.getBody().getBorrowerId());
+        assertEquals(requestDto.getBorrowerId(), response.getBody().getBorrowerId());
         assertEquals(BorrowRequest.RequestStatus.Pending, response.getBody().getRequestStatus());
     }
 
@@ -114,7 +113,7 @@ public class BorrowingIntegrationTests {
 
         //Act
         ResponseEntity<ErrorDto> response = client.postForEntity(
-            "/borrowrequests?gameCopyId=" + gameCopyId + "&borrowerId=" + requestDto.getBorrower().getId(),
+            "/borrowrequests?gameCopyId=" + gameCopyId + "&borrowerId=" + requestDto.getBorrowerId(),
             requestDto, ErrorDto.class);
         
         //Assert

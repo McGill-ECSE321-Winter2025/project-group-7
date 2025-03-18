@@ -4,15 +4,20 @@ import java.time.LocalDate;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest.RequestStatus;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 
 public class BorrowRequestResponseDto {
     private int id;
     private LocalDate startDate;
     private LocalDate endDate;
-    private UserAccount borrower;
-    private GameCopy gameCopy;
+    private int borrowerId;
+    private String borrowerName;
+    private String borrowerEmail;
+    private int gameCopyId;
+    private String gameTitle;
+    private int ownerId;
+    private String ownerName;
+    private String ownerEmail;
+
     private RequestStatus requestStatus;
 
     @SuppressWarnings("unused")
@@ -23,8 +28,14 @@ public class BorrowRequestResponseDto {
     public BorrowRequestResponseDto(BorrowRequest borrowRequest) {
         this.startDate = borrowRequest.getStartDate().toLocalDate();
         this.endDate = borrowRequest.getEndDate().toLocalDate();
-        this.borrower = borrowRequest.getBorrower();
-        this.gameCopy = borrowRequest.getGameCopy();
+        this.borrowerId = borrowRequest.getBorrower().getId();
+        this.borrowerName = borrowRequest.getBorrower().getName();
+        this.borrowerEmail = borrowRequest.getBorrower().getEmail();
+        this.gameCopyId = borrowRequest.getGameCopy().getId();
+        this.gameTitle = borrowRequest.getGameCopy().getGame().getTitle();
+        this.ownerName = borrowRequest.getGameCopy().getGameOwner().getUser().getName();
+        this.ownerEmail = borrowRequest.getGameCopy().getGameOwner().getUser().getEmail();
+        this.ownerId = borrowRequest.getGameCopy().getGameOwner().getId();
         this.requestStatus = borrowRequest.getRequestStatus();
         this.id = borrowRequest.getId();
     }
@@ -41,12 +52,16 @@ public class BorrowRequestResponseDto {
         return endDate;
     }
 
-    public UserAccount getBorrower() {
-        return borrower;
+    public int getBorrowerId() {
+        return borrowerId;
+    }
+    
+    public String getBorrowerName() {
+        return borrowerName;
     }
 
-    public GameCopy getGameCopy() {
-        return gameCopy;
+    public int getGameCopyId() {
+        return gameCopyId;
     }
 
     public RequestStatus getRequestStatus() {
@@ -55,5 +70,22 @@ public class BorrowRequestResponseDto {
 
     public void setStartDate(LocalDate date) {
         this.startDate = date;
+    }
+    public String getBorrowerEmail() {
+        return borrowerEmail;
+    }
+    public String getGameTitle() {
+        return gameTitle;
+    }
+
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
     }
 }
