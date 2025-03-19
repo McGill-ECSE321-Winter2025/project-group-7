@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
-//import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.sql.Time;
 
@@ -8,7 +7,6 @@ public class RequestAnswerDto {
     private int id;
     private int borrowingRequestId;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dropoffDate;
     private Time dropoffTime;
     private String dropoffLocation;
