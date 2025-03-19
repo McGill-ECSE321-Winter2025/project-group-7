@@ -63,7 +63,7 @@ No worries, we got you covered.
 ```bash
 ## . is project-group7
 $ cd BoardGameSharingSystem-Backend
-$ ./gradlew -xtest
+$ ./gradlew build -xtest
 
 ```
 **I forgot how to run the tests.**
