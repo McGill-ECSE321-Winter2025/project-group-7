@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
-//import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.sql.Time;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
@@ -13,7 +12,6 @@ public class RequestAnswerResponseDto {
     private int id;
     private int requestId;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dropOffDate;
     private Time dropOffTime;
     private String location;

@@ -25,7 +25,7 @@ public class EventController {
     private EventService eventService;
     
     /**
-     * Create a new Event
+     * Create a new Event.
      * @param event the Event to create
      * @return the created Event including their generated id and the response's timestamp
      */
@@ -37,7 +37,7 @@ public class EventController {
     }
 
     /**
-     * Returns a list of all Events
+     * Returns a list of all Events.
      * @return a list of all Events
      */
     @GetMapping("/events")
@@ -50,7 +50,7 @@ public class EventController {
     }
 
     /**
-     * Updates the Event with ID eventID using the information in event
+     * Updates the Event with ID eventID using the information in event.
      * @param id the ID of the event to update
      * @param event the informationt to update to
      * @return the updated Event including id and response timestamp
@@ -62,7 +62,7 @@ public class EventController {
     }
 
     /**
-     * Deletes the Event with ID eventID
+     * Deletes the Event with ID eventID.
      * @param id the ID of the event to delete
      * @return the deleted Event including id and response timestamp
      */

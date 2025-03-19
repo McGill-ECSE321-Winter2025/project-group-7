@@ -32,7 +32,9 @@ public class GameOwningService {
     private GameCopyRepository gameCopyRepo;
 
     /**
-     * Create a GameOwner from an existing UserAccount
+     * Create a GameOwner from an existing UserAccount.
+     * @param userId The id of the user
+     * @return The created game owner
      */
     @Transactional
     public GameOwner createGameOwner(int userId) {
@@ -55,7 +57,9 @@ public class GameOwningService {
     }
 
     /**
-     * Find a GameOwner by ID
+     * Find a GameOwner by ID.
+     * @param userId The id of the user
+     * @return The game owner
      */
     @Transactional
     public GameOwner findGameOwner(int userId) {
@@ -69,6 +73,9 @@ public class GameOwningService {
 
     /**
      * Add a GameCopy to a GameOwner
+     * @param gameOwnerId The id of the game owner
+     * @param gameId The id of the game
+     * @return The created game copy
      */
     @Transactional
     public GameCopy addGameCopyToGameOwner(int gameOwnerId, int gameId) {
@@ -109,7 +116,9 @@ public class GameOwningService {
     }
 
     /**
-     * Remove a GameCopy from a GameOwner
+     * Remove a GameCopy from a GameOwner.
+     * @param gameCopyId The id of the game copy
+     * @return The removed game copy
      */
     @Transactional
     public GameCopy removeGameCopyFromGameOwner(int gameCopyId) {
@@ -140,7 +149,9 @@ public class GameOwningService {
     }
 
     /**
-     * Find all GameCopies owned by a GameOwner
+     * Find all GameCopies owned by a GameOwner.
+     * @param gameOwnerId The id of the game owner
+     * @return The list of game copies associated with the game owner
      */
     @Transactional
     public List<GameCopy> findGameCopiesForGameOwner(int gameOwnerId) {

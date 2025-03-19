@@ -2,13 +2,8 @@ package ca.mcgill.ecse321.boardgamesharingsystem.integration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

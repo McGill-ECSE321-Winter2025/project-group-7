@@ -29,6 +29,12 @@ import ca.mcgill.ecse321.boardgamesharingsystem.repo.RegistrationRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
 import jakarta.validation.Valid;
 
+/**
+ * This service class implements functionalities related to the Events,
+ * including creating, updating, deleting, and retrieving events; 
+ * adding, removing, and retrieving event games; 
+ * and creating, deleting, and retrieving registrations to events.
+ */
 @Service
 @Validated
 public class EventService {
