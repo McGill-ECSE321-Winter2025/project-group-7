@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
-import java.sql.Date;
-
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,8 +14,8 @@ public class BorrowRequest{
     @GeneratedValue
     private int id;
 
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @ManyToOne
     private UserAccount borrower;
@@ -34,7 +33,7 @@ public class BorrowRequest{
     protected BorrowRequest() {
     }
 
-    public BorrowRequest(Date startDate, Date endDate, UserAccount borrower, GameCopy gameCopy) {
+    public BorrowRequest(LocalDate startDate, LocalDate endDate, UserAccount borrower, GameCopy gameCopy) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.borrower = borrower;
@@ -46,11 +45,11 @@ public class BorrowRequest{
         return id;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
@@ -66,11 +65,11 @@ public class BorrowRequest{
         return requestStatus;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

@@ -76,7 +76,7 @@ public class BorrowingIntegrationTests {
         gameCopy = gameCopyRepository.save(gameCopy);
         gameCopyId = gameCopy.getId();
 
-        BorrowRequest borrowRequest = new BorrowRequest(Date.valueOf(START_DATE), Date.valueOf(END_DATE), borrower, gameCopy);
+        BorrowRequest borrowRequest = new BorrowRequest(START_DATE, END_DATE, borrower, gameCopy);
         borrowRequest = borrowRequestRepository.save(borrowRequest);
         borrowRequestId = borrowRequest.getId();
         
@@ -229,8 +229,8 @@ public class BorrowingIntegrationTests {
     @Order(8)
     public void testFindAcceptedBorrowingRequests_Success() {
         //Arrange
-        Date startDate = Date.valueOf("2025-01-01");
-        Date endDate = Date.valueOf("2025-01-10");
+        LocalDate startDate = LocalDate.parse("2025-01-01");
+        LocalDate endDate = LocalDate.parse("2025-01-10");
 
         UserAccount borrower = new UserAccount("yeonjun", "txt@bighit.com", "password");
         borrower = userAccountRepository.save(borrower);
@@ -271,8 +271,8 @@ public class BorrowingIntegrationTests {
         @Order(9)
         public void testDeclinePendingBorrowingRequest_Success() {
             //Arrange
-            Date startDate = Date.valueOf("2025-01-01");
-            Date endDate = Date.valueOf("2025-01-10");
+            LocalDate startDate = LocalDate.parse("2025-01-01");
+            LocalDate endDate = LocalDate.parse("2025-01-10");
 
             UserAccount borrower = new UserAccount("yeonjun", "txt@bighit.com", "password");
             borrower = userAccountRepository.save(borrower);

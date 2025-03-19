@@ -15,7 +15,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.sql.Time;
 
 @SpringBootTest
@@ -64,12 +64,12 @@ public class RequestAnswerRepositoryTests {
 
         GameCopy gameCopy = new GameCopy(game, gameOwner);
         gameCopy = gameCopyRepository.save(gameCopy);
-        Date startDateBorrow = Date.valueOf("2025-12-14");
-        Date endDateBorrow = Date.valueOf("2026-01-14");
+        LocalDate startDateBorrow = LocalDate.parse("2025-12-14");
+        LocalDate endDateBorrow = LocalDate.parse("2026-01-14");
         BorrowRequest borrowRequest = new BorrowRequest(startDateBorrow, endDateBorrow, borrower, gameCopy);
         borrowRequest = borrowRequestRepository.save(borrowRequest);
 
-        Date dropOffDate = Date.valueOf("2026-02-14");
+        LocalDate dropOffDate = LocalDate.parse("2026-02-14");
         Time dropOffTime = Time.valueOf("10:10:02");
         RequestAnswer requestAns = new RequestAnswer(dropOffDate, dropOffTime, "Montreal", borrowRequest, "snigdha@gmail.com");
         requestAns = requestAnswerRepository.save(requestAns);
@@ -103,12 +103,12 @@ public class RequestAnswerRepositoryTests {
 
         GameCopy gameCopy = new GameCopy(game, gameOwner);
         gameCopy = gameCopyRepository.save(gameCopy);
-        Date startDateBorrow = Date.valueOf("2025-12-14");
-        Date endDateBorrow = Date.valueOf("2026-01-14");
+        LocalDate startDateBorrow = LocalDate.parse("2025-12-14");
+        LocalDate endDateBorrow = LocalDate.parse("2026-01-14");
         BorrowRequest borrowRequest = new BorrowRequest(startDateBorrow, endDateBorrow, borrower, gameCopy);
         borrowRequest = borrowRequestRepository.save(borrowRequest);
 
-        Date dropOffDate = Date.valueOf("2026-02-14");
+        LocalDate dropOffDate = LocalDate.parse("2026-02-14");
         Time dropOffTime = Time.valueOf("10:10:02");
         RequestAnswer requestAns = new RequestAnswer(dropOffDate, dropOffTime, "Montreal", borrowRequest, "snigdha@gmail.com");
         requestAns = requestAnswerRepository.save(requestAns);

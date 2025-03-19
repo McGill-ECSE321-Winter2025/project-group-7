@@ -1,12 +1,15 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.dto;
 
-import java.sql.Date;
+//import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 import java.sql.Time;
 
 public class RequestAnswerDto {
     private int id;
     private int borrowingRequestId;
-    private Date dropoffDate;
+
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate dropoffDate;
     private Time dropoffTime;
     private String dropoffLocation;
     private String contactEmail;
@@ -16,7 +19,7 @@ public class RequestAnswerDto {
 
     }
 
-    public RequestAnswerDto(int id, int borrowingRequestId, Date dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
+    public RequestAnswerDto(int id, int borrowingRequestId, LocalDate dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
         this.id = id;
         this.borrowingRequestId = borrowingRequestId;
         this.dropoffDate = dropoffDate;
@@ -42,12 +45,11 @@ public class RequestAnswerDto {
         this.borrowingRequestId = borrowingRequestId; 
     }
 
-    public Date getDropoffDate() { 
-        return dropoffDate; 
+    public LocalDate getDropoffDate() {
+        return dropoffDate;
     }
-
-    public void setDropoffDate(Date dropoffDate) { 
-        this.dropoffDate = dropoffDate; 
+    public void setDropoffDate(LocalDate dropoffDate) {
+        this.dropoffDate = dropoffDate;
     }
 
     public Time getDropoffTime() { 

@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
 import java.time.LocalDate;
-import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class BorrowingService
 
         if (!endDate.isAfter(startDate)) throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "End date must be after start date.");
 
-        BorrowRequest newRequest = new BorrowRequest(Date.valueOf(startDate), Date.valueOf(endDate), foundBorrower, foundGameCopy);
+        BorrowRequest newRequest = new BorrowRequest(startDate, endDate, foundBorrower, foundGameCopy);
         borrowingRequestRepository.save(newRequest);
         return newRequest;
     }
@@ -107,7 +106,7 @@ public class BorrowingService
     }
 
     @Transactional
-    public RequestAnswer createRequestAnswer(int borrowingRequestId, Date dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
+    public RequestAnswer createRequestAnswer(int borrowingRequestId, LocalDate dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
         BorrowRequest foundRequest = borrowingRequestRepository.findById(borrowingRequestId)
                 .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Borrowing request not found."));
 
@@ -115,12 +114,13 @@ public class BorrowingService
             throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Drop-off date, time, location, and contact email must be valid.");
 
         RequestAnswer requestAnswer = new RequestAnswer(dropoffDate, dropoffTime, dropoffLocation, foundRequest, contactEmail);
+        System.out.println("Saving DropOffDate: " + dropoffDate);
 
         return requestAnswerRepository.save(requestAnswer);
     }
 
     @Transactional
-    public RequestAnswer updateRequestAnswer(int requestAnswerId, Date dropoffDate, Time dropoffTime, String dropoffLocation) {
+    public RequestAnswer updateRequestAnswer(int requestAnswerId, LocalDate dropoffDate, Time dropoffTime, String dropoffLocation) {
         RequestAnswer foundAnswer = requestAnswerRepository.findById(requestAnswerId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Request answer not found."));
 
@@ -138,7 +138,7 @@ public class BorrowingService
     public void deleteRequestAnswer(int requestAnswerId) {
         RequestAnswer foundAnswer = requestAnswerRepository.findById(requestAnswerId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Request answer not found."));
-            
+
         requestAnswerRepository.delete(foundAnswer);
     }
 
