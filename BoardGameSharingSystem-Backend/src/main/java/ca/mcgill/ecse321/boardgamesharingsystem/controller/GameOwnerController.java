@@ -40,5 +40,4 @@ public class GameOwnerController {
         GameOwner gameOwner = gameOwningService.findGameOwner(id);
         return new GameOwnerResponseDto(gameOwner);
     }
-
 }

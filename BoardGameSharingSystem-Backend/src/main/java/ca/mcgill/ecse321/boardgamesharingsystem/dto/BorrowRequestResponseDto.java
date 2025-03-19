@@ -26,8 +26,8 @@ public class BorrowRequestResponseDto {
     }
 
     public BorrowRequestResponseDto(BorrowRequest borrowRequest) {
-        this.startDate = borrowRequest.getStartDate().toLocalDate();
-        this.endDate = borrowRequest.getEndDate().toLocalDate();
+        this.startDate = borrowRequest.getStartDate();
+        this.endDate = borrowRequest.getEndDate();
         this.borrowerId = borrowRequest.getBorrower().getId();
         this.borrowerName = borrowRequest.getBorrower().getName();
         this.borrowerEmail = borrowRequest.getBorrower().getEmail();

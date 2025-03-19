@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +47,9 @@ public class BorrowingServiceTests {
     @InjectMocks
     private BorrowingService borrowingService;
 
-    private static final Date START_DATE = Date.valueOf("2025-01-01");
-    private static final Date END_DATE = Date.valueOf("2025-01-10");
-    private static final Date DROP_OFF_DATE = Date.valueOf("2025-01-02");
+    private static final LocalDate START_DATE = LocalDate.parse("2025-01-01");
+    private static final LocalDate END_DATE = LocalDate.parse("2025-01-10");
+    private static final LocalDate DROP_OFF_DATE = LocalDate.parse("2025-01-02");
     private static final Time DROP_OFF_TIME = Time.valueOf("12:00:00");
 
     private static final String CONTACT_EMAIL = "yeonjun@txt.com";
@@ -74,7 +74,7 @@ public class BorrowingServiceTests {
                 .thenAnswer((InvocationOnMock invocation) -> invocation.getArgument(0));
 
         //Act
-        BorrowRequest request = borrowingService.createBorrowingRequest(2, 1, START_DATE.toLocalDate(), END_DATE.toLocalDate());
+        BorrowRequest request = borrowingService.createBorrowingRequest(2, 1, START_DATE, END_DATE);
 
         //Assert
         assertNotNull(request);
@@ -95,7 +95,7 @@ public class BorrowingServiceTests {
         when(gameCopyRepository.findById(2)).thenReturn(Optional.of(new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"), new GameOwner(new UserAccount("Owner", "owner@test.com", "ownerPass")))));
         
         //Act & Assert
-        BoardGameSharingSystemException ex = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(2, 1, null, END_DATE.toLocalDate()));
+        BoardGameSharingSystemException ex = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(2, 1, null, END_DATE));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("Dates cannot be null.", ex.getMessage());
     }
@@ -110,7 +110,7 @@ public class BorrowingServiceTests {
         when(gameCopyRepository.findById(2)).thenReturn(Optional.of(new GameCopy(new Game("Chess", 2, 2, "chess.com", "desc"), new GameOwner(new UserAccount("Owner", "owner@test.com", "ownerPass")))));
         
         //Act & Assert
-        BoardGameSharingSystemException ex = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(2, 1, END_DATE.toLocalDate(), START_DATE.toLocalDate()));
+        BoardGameSharingSystemException ex = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(2, 1, END_DATE, START_DATE));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
         assertEquals("End date must be after start date.", ex.getMessage());
     }
@@ -124,7 +124,7 @@ public class BorrowingServiceTests {
         when(gameCopyRepository.findById(1)).thenReturn(Optional.empty());
 
         //Act + Assert
-        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(1, 2, START_DATE.toLocalDate(), END_DATE.toLocalDate()));
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(1, 2, START_DATE, END_DATE));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("Game copy not found.", exception.getMessage());
     }
@@ -143,7 +143,7 @@ public class BorrowingServiceTests {
         when(userAccountRepository.findById(2)).thenReturn(Optional.empty());
 
         //Act + Assert
-        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(1, 2, START_DATE.toLocalDate(), END_DATE.toLocalDate()));
+        BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, () -> borrowingService.createBorrowingRequest(1, 2, START_DATE, END_DATE));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("Borrower not found.", exception.getMessage());
     }
@@ -162,7 +162,7 @@ public class BorrowingServiceTests {
 
         //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, 
-                () -> borrowingService.createBorrowingRequest(1, 2, START_DATE.toLocalDate(), null));
+                () -> borrowingService.createBorrowingRequest(1, 2, START_DATE, null));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Dates cannot be null.", exception.getMessage());
     }
@@ -181,7 +181,7 @@ public class BorrowingServiceTests {
 
         //Act + Assert
         BoardGameSharingSystemException exception = assertThrows(BoardGameSharingSystemException.class, 
-                () -> borrowingService.createBorrowingRequest(1, 2, null, END_DATE.toLocalDate()));
+                () -> borrowingService.createBorrowingRequest(1, 2, null, END_DATE));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals("Dates cannot be null.", exception.getMessage());
     }

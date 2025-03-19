@@ -6,7 +6,6 @@ public class UserAccountResponseDto {
     private int id;
     private String email;
     private String name;
-    private String password;
 
     @SuppressWarnings("unused")
     private UserAccountResponseDto() {
@@ -17,7 +16,6 @@ public class UserAccountResponseDto {
         this.id = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.password = user.getPassword();
     }
     
     public int getId() {
@@ -30,9 +28,5 @@ public class UserAccountResponseDto {
 
     public String getName(){
         return this.name;
-    }
-
-    public String getPassword(){
-        return this.password;
     }
 }

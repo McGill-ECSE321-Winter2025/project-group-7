@@ -24,7 +24,7 @@ public class EventGameController {
     private EventService eventService;
     
     /**
-     * Adds a Game to an Event by creating an EventGame
+     * Adds a Game to an Event by creating an EventGame.
      * @param eventId the Id of the Event to add a Game to
      * @param gameId the Id of the Game to add to the Event
      * @return the EventGame created, including a timestamp of the response
@@ -37,7 +37,7 @@ public class EventGameController {
     }
 
     /**
-     * Removes a Game from an Event
+     * Removes a Game from an Event.
      * @param eventId the Id of the Event to remove a Game from
      * @param gameId the Id of the Game to remove from the event
      * @return the EventGame deleted, including a timestamp of the response
@@ -49,7 +49,7 @@ public class EventGameController {
     }
 
     /**
-     * Returns a list of all EventGames associated to an Event
+     * Returns a list of all EventGames associated to an Event.
      * @param eventId the Event associated to the EventGames
      * @return the list of found EventGames
      */
@@ -63,7 +63,7 @@ public class EventGameController {
     }
 
     /**
-     * Returns a list of all EventGames associated to a Game
+     * Returns a list of all EventGames associated to a Game.
      * @param gameId the Game associated to the EventGames
      * @return the list of found EventGames
      */

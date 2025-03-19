@@ -3,7 +3,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.repo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -42,8 +42,8 @@ public class BorrowRequestRepositoryTests {
     @Test
     public void testCreateAndReadBorrowRequest() {
         //Arrange
-        Date startdate = Date.valueOf("2025-02-14");
-        Date endDate = Date.valueOf("2025-02-20");
+        LocalDate startdate = LocalDate.parse("2025-02-14");
+        LocalDate endDate = LocalDate.parse("2025-02-20");
 
         UserAccount borrower = new UserAccount("yeonjun", "yeonjun@bighit.com", "txt0304");
         UserAccount owner = new UserAccount("soobin", "soobin@bighit.com", "1299");
@@ -85,8 +85,8 @@ public class BorrowRequestRepositoryTests {
     @Test
     public void testFindByBorrowerId() {
         //Arrange
-        Date startDate = Date.valueOf("2025-03-01");
-        Date endDate = Date.valueOf("2025-03-10");
+        LocalDate startDate = LocalDate.parse("2025-03-01");
+        LocalDate endDate = LocalDate.parse("2025-03-10");
 
         UserAccount borrower1 = new UserAccount("alice", "alice@example.com", "password123");
         UserAccount borrower2 = new UserAccount("bob", "bob@example.com", "password123");
@@ -123,8 +123,8 @@ public class BorrowRequestRepositoryTests {
     @Test
     public void testFindByGameCopyId() {
         //Arrange
-        Date startDate = Date.valueOf("2025-04-01");
-        Date endDate = Date.valueOf("2025-04-10");
+        LocalDate startDate = LocalDate.parse("2025-04-01");
+        LocalDate endDate = LocalDate.parse("2025-04-10");
 
         UserAccount borrower = new UserAccount("charlie", "charlie@example.com", "password123");
         borrower = userAccountRepository.save(borrower);
