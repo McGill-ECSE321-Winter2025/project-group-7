@@ -63,7 +63,7 @@ public class GameCollectionService {
      * @return the list of game copies for the game with the id
      */
     public List<GameCopy> findGameCopiesFromGame(int gameId) {
-        if (gameRepo.findById(gameId)==null){
+        if (gameRepo.findGameById(gameId)==null){
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND,
             String.format("Could not find the list of game copies for game with id %d since it does not exist",gameId));
         }

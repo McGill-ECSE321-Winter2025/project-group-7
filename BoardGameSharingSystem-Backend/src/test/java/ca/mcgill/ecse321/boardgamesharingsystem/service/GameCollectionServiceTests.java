@@ -132,7 +132,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindGameCopiesFromGame(){
         //Arrange
-        when(gameRepository.findById(42)).thenReturn(Optional.of(game));
+        when(gameRepository.findGameById(42)).thenReturn(game);
         when(gameCopyRepository.findByGameId(42)).thenReturn(Arrays.asList(gameCopy));
 
         //Act
@@ -148,7 +148,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindGameCopiesFromGameValidGameOwner(){
         //Arrange
-        when(gameRepository.findById(42)).thenReturn(Optional.of(game));        
+        when(gameRepository.findGameById(42)).thenReturn(game);
         when(gameCopyRepository.findByGameId(42)).thenReturn(Arrays.asList(gameCopy));
         gameCopy.getGameOwner().setUser(null);
         
@@ -162,7 +162,7 @@ public class GameCollectionServiceTests {
     @Test
     public void testFindGameCopiesFromUnknownGame(){
         // Arrange
-        when(gameRepository.findById(42)).thenReturn(null);
+        when(gameRepository.findGameById(42)).thenReturn(null);
         //Act+Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
         ()-> gameCollectionService.findGameCopiesFromGame(42));
@@ -173,7 +173,7 @@ public class GameCollectionServiceTests {
 
     @Test
     public void testFindGameCopiesFromGameError(){
-        //
+        when(gameRepository.findGameById(42)).thenReturn(game);
         when(gameCopyRepository.findByGameId(42)).thenReturn(null);
         //Act+Assert
         BoardGameSharingSystemException e = assertThrows(BoardGameSharingSystemException.class,
