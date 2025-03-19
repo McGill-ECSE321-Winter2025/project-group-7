@@ -47,11 +47,6 @@ public class BorrowRequestController {
     public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable int gameCopyId) {
         List<BorrowRequest> pendingRequests = borrowingService.findPendingBorrowingRequests(gameCopyId);
     
-        if (pendingRequests.isEmpty()) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, 
-                "No pending borrowing requests found for game copy with id " + gameCopyId);
-        }
-    
         return pendingRequests.stream()
                               .map(BorrowRequestResponseDto::new)
                               .toList();
@@ -65,11 +60,6 @@ public class BorrowRequestController {
     @ResponseStatus(HttpStatus.OK)
     public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable int gameCopyId) {
         List<BorrowRequest> acceptedRequests = borrowingService.findAcceptedBorrowingRequests(gameCopyId);
-
-        if (acceptedRequests.isEmpty()) {
-            throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, 
-                "No accepted borrowing requests found for game copy with id " + gameCopyId);
-        }
 
         return acceptedRequests.stream()
                             .map(BorrowRequestResponseDto::new)
