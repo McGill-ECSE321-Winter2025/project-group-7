@@ -38,6 +38,14 @@ public class BorrowingService
     @Autowired
     private GameCopyRepository gameCopyRepository;
 
+    /**
+     * Creates a borrowing request.
+     * @param gameCopyId The id of the game copy 
+     * @param borrowerId The id of the borrower
+     * @param startDate The start date of the borrowing
+     * @param endDate The end date of the borrowing
+     * @return The created borrowing request
+     */
     @Transactional
     public BorrowRequest createBorrowingRequest(int gameCopyId, int borrowerId, LocalDate startDate, LocalDate endDate) {
         GameCopy foundGameCopy = gameCopyRepository.findById(gameCopyId)
@@ -55,7 +63,11 @@ public class BorrowingService
         return newRequest;
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * Finds all pending borrowing requests for a game copy.
+     * @param gameCopyId The id of the game copy
+     * @return The list of pending borrow request for the game copy
+     */
     public List<BorrowRequest> findPendingBorrowingRequests(int gameCopyId) {
         gameCopyRepository.findById(gameCopyId)
                 .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Game copy not found."));
@@ -68,7 +80,11 @@ public class BorrowingService
         return pendingRequests;
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * Find accepted borrwoing requests for a game copy.
+     * @param gameCopyId The id of the game copy
+     * @return The list of accepted borrow requests for the game copy
+     */
     public List<BorrowRequest> findAcceptedBorrowingRequests(int gameCopyId) {
         gameCopyRepository.findById(gameCopyId)
                 .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Game copy not found."));
@@ -81,6 +97,11 @@ public class BorrowingService
         return acceptedRequests;
     }
 
+    /**
+     * Decline a pending borrow request.
+     * @param borrowingRequestId The id of the borrow request
+     * @return The borrow request that was declined
+     */
     @Transactional
     public BorrowRequest declinePendingBorrowingRequest(int borrowingRequestId) {
         BorrowRequest foundRequest = borrowingRequestRepository.findById(borrowingRequestId)
@@ -94,6 +115,11 @@ public class BorrowingService
         return foundRequest;
     }
 
+    /**
+     * Accept a pending borrow request.
+     * @param borrowingRequestId The id of the pending borrow request
+     * @return The accepted borrow request
+     */
     @Transactional
     public BorrowRequest acceptPendingBorrowingRequest(int borrowingRequestId) {
         BorrowRequest foundRequest = borrowingRequestRepository.findById(borrowingRequestId)
@@ -105,6 +131,15 @@ public class BorrowingService
         return foundRequest;
     }
 
+    /**
+     * Creates a request answer.
+     * @param borrowingRequestId The id of the borrow request
+     * @param dropoffDate The dropoff date
+     * @param dropoffTime The dropoff time
+     * @param dropoffLocation The dropoff location
+     * @param contactEmail The contact email
+     * @return The created request answer
+     */
     @Transactional
     public RequestAnswer createRequestAnswer(int borrowingRequestId, LocalDate dropoffDate, Time dropoffTime, String dropoffLocation, String contactEmail) {
         BorrowRequest foundRequest = borrowingRequestRepository.findById(borrowingRequestId)
@@ -119,6 +154,14 @@ public class BorrowingService
         return requestAnswerRepository.save(requestAnswer);
     }
 
+    /**
+     * Updates a request answer.
+     * @param requestAnswerId The id of the request answer
+     * @param dropoffDate The new dropoff date
+     * @param dropoffTime The new dropoff time
+     * @param dropoffLocation The new dropoff location
+     * @return The updated request answer
+     */
     @Transactional
     public RequestAnswer updateRequestAnswer(int requestAnswerId, LocalDate dropoffDate, Time dropoffTime, String dropoffLocation) {
         RequestAnswer foundAnswer = requestAnswerRepository.findById(requestAnswerId)
@@ -134,6 +177,10 @@ public class BorrowingService
         return requestAnswerRepository.save(foundAnswer);
     }
 
+    /**
+     * Deletes a request answer
+     * @param requestAnswerId The id of the request answer
+     */
     @Transactional
     public void deleteRequestAnswer(int requestAnswerId) {
         RequestAnswer foundAnswer = requestAnswerRepository.findById(requestAnswerId)
@@ -142,7 +189,11 @@ public class BorrowingService
         requestAnswerRepository.delete(foundAnswer);
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * Finds a request answer for a given borrowing request.
+     * @param borrowingRequestId
+     * @return The request answer for the borrowing request
+     */
     public RequestAnswer findRequestAnswerForBorrowingRequest(int borrowingRequestId) {
         BorrowRequest foundRequest = borrowingRequestRepository.findById(borrowingRequestId)
                 .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, "Borrowing request not found."));
