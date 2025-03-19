@@ -94,7 +94,6 @@ public class UserIntegrationTests {
         UserAccountResponseDto createdUserDto = response.getBody();
         assertEquals(VALID_NAME, createdUserDto.getName());
         assertEquals(VALID_EMAIL, createdUserDto.getEmail());
-        assertEquals(VALID_PASSWORD, createdUserDto.getPassword());
     }
 
     @Test
@@ -150,7 +149,6 @@ public class UserIntegrationTests {
         assertEquals(this.userId, foundUserDto.getId());
         assertEquals(VALID_NAME, foundUserDto.getName());
         assertEquals(VALID_EMAIL, foundUserDto.getEmail());
-        assertEquals(VALID_PASSWORD, foundUserDto.getPassword());
     }
 
     @Test
@@ -200,7 +198,6 @@ public class UserIntegrationTests {
         assertEquals(this.userId, deletedUserDto.getId());
         assertEquals(VALID_NAME, deletedUserDto.getName());
         assertEquals(VALID_EMAIL, deletedUserDto.getEmail());
-        assertEquals(VALID_PASSWORD, deletedUserDto.getPassword());
     }
 
     @Test
@@ -254,7 +251,6 @@ public class UserIntegrationTests {
         assertEquals(user.getId(), loggedInUserDto.getId());
         assertEquals(VALID_NAME, loggedInUserDto.getName());
         assertEquals(VALID_EMAIL, loggedInUserDto.getEmail());
-        assertEquals(VALID_PASSWORD, loggedInUserDto.getPassword());
     }
 
     @Test
@@ -316,7 +312,6 @@ public class UserIntegrationTests {
         UserAccountResponseDto toggledUserDto = response.getBody();
         assertEquals(VALID_NAME, toggledUserDto.getName());
         assertEquals(VALID_EMAIL, toggledUserDto.getEmail());
-        assertEquals(VALID_PASSWORD, toggledUserDto.getPassword());
         assertEquals(userId, toggledUserDto.getId());
         GameOwner toggledGameOwner = gameOwnerRepository.findGameOwnerById(userId);
         assertNull(toggledGameOwner.getUser());
