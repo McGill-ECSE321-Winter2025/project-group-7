@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.BorrowRequestResponseDto;
-import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 
@@ -24,7 +23,7 @@ public class BorrowRequestController {
     private BorrowingService borrowingService;
 
     /**
-     * creates a new borrowing request 
+     * Creates a new borrowing request.
      * @param gameCopyId the id of the game copy 
      * @param borrowerId the id of the borrower
      * @param borrowRequest the Request DTO to create the borrow request
@@ -38,7 +37,7 @@ public class BorrowRequestController {
     }
     
     /**
-     * finds all pending borrowing requests for a game copy 
+     * Finds all pending borrowing requests for a game copy.
      * @param gameCopyId the id of the game copy 
      * @return a list of information contained in a borrowing request
      */
@@ -51,8 +50,9 @@ public class BorrowRequestController {
                               .map(BorrowRequestResponseDto::new)
                               .toList();
     }
+    
     /**
-     * finds all accepted borrowing requests for a game copy 
+     * Finds all accepted borrowing requests for a game copy. 
      * @param gameCopyId the id of the game copy 
      * @return the list containing information about borrow request for the game copy 
      */
@@ -67,10 +67,11 @@ public class BorrowRequestController {
     }
 
     /**
-     * declines a pending borrowing request
+     * Declines a pending borrowing request.
      * @param id the id of the borrowing request 
      * @return the information about the declined borrowing request
      */
+    
     @DeleteMapping("/borrowrequests/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BorrowRequestResponseDto declinePendingBorrowingRequest(@PathVariable int id) 
@@ -78,7 +79,7 @@ public class BorrowRequestController {
         return new BorrowRequestResponseDto(borrowingService.declinePendingBorrowingRequest(id));
     }
     /**
-     * accepts pending borrowing request 
+     * Accepts pending borrowing request.
      * @param id the id of the borrowing request 
      * @return the accepted borrowing 
      */

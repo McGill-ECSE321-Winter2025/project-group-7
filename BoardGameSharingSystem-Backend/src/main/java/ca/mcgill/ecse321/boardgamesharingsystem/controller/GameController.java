@@ -64,7 +64,7 @@ public class GameController {
 
     
     /** 
-     * Find a game.
+     * Finds a game.
      * @param gameId the ID of the game
      * @return the game in question
      */
