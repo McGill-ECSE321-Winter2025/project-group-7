@@ -32,7 +32,7 @@ Hi! We are group 7🤯 We are a team of 7 students consisting of:
   
 This project is focused on providing a seamless experience for board game enthusiasts by enabling easy game sharing and event organization. Future enhancements may include additional social features or advanced search and filtering options.
 
-## Installation, Building, Testing and Running the Application 
+## Installing, Building, Testing and Running the Application 
 
 Running the app locally requires Java and PostgreSQL 
 
