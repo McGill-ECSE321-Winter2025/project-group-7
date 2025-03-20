@@ -44,21 +44,15 @@ Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
 $ psql --version
 psql (PostgreSQL) 17.2
 ```
-**This project uses java 21**
-
-Furthermore the app requires a database. Create a database using 
+This project uses java 21. Furthermore the app requires a database. **Create a database** using:
 ```SQL
 psql --username postgres
 Password for user postgres: 
 postgres=# CREATE DATABASE board_game_sharing_system
 ```
-*Note that the password for the user postgres is ecse321* 
+*Note that the password for the user postgres is ecse321. Details of database configuration can be found in the app.properties file*
 
-*Details of database configuration can be found in the app.properties file*
-
-**I forgot how to build the project.**
-
-No worries, we got you covered.
+**Steps to build the project:**
 
 ```bash
 ## . is project-group7
@@ -66,9 +60,7 @@ $ cd BoardGameSharingSystem-Backend
 $ ./gradlew build -xtest
 
 ```
-**I forgot how to run the tests.**
-
-No worries, we got you covered.
+**Steps to run the tests:**
 ```bash
 ## . is project-group7
 $ cd BoardGameSharingSystem-Backend
@@ -76,9 +68,8 @@ $ ./gradlew test
 
 ```
 
-**There should be REST API documentation for the project. I can't seem to find it.**
+**Steps to generate the REST API documentation:**
 
-No worries, we got you covered.
 ```bash
 ## . is project-group7
 $ cd BoardGameSharingSystem-Backend
@@ -88,9 +79,7 @@ $ ./gradlew bootRun
 
 Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology.
 
-**Where can I find the test coverage report**
-
-Please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
+**To find the test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
 
 
 ## Team Management
