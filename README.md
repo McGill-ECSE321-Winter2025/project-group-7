@@ -77,9 +77,7 @@ $ ./gradlew bootRun
 
 ```
 
-Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology.
-
-**To find the test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
+Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
 
 
 ## Team Management
