@@ -1,6 +1,6 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.sql.Time;
 
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ public class RequestAnswer {
     @Id
     @GeneratedValue
     private int id;
-    private Date dropOffDate;
+    private LocalDate dropOffDate;
     private Time dropOffTime;
     private String location;
 
@@ -29,7 +29,7 @@ public class RequestAnswer {
 
     }
 
-    public RequestAnswer(Date dropOffDate, Time dropOffTime, String location, BorrowRequest request, String contactEmail) {
+    public RequestAnswer(LocalDate dropOffDate, Time dropOffTime, String location, BorrowRequest request, String contactEmail) {
         this.dropOffDate = dropOffDate;
         this.location= location;
         this.request = request;
@@ -41,7 +41,7 @@ public class RequestAnswer {
         return id;
     }
 
-    public Date getDropOffDate() {
+    public LocalDate getDropOffDate() {
         return dropOffDate;
     }
 
@@ -65,7 +65,7 @@ public class RequestAnswer {
         this.contactEmail = contactEmail;
     }
 
-    public void setDropOffDate(Date dropOffDate) {
+    public void setDropOffDate(LocalDate dropOffDate) {
         this.dropOffDate = dropOffDate;
     }
 

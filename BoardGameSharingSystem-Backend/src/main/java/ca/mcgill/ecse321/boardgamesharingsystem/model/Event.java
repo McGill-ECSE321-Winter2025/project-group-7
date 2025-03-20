@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.model;
 
 import java.sql.Date;
 import java.sql.Time;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,6 +20,7 @@ public class Event {
     private int maxNumParticipants;
     private String location;
     private String description;
+    private String contactEmail;
     @ManyToOne
     private UserAccount creator;
 
@@ -26,7 +28,7 @@ public class Event {
 
     }
 
-    public Event(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, UserAccount creator)
+    public Event(Date startDate, Time startTime, Date endDate, Time endTime, int maxNumParticipants, String location, String description, String contactEmail, UserAccount creator)
     {
         this.startDate = startDate;
         this.startTime = startTime;
@@ -35,6 +37,7 @@ public class Event {
         this.maxNumParticipants = maxNumParticipants;
         this.location = location;
         this.description = description;
+        this.contactEmail = contactEmail;
         this.creator = creator;
     }
     public int getId()
@@ -69,8 +72,44 @@ public class Event {
     {
         return description;
     }
+    public String getContactEmail()
+    {
+        return contactEmail;
+    }
     public UserAccount getCreator()
     {
         return creator;
+    }
+    public void setStartDate(Date startDate)
+    {
+        this.startDate = startDate;
+    }
+    public void setStartTime(Time startTime)
+    {
+        this.startTime = startTime;
+    }
+    public void setEndDate(Date endDate)
+    {
+        this.endDate = endDate;
+    }
+    public void setEndTime(Time endTime)
+    {
+        this.endTime = endTime;
+    }
+    public void setMaxNumParticipants(int maxNumParticipants)
+    {
+        this.maxNumParticipants = maxNumParticipants;
+    }
+    public void setLocation(String location)
+    {
+        this.location = location;
+    }
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+    public void setContactEmail(String contactEmail)
+    {
+        this.contactEmail = contactEmail;
     }
 }

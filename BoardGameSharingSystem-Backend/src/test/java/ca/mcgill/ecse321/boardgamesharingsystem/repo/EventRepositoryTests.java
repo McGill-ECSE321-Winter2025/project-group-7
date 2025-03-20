@@ -1,11 +1,10 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.repo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.sql.Date;
 import java.sql.Time;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +45,8 @@ public class EventRepositoryTests {
         int maxNumParticipants = 10;
         String location = "McConnel 304";
         String description = "ChessV2 playtest";
-        Event event = new Event(startDate, startTime, endDate, endTime, maxNumParticipants, location, description, creator);
+        String contactEmail = "mikeEvents@mikemail.com";
+        Event event = new Event(startDate, startTime, endDate, endTime, maxNumParticipants, location, description, contactEmail, creator);
         event = eventRepository.save(event);
 
         //Act
@@ -62,6 +62,7 @@ public class EventRepositoryTests {
         assertEquals(maxNumParticipants, eventFromDb.getMaxNumParticipants());
         assertEquals(location, eventFromDb.getLocation());
         assertEquals(description, eventFromDb.getDescription());
+        assertEquals(contactEmail, eventFromDb.getContactEmail());
         assertNotNull(eventFromDb.getCreator());
         assertEquals(creator.getId(), eventFromDb.getCreator().getId());
     }

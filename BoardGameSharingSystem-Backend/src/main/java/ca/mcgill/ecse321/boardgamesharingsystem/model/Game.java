@@ -50,4 +50,25 @@ public class Game {
     public String getDescription() {
         return description;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMaxNumPlayers(int maxNumPlayers) {
+        this.maxNumPlayers = maxNumPlayers;
+    }
+
+    public void setMinNumPlayers(int minNumPlayers) {
+        this.minNumPlayers = minNumPlayers;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPictureURL(String pictureURL) {
+        this.pictureURL = pictureURL;
+    }
+
 }

@@ -36,4 +36,21 @@ public class UserAccountRepositoryTests {
         assertEquals(mila.getEmail(), milaFromDb.getEmail());
         assertEquals(mila.getPassword(), milaFromDb.getPassword());
     }
+
+    @Test
+    public void testReadUserAccountByName() {
+        //Arrange
+        UserAccount mila = new UserAccount("mila","mila@gmail.com","1234");
+        mila = userAccountRepository.save(mila);
+
+        //Act
+        UserAccount milaFromDb = userAccountRepository.findUserAccountByName(mila.getName());
+
+        //Assert
+        assertNotNull(milaFromDb);
+        assertEquals(mila.getId(), milaFromDb.getId());
+        assertEquals(mila.getName(), milaFromDb.getName());
+        assertEquals(mila.getEmail(), milaFromDb.getEmail());
+        assertEquals(mila.getPassword(), milaFromDb.getPassword());
+    }
 }
