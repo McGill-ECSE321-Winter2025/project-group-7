@@ -1,18 +1,18 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import CreateReview from './views/CreateReview.vue';
+
+export default {
+  name: 'App',
+  components: {
+    CreateReview
+  }
+}
 </script>
 
 <template>
-  <header>
-    <!--The navigation bar-->
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-  </header>
-
-  <RouterView />
+  <div id="app">
+    <CreateReview />
+  </div>
 </template>
 
 <style scoped>
