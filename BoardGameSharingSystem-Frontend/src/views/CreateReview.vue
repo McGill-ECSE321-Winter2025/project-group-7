@@ -29,12 +29,14 @@
                 <input type = "checkbox" id = "5star" name="5star" value = "5star">
                 <font-awesome-icon :icon="['fas', 'star']" />
                 </label>
+            
             </div>
             <label for="title">Title:</label><br>
-            <input type="text" name="Review Title"><br>
+            <input type="text" name="Review Title"><br> <br>
             <label for = "desc"> Description:</label><br>
             <textarea id="desc" name="desc" rows="4" cols="50"> </textarea>
-        </form>
+            
+        </form> <br>
         <button>Submit</button>
         <button>Cancel</button>
     </main>
@@ -44,6 +46,25 @@
 </script>
 
 <style>
+body {
+    background-color: #eee9e0;
+
+}
+
+
+
+h1 {
+    color : #FFFFFF;
+    font-family: "Times New Roman", Times, serif;
+}
+
+input[type="text"], textarea {
+    border-radius: 10px;
+    box-shadow: 0 0 0 1.5px #000;
+    border: 5px solid transparent;
+
+}
+
 .star-checkbox input {
     opacity:0;
     
@@ -57,9 +78,16 @@
 
 }
 
-.star-checkbox input:checked {
-    color: yellow;
+.star-checkbox :hover + svg {
+    color: #d99058;
+}
 
+.star-checkbox input:checked + svg {
+    color: #d99058;
+}
+
+textarea {
+    resize : none;
 }
 
 </style>

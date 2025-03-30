@@ -1,17 +1,18 @@
 <script>
 import CreateReview from './views/CreateReview.vue';
+import SpecificGame from './views/SpecificGame.vue';
 
 export default {
   name: 'App',
   components: {
-    CreateReview
+    SpecificGame
   }
 }
 </script>
 
 <template>
   <div id="app">
-    <CreateReview />
+    <SpecificGame />
   </div>
 </template>
 
