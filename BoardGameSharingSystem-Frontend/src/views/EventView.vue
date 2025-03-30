@@ -9,7 +9,7 @@
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
         <button id="createEventButton" @click="createEvent">Create An Event</button>
-        <table>
+        <table id="eventTable">
             <tr>
                 <td class="eventTableDataContainer">
                     <div class="eventBox">
@@ -115,12 +115,11 @@ button{
 }
 .registerToEventButton{
     color: #32CD32;
-    background-color: white;
 }
-.registerToEventButton:hover{
+button:hover{
     background-color: #e3e3e3;
 }
-.registerToEventButton:active{
+button:active{
     background-color: #bababa;
 }
 .search{
@@ -142,5 +141,9 @@ button{
     border-style: none;
     outline: none;
     text-indent: 20px;
+}
+#eventSearch::-webkit-search-cancel-button{
+    color:#bababa;
+    margin-right: 50px;
 }
 </style>
