@@ -9,10 +9,11 @@ import HelloWorld from './components/HelloWorld.vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/events">Events</RouterLink>
       </nav>
   </header>
 
-  <RouterView />
+  <RouterView id="pageContent"/>
 </template>
 
 <style scoped>
@@ -51,11 +52,14 @@ nav a:first-of-type {
   border: 0;
 }
 
+#pageContent {
+  width: 100%;
+  height: 100%;
+}
 @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   .logo {
@@ -69,7 +73,7 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
+    text-align: center;
     margin-left: -1rem;
     font-size: 1rem;
 
