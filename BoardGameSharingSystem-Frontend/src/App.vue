@@ -1,11 +1,13 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 </script>
 
 <template>
   <header>
     <!--The navigation bar-->
-      <nav>
+      <nav v-if="!$route.meta.hideNavbar">
         
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
@@ -131,6 +133,7 @@ nav a:first-of-type {
 
 <style>
 #app {
+  /* Default background */
   background-image: url('@/images/GameNest-app-bg.png'); 
   background-size: cover;
   background-position: center;
@@ -138,5 +141,8 @@ nav a:first-of-type {
   min-height: 100vh;
   min-width: 100vw; 
   width: 100%;
+
+  /* Allow views to override */
+  transition: background 0.3s ease-in-out;
 }
 </style>
