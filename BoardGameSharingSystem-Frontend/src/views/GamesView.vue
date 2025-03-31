@@ -15,14 +15,6 @@ import { Button } from 'primevue';
         <template #header>
           <img src="/test-image2.jpg" alt="game image1" class="game-images">
         </template>
-        <template #title>Game</template>
-        <template #subtitle>Min-Max Players </template>
-        <template #content>
-            <p class="m-0">
-              This is a short description about the game 
-            </p>
-        </template>
-        <template #footer>This is a footer</template>
     </Card>
     </div>
     <div class="flip-card-back">
@@ -50,14 +42,6 @@ import { Button } from 'primevue';
         <template #header>
           <img src="/test-image2.jpg" alt="game image1" class="game-images">
         </template>
-        <template #title>Game</template>
-        <template #subtitle>Min-Max Players </template>
-        <template #content>
-            <p class="m-0">
-              This is a short description about the game 
-            </p>
-        </template>
-        <template #footer>This is a footer</template>
     </Card>
     </div>
     <div class="flip-card-back">
@@ -81,14 +65,15 @@ import { Button } from 'primevue';
   
 </template>
 
-<style>
+<style scoped>
  .game-card-wrapper {
-  position: relative;
-  max-width: 200px;
-  margin-top: 10vh;
+  /* position: relative;
+  max-width: 200px; */
+  /* margin-top: 10vh; */
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  flex-direction: row;
   gap: 20px;
 } 
 
@@ -98,6 +83,7 @@ import { Button } from 'primevue';
   height: 100%;
   transition: transform 0.2s ease;
   margin-bottom: 0;
+  text-align: center;
 }
 
 .flip-card {
@@ -145,9 +131,9 @@ import { Button } from 'primevue';
   margin-top: 10vh;
 }
 
-.game-images{
-  max-height: 100px;
-}
+/* .game-images{
+  c
+} */
 
 .game-card{
   height: 300px ;
