@@ -27,13 +27,15 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/RequestView.vue'),
     },
+
     {
       path: '/request-historys',
       name: 'request-historys',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/RequestHistoryView.vue'),
+      component: () => import('../views/RequestHistoryView.vue'), 
+    },     
     {
       path: '/games',
       name: 'games',
