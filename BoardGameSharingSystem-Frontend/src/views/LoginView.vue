@@ -146,7 +146,7 @@ body{
     transform: translateX(-50%);
     width: 850px;
     height: 550px;
-    background: #14252e;
+    background-color: rgba(59, 24, 4, 1);
     margin: 20px;
     border-radius: 30px;
     box-shadow: 0 0 30px rgba(0, 0, 0, .2);
@@ -170,7 +170,7 @@ form{ width: 100%; color: #fff;}
     right: 0;
     width: 50%;
     height: 100%;
-    background: #14252e;
+    background-color: rgba(59, 24, 4, 1);
     display: flex;
     align-items: center;
     color: #333;
