@@ -1,6 +1,5 @@
 <script setup>
-import { useRoute } from 'vue-router'
-
+import { useRoute, RouterLink, RouterView } from 'vue-router'
 const route = useRoute()
 </script>
 
@@ -12,7 +11,7 @@ const route = useRoute()
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
           <RouterLink to="/events">Event</RouterLink>
-          <RouterLink to="/borrowrequests">Request</RouterLink>
+          <RouterLink to="/requests">Request</RouterLink>
         </div>
 
       <!-- Account icon and Link on the right -->
@@ -24,17 +23,20 @@ const route = useRoute()
 
           <RouterLink to="/login">Sign Out</RouterLink>
         </div>
-        
-      </nav>
+        </nav>
   </header>
 
-  <RouterView />
+  <RouterView id="pageContent"/>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  height: 100%;
+  width: 100%;
+  padding: 4.5rem;
+  background-color: rgba(219, 213, 197, 0.3);
+  mix-blend-mode: additive;
 }
 
 /* .logo {
@@ -46,23 +48,25 @@ nav {
   display: flex;
   position: fixed; /* Keeps it at the top even when scrolling */
   align-items: center; /* Align items vertically */
-  top: -3.5rem;
   left: 50%;
   transform: translateX(-50%); /* Shift it back by half of its width */
-  width: max-content;/* Shrinks to fit content */
+  width: 100%;/* Shrinks to fit content */
   font-size: 55px;
   text-align: center;
   z-index: 1000; /* Ensures it stays above other elements */
   gap: 1.5rem; /* Adds spacing between links */
 } 
 
-.nav-center {
+.nav-left {
   position: absolute;
   display: flex;
   align-items: center;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  margin-top: 0rem;
+  color: rgb(230, 204, 189);
+  mix-blend-mode: add;
   gap: 1rem;
   justify-content: center;
   font-size: 2.5rem;
@@ -73,15 +77,15 @@ nav {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-top: 0rem;
   margin-left: auto;
   font-size: 2.5rem;
 }
 
-nav .nav-icon {
-  width: 150px; /* Adjust to the desired size */
-  height: 150px; /* Same as width to keep it circular */
-  border-radius: 50%; /* Ensures it remains circular */
-  object-fit: cover; /* Ensures image is cropped to fit inside the circle */
+.nav-icon {
+  width: 60px; /* Adjust to the desired size */
+  height: 60px; /* Same as width to keep it circular */
+  margin-top: 1rem;
 }
 
 nav a.router-link-exact-active {
@@ -104,11 +108,14 @@ nav a:first-of-type {
   border: 0;
 }
 
+#pageContent {
+  width: 100%;
+  height: 100%;
+}
 @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   .logo {
@@ -122,13 +129,14 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
+    text-align: center;
+    font-size: 1rem;
 
     padding: 1rem 0;
-    margin-top: 1rem;
+    margin-top: 0;
   }
 }
+
 </style>
 
 <style>

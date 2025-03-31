@@ -15,15 +15,15 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(PrimeVue, {
-    theme: {
-      preset: Aura,
-      options: {
-        prefix: 'p',
-        darkModeSelector: 'system',
-        cssLayer: false,
-      },
+  theme: {
+    preset: Aura,
+    options: {
+      prefix: 'p',
+      darkModeSelector: 'system',
+      cssLayer: false,
     },
-  })
+  },
+})
 app.use(ToastService)
 app.use(ConfirmationService)
 
