@@ -35,6 +35,7 @@ const route = useRoute()
 header {
   line-height: 1.5;
   max-height: 100vh;
+  padding: 2rem;
 }
 
 /* .logo {
