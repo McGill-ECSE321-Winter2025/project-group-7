@@ -7,7 +7,7 @@ const route = useRoute()
   <header>
     <!--The navigation bar-->
       <nav v-if="!$route.meta.hideNavbar">
-        
+        <img class="logo" src="@/images/GameNest-logo.png">
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
           <RouterLink to="/events">Event</RouterLink>
@@ -23,7 +23,7 @@ const route = useRoute()
 
           <RouterLink to="/login">Sign Out</RouterLink>
         </div>
-        </nav>
+      </nav>
   </header>
 
   <RouterView id="pageContent"/>
@@ -31,11 +31,13 @@ const route = useRoute()
 
 <style scoped>
 header {
+  display: flex;
+  place-items: center;
   line-height: 1.5;
   height: 100%;
   width: 100%;
   padding: 4.5rem;
-  background-color: rgba(219, 213, 197, 0.3);
+  background-color: rgba(221, 216, 201, 0.7);
   mix-blend-mode: additive;
 }
 
@@ -46,23 +48,22 @@ header {
 
 nav {
   display: flex;
-  position: fixed; /* Keeps it at the top even when scrolling */
+  position: fixed; /* Keeps it at the top even when scrolling */  
+  justify-content: space-between;
   align-items: center; /* Align items vertically */
-  left: 50%;
-  transform: translateX(-50%); /* Shift it back by half of its width */
   width: 100%;/* Shrinks to fit content */
   font-size: 55px;
   text-align: center;
   z-index: 1000; /* Ensures it stays above other elements */
-  gap: 1.5rem; /* Adds spacing between links */
 } 
 
+.logo{
+  width: 20%;
+  height: auto;
+}
 .nav-left {
-  position: absolute;
   display: flex;
   align-items: center;
-  left: 50%;
-  transform: translateX(-50%);
   text-align: center;
   margin-top: 0rem;
   color: rgb(230, 204, 189);
@@ -77,8 +78,8 @@ nav {
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding-right: 10rem;
   margin-top: 0rem;
-  margin-left: auto;
   font-size: 2.5rem;
 }
 
@@ -111,46 +112,5 @@ nav a:first-of-type {
 #pageContent {
   width: 100%;
   height: 100%;
-}
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: center;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 0;
-  }
-}
-
-</style>
-
-<style>
-#app {
-  /* Default background */
-  background-image: url('@/images/GameNest-app-bg.png'); 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  min-width: 100vw; 
-  width: 100%;
-
-  /* Allow views to override */
-  transition: background 0.3s ease-in-out;
 }
 </style>

@@ -1,14 +1,20 @@
 @import './base.css';
 
 #app {
+  display: flex;
+  flex:1;
+  flex-direction: column;
+  background-size: 100%;
+  font-weight: normal;
+  /* Default background */
+  background-image: url('@/images/GameNest-app-bg-plain.png'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  background-image: url("https://images4.alphacoders.com/123/thumb-1920-1232432.jpg");
-  background-size: 100%;
-  background-blend-mode: multiply;
-  font-weight: normal;
+  width: 100%;
+
 }
 body {
   margin: 0;
