@@ -26,14 +26,17 @@ const route = useRoute()
         </nav>
   </header>
 
-  <RouterView />
+  <RouterView id="pageContent"/>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
-  max-height: 100vh;
-  padding: 2rem;
+  height: 100%;
+  width: 100%;
+  padding: 4.5rem;
+  background-color: rgba(219, 213, 197, 0.3);
+  mix-blend-mode: additive;
 }
 
 /* .logo {
@@ -45,26 +48,24 @@ nav {
   display: flex;
   position: fixed; /* Keeps it at the top even when scrolling */
   align-items: center; /* Align items vertically */
-  top: -3.5rem;
   left: 50%;
   transform: translateX(-50%); /* Shift it back by half of its width */
-  width: max-content;/* Shrinks to fit content */
+  width: 100%;/* Shrinks to fit content */
   font-size: 55px;
   text-align: center;
   z-index: 1000; /* Ensures it stays above other elements */
   gap: 1.5rem; /* Adds spacing between links */
 } 
 
-.nav-center {
+.nav-left {
   position: absolute;
   display: flex;
   align-items: center;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 0rem;
   color: rgb(230, 204, 189);
-  background-color: rgba(2, 1, 0, 0.411);
   mix-blend-mode: add;
   gap: 1rem;
   justify-content: center;
@@ -76,15 +77,15 @@ nav {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-top: 0rem;
   margin-left: auto;
   font-size: 2.5rem;
 }
 
-nav .nav-icon {
-  width: 150px; /* Adjust to the desired size */
-  height: 150px; /* Same as width to keep it circular */
-  border-radius: 50%; /* Ensures it remains circular */
-  object-fit: cover; /* Ensures image is cropped to fit inside the circle */
+.nav-icon {
+  width: 60px; /* Adjust to the desired size */
+  height: 60px; /* Same as width to keep it circular */
+  margin-top: 1rem;
 }
 
 nav a.router-link-exact-active {
