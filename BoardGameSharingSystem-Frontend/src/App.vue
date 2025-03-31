@@ -6,11 +6,11 @@ import HelloWorld from './components/HelloWorld.vue'
 <template>
   <header>
     <!--The navigation bar-->
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/games">Games</RouterLink>
-      </nav>
+    <nav>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/games">Games</RouterLink>
+    </nav>
   </header>
 
   <RouterView />
@@ -20,6 +20,7 @@ import HelloWorld from './components/HelloWorld.vue'
 header {
   line-height: 1.5;
   max-height: 100vh;
+  padding: 2rem;
 }
 
 .logo {
@@ -28,10 +29,15 @@ header {
 }
 
 nav {
-  width: 100%;
+  display: flex;
+  position: fixed; /* Keeps it at the top even when scrolling */
+  align-items: center; /* Align items vertically */
+  top: 0%;
+  width: 80%;
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
+  z-index: 1000;
 }
 
 nav a.router-link-exact-active {
