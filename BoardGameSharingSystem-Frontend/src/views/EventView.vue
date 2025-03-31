@@ -2,7 +2,7 @@
     <main>
         <div class="search">
             <input type="search" name="eventName" id="eventSearch" placeholder="Search Events">
-            <img id="searchIconImg" src="./myimg.png">
+            <img id="searchIconImg" src="./search.png">
         </div>
         <div class="searchFilters">
             <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
@@ -27,7 +27,6 @@
                             <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
                         </div>
                     </div>
-                    
                 </td>
             </tr>
         </table>
@@ -60,7 +59,7 @@ export default {
 
 <style scoped>
 td{
-    border-top: 1px solid black;
+    border-top: 0.1em solid black;
     width: 100%;
 }
 tr:first-child td{
@@ -69,19 +68,20 @@ tr:first-child td{
 main{
     flex: 1;
     width: 100%;
-    background-color: aquamarine;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100%;
+    color: rgb(230, 204, 189);
 }
 table{
-    border-radius: 10px;
+    border-radius: 1em;
     border-style: solid;
     border-color: green;
     width: 60%;
     border-spacing: 0;
-    background-color: azure;
+    background-color: rgba(59, 24, 4, 0.9);
+    mix-blend-mode:add;
     margin-top: 1%;
 }
 .eventTableDataContainer{
@@ -98,7 +98,7 @@ table{
     display: flex;
 }
 .eventBox div p {
-    margin-right: 10px;
+    margin-right: 1em;
 }
 .eventDescription{
     word-wrap: break-word;
@@ -106,21 +106,25 @@ table{
     overflow-wrap: break-word;
 }
 button{
-    border-radius: 10px;
+    background-color: rgba(59, 24, 4, 0.9);
+    color: rgb(230, 204, 189);
+    mix-blend-mode:add;
+    border-radius: 10em;
     border-style: solid;
-    background-color: white;
     border-color: grey;
-    border-width: 1px;
-    padding: 3px;
+    border-width: 0.1em;
+    padding: 0.5em;
 }
 .registerToEventButton{
     color: #32CD32;
 }
 button:hover{
-    background-color: #e3e3e3;
+    background-color: rgba(145, 84, 49, 0.9);
+    mix-blend-mode:add;
 }
 button:active{
-    background-color: #bababa;
+    background-color: rgba(187, 128, 95, 0.9);
+    mix-blend-mode:add;
 }
 .search{
     margin-top: 1%;
@@ -128,22 +132,45 @@ button:active{
 }
 #searchIconImg{
     position: absolute;  
-    left: 260px;
-    top: 18px;
-    width: 16px;
-    height: 16px;
+    left: 20em;
+    top: 1em;
+    width: 1.6em;
+    height: 1.6em;
     pointer-events: none;
+    filter: brightness(10);
 }
 #eventSearch{
-    height: 50px;
-    width: 300px;
-    border-radius: 100px;
+    height: 4em;
+    width: 25em;
+    border-radius: 10em;
     border-style: none;
     outline: none;
-    text-indent: 20px;
+    text-indent: 2em;
+    background-color: rgba(59, 24, 4, 0.9);
+    caret-color: rgb(230, 204, 189);
+    color: rgb(230, 204, 189);
+    mix-blend-mode:add;
 }
 #eventSearch::-webkit-search-cancel-button{
     color:#bababa;
-    margin-right: 50px;
+    margin-right: 5em;
+}
+#registeredEventCheckbox{
+    margin-right: 0.2em;
+    accent-color: rgba(59, 24, 4, 0.9);
+    mix-blend-mode:add;
+}
+.eventName{
+    text-decoration: underline;
+}
+.eventName:hover{
+    text-decoration: underline;
+}
+.eventCapacity{
+    font-weight: bold;
+}
+.eventLocation{
+    font-style: italic;
+    color: rgb(197, 102, 54);
 }
 </style>
