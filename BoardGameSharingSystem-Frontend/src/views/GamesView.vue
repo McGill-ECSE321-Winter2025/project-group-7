@@ -5,7 +5,7 @@ import { Button } from 'primevue';
 </script>
 
 <template>
-  <h1 class="game-title">Games</h1>
+  <!-- <h1 class="game-title">Games</h1> -->
   <div class="game-card-wrapper">
     <div class="game-card-content">
       <div class="flip-card">
@@ -122,14 +122,14 @@ import { Button } from 'primevue';
   transform: rotateY(180deg);
 }
 
-.game-title {
+/* .game-title {
   width: auto;
   text-align: left;
   position: fixed;
   margin-left: 0;
   margin-bottom: 10vh;
   margin-top: 10vh;
-}
+} */
 
 /* .game-images{
   c

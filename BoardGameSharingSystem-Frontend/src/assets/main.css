@@ -7,7 +7,7 @@
   flex-direction: column;
   background-image: url("https://images4.alphacoders.com/123/thumb-1920-1232432.jpg");
   background-size: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: rgba(0, 0, 0, 0.5); */
   background-blend-mode: multiply;
   font-weight: normal;
 }
