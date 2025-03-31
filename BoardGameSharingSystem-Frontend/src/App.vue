@@ -1,6 +1,5 @@
 <script setup>
-import { useRoute } from 'vue-router'
-
+import { useRoute, RouterLink, RouterView } from 'vue-router'
 const route = useRoute()
 </script>
 
@@ -12,7 +11,7 @@ const route = useRoute()
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
           <RouterLink to="/events">Event</RouterLink>
-          <RouterLink to="/borrowrequests">Request</RouterLink>
+          <RouterLink to="/requests">Request</RouterLink>
         </div>
 
       <!-- Account icon and Link on the right -->
@@ -24,8 +23,7 @@ const route = useRoute()
 
           <RouterLink to="/login">Sign Out</RouterLink>
         </div>
-        
-      </nav>
+        </nav>
   </header>
 
   <RouterView />
@@ -64,6 +62,10 @@ nav {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  margin-top: 2rem;
+  color: rgb(230, 204, 189);
+  background-color: rgba(2, 1, 0, 0.411);
+  mix-blend-mode: add;
   gap: 1rem;
   justify-content: center;
   font-size: 2.5rem;
@@ -105,11 +107,14 @@ nav a:first-of-type {
   border: 0;
 }
 
+#pageContent {
+  width: 100%;
+  height: 100%;
+}
 @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   .logo {
@@ -123,13 +128,14 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
+    text-align: center;
+    font-size: 1rem;
 
     padding: 1rem 0;
-    margin-top: 1rem;
+    margin-top: 0;
   }
 }
+
 </style>
 
 <style>
