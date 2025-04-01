@@ -8,130 +8,108 @@
             <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
-        <button id="createEventButton" @click="getAllEvents">Create An Event</button>
-        <table id="eventTable">
-            <tr>
+        <button id="createEventButton" @click="fetchEvents">Create An Event</button>
+        <table v-if="events && events.length > 0" id="eventTable">
+            <tr v-for="(event, index) in events" :key="event.id">
                 <td class="eventTableDataContainer">
                     <div class="eventBox">
-                        <p class="eventName">Event Name</p>
+                        <p class="eventName">{{event.eventName}}</p>
                         <div>    
-                            <p class="eventCapacity">8/9</p>
-                            <button class="registerToEventButton">Register</button>
-                        </div>
-                    </div>
-                    
-                    <div class="eventDetails">
-                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
-                        <div class="eventDetailsLeft">
-                            <p class="eventLocation">Event Location</p>
-                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="eventTableDataContainer">
-                    <div class="eventBox">
-                        <p class="eventName">Event Name</p>
-                        <div>    
-                            <p class="eventCapacity">8/9</p>
-                            <button class="deregisterFromEventButton">Deregister</button>
-                        </div>
-                    </div>
-                    
-                    <div class="eventDetails">
-                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
-                        <div class="eventDetailsLeft">
-                            <p class="eventLocation">Event Location</p>
-                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="eventTableDataContainer">
-                    <div class="eventBox">
-                        <p class="eventName">Event Name</p>
-                        <div>    
-                            <p class="eventCapacity">8/9</p>
+                            <p class="eventCapacity">{{event.eventCapacity}}</p>
+                            <button v-if="event.eventHasCapacity" class="registerToEventButton">Register</button>
+                            <!--NEEDS CURRENT USER ID TO IMPLEMENT
+                            <button class="dangerButton">Deregister</button>
                             <button class="updateEvent">Update</button>
-                            <button class="cancelEvent">Cancel</button>
+                            <button class="dangerButton">Cancel</button>
+                            -->
                         </div>
                     </div>
                     
                     <div class="eventDetails">
-                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
+                        <p class="eventDateTime">{{event.eventFormattedDateTime}}</p>
                         <div class="eventDetailsLeft">
-                            <p class="eventLocation">Event Location</p>
-                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="eventTableDataContainer">
-                    <div class="eventBox">
-                        <p class="eventName">Event Name</p>
-                        <div>    
-                            <p class="eventCapacity">8/9</p>
-                            <button class="registerToEventButton">Register</button>
-                        </div>
-                    </div>
-                    
-                    <div class="eventDetails">
-                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
-                        <div class="eventDetailsLeft">
-                            <p class="eventLocation">Event Location</p>
-                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="eventTableDataContainer">
-                    <div class="eventBox">
-                        <p class="eventName">Event Name</p>
-                        <div>    
-                            <p class="eventCapacity">8/9</p>
-                            <button class="registerToEventButton">Register</button>
-                        </div>
-                    </div>
-                    
-                    <div class="eventDetails">
-                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
-                        <div class="eventDetailsLeft">
-                            <p class="eventLocation">Event Location</p>
-                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
+                            <p class="eventLocation">{{event.location}}</p>
+                            <p class="eventDescription">{{event.description}}</p>
                         </div>
                     </div>
                 </td>
             </tr>
         </table>
+        <div v-else class="noContent">
+            There are no Events yet,<br> Create one!
+        </div>
     </main>
 </template>
 
 <script>
-import api from '../services/api'
+import { ref, onMounted } from 'vue'
+import { eventService } from '@/services/eventService'
+import { userService } from '@/services/userService'
+import { eventGameService } from '@/services/eventGameService'
+import { registrationService } from '@/services/registrationServices'
+let events = ref([])
+let error = ref(null)
 
-export default {
-  methods: {
-    async getAllEvents() {
+const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
+  weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+})
+
+const formatTime = (timeStr) => {
+  const dateObj = new Date(`1970-01-01T${timeStr}`)
+  return dateObj.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+}
+
+const fetchEvents = async () => {
     try {
-      const response = await api.get('/events')
-      console.log(response.data);
-      return response.data
-    } catch (error) {
-      console.error('Error fetching events:', error)
-      throw error
-    }
-  },
-    async createEvent()
-    {
-        console.log("create an event!");
-    },
+    error.value = null
+    const fetchedEvents = await eventService.findAllEvents()
+    const formattedEvents = await Promise.all(fetchedEvents.map(async (event) => {
+        let gameTitle = "Game Not Found"
+        let creatorName = "User Not Found"
+        let eventCapacity = "N/A"
+        let eventHasCapacity = false
+        let eventFormattedDateTime = "UnknownTime UnknownDate - UnknownTime UnknownDate"
+        try {
+          const games = await eventGameService.findEventGamesByEvent(event.id)
+          if (games.length > 0) {
+            gameTitle = games[0].gameTitle // Adjust if multiple games
+          }
+        } catch (e) {
+          console.warn(`Error Fetching Games for Event: ${e}`)
+        }
+        try {
+          const user = await userService.findUserAccountById(event.creatorId)
+          creatorName = user.name
+        } catch (e) {
+          console.warn(`Error Fetching Creator for Event: ${e}`)
+        }
+        try {
+          const registrations = await registrationService.findRegistrationByEvent(event.id)
+          const registrationCount = registrations.length
+          eventCapacity = registrations.length + "/" + event.maxNumParticipants 
+          eventHasCapacity = registrations.length < event.maxNumParticipants
+        } catch (e) {
+          console.warn(`Error Fetching Registrations for Event: ${e}`)
+        }
+        eventFormattedDateTime =`${formatTime(event.startTime)} ${formatDate(event.startDate)} - ${formatTime(event.endTime)} ${formatDate(event.endDate)}`
+        return {
+          ...event,
+          eventName: `${gameTitle} by ${creatorName}`,
+          eventCapacity: eventCapacity,
+          eventHasCapacity : eventHasCapacity,
+          eventFormattedDateTime: eventFormattedDateTime
+        }
+    }))
+    events.value = formattedEvents
+  } catch (err) {
+    error.value = 'Failed to load events. Please try again later.'
+    console.error('Error loading events:', err)
   }
-  // ...
-};
+}
+onMounted(() => {
+  fetchEvents()
+})
+
 </script>
 
 <style scoped>
@@ -195,23 +173,25 @@ button{
 .registerToEventButton{
     color: rgba(255, 254, 198, 1);
 }
-.deregisterFromEventButton{
+.dangerButton{
     background-color: rgba(189, 0, 0, 0.9);
-    color: rgb(255, 180, 203);
+    color: rgb(255, 255, 255);
 }
-.cancelEvent{
-    background-color: rgba(189, 0, 0, 0.9);
-    color: rgb(255, 180, 203);
+.dangerButton:hover{
+    background-color: rgba(226, 12, 12, 0.9);
+}
+.dangerButton:active{
+    background-color: rgba(255, 149, 149, 0.9);
 }
 .updateEvent {
-margin-right: 1rem;
+    margin-right: 1rem;
 }
 button:hover{
     background-color: rgba(172, 117, 86, 0.9);
     mix-blend-mode:add;
 }
 button:active{
-    background-color: rgba(187, 128, 95, 0.9);
+    background-color: rgba(241, 187, 155, 0.9);
     mix-blend-mode:add;
 }
 .search{
@@ -248,7 +228,7 @@ button:active{
 }
 #registeredEventCheckbox{
     margin-right: 0.2em;
-    accent-color: rgba(221, 219, 119, 0.9);
+    accent-color: rgba(167, 166, 160, 0.9);
     mix-blend-mode:add;
 }
 label[for="registeredEventCheckbox"]{
@@ -266,5 +246,19 @@ label[for="registeredEventCheckbox"]{
 .eventLocation{
     font-style: italic;
     color: rgb(197, 102, 54);
+}
+.noContent{
+    background-color: rgba(221, 219, 119, 0.9);
+    flex: 1;
+    width: 60%;
+    margin: 10vh;
+    border-radius: 1em;
+    border-style: solid;
+    border-color: rgb(234, 240, 154, 0.9);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
 }
 </style>

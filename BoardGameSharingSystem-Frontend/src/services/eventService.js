@@ -13,7 +13,7 @@ export const eventService = {
   },
 
   // PUT /events/{id}
-  async updateEvent(eventId, eventData) {
+  async updateEvent(id, eventData) {
     try {
       const response = await api.put(`/events/${id}`, eventData)
       return response.data
@@ -35,12 +35,12 @@ export const eventService = {
   },
 
   // DELETE /events/{id}
-  async deleteEvent(eventData) {
+  async deleteEvent(id) {
     try {
-      const response = await api.post(`/events/${id}`, eventData)
+      const response = await api.delete(`/events/${id}`)
       return response.data
     } catch (error) {
-      console.error('Error creating event:', error)
+      console.error('Error deleting event:', error)
       throw error
     }
   },
