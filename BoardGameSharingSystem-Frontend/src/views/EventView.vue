@@ -29,6 +29,82 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="eventTableDataContainer">
+                    <div class="eventBox">
+                        <p class="eventName">Event Name</p>
+                        <div>    
+                            <p class="eventCapacity">8/9</p>
+                            <button class="registerToEventButton">Register</button>
+                        </div>
+                    </div>
+                    
+                    <div class="eventDetails">
+                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
+                        <div class="eventDetailsLeft">
+                            <p class="eventLocation">Event Location</p>
+                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="eventTableDataContainer">
+                    <div class="eventBox">
+                        <p class="eventName">Event Name</p>
+                        <div>    
+                            <p class="eventCapacity">8/9</p>
+                            <button class="registerToEventButton">Register</button>
+                        </div>
+                    </div>
+                    
+                    <div class="eventDetails">
+                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
+                        <div class="eventDetailsLeft">
+                            <p class="eventLocation">Event Location</p>
+                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="eventTableDataContainer">
+                    <div class="eventBox">
+                        <p class="eventName">Event Name</p>
+                        <div>    
+                            <p class="eventCapacity">8/9</p>
+                            <button class="registerToEventButton">Register</button>
+                        </div>
+                    </div>
+                    
+                    <div class="eventDetails">
+                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
+                        <div class="eventDetailsLeft">
+                            <p class="eventLocation">Event Location</p>
+                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="eventTableDataContainer">
+                    <div class="eventBox">
+                        <p class="eventName">Event Name</p>
+                        <div>    
+                            <p class="eventCapacity">8/9</p>
+                            <button class="registerToEventButton">Register</button>
+                        </div>
+                    </div>
+                    
+                    <div class="eventDetails">
+                        <p class="eventDateTime">9AM May 12, 2025 - 10AM May 12, 2025</p>
+                        <div class="eventDetailsLeft">
+                            <p class="eventLocation">Event Location</p>
+                            <p class="eventDescription">Event Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa a</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
         </table>
     </main>
 </template>
@@ -72,15 +148,15 @@ main{
     flex-direction: column;
     align-items: center;
     min-height: 100%;
-    color: rgb(230, 204, 189);
+    color: rgb(85, 40, 17);
 }
 table{
     border-radius: 1em;
     border-style: solid;
-    border-color: green;
+    border-color: rgb(234, 240, 154, 0.9);
     width: 60%;
     border-spacing: 0;
-    background-color: rgba(59, 24, 4, 0.9);
+    background-color: rgba(221, 219, 119, 0.9);
     mix-blend-mode:add;
     margin-top: 1%;
 }
@@ -106,20 +182,20 @@ table{
     overflow-wrap: break-word;
 }
 button{
-    background-color: rgba(59, 24, 4, 0.9);
-    color: rgb(230, 204, 189);
+    background-color: rgba(145, 84, 49, 0.9);
     mix-blend-mode:add;
     border-radius: 10em;
     border-style: solid;
     border-color: grey;
     border-width: 0.1em;
     padding: 0.5em;
+    color: #dff5df;
 }
 .registerToEventButton{
-    color: #32CD32;
+    color: rgba(255, 253, 143, 0.9);
 }
 button:hover{
-    background-color: rgba(145, 84, 49, 0.9);
+    background-color: rgba(172, 117, 86, 0.9);
     mix-blend-mode:add;
 }
 button:active{
@@ -146,19 +222,25 @@ button:active{
     border-style: none;
     outline: none;
     text-indent: 2em;
-    background-color: rgba(59, 24, 4, 0.9);
-    caret-color: rgb(230, 204, 189);
-    color: rgb(230, 204, 189);
+    background-color: rgba(221, 219, 119, 0.9);
+    caret-color: rgb(85, 40, 17);
+    color: rgb(85, 40, 17);
     mix-blend-mode:add;
 }
+#eventSearch::placeholder{
+    color: rgb(124, 68, 40);;
+}
 #eventSearch::-webkit-search-cancel-button{
-    color:#bababa;
+    color:rgb(85, 40, 17);
     margin-right: 5em;
 }
 #registeredEventCheckbox{
     margin-right: 0.2em;
-    accent-color: rgba(59, 24, 4, 0.9);
+    accent-color: rgba(221, 219, 119, 0.9);
     mix-blend-mode:add;
+}
+label[for="registeredEventCheckbox"]{
+    color: rgb(255, 235, 123);
 }
 .eventName{
     text-decoration: underline;

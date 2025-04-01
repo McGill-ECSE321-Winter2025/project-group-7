@@ -32,11 +32,10 @@ const route = useRoute()
 <style scoped>
 header {
   display: flex;
+  position: fixed;
   place-items: center;
-  line-height: 1.5;
-  height: 100%;
+  max-height: 10rem;
   width: 100%;
-  padding: 4.5rem;
   background-color: rgba(221, 216, 201, 0.7);
   mix-blend-mode: additive;
 }
@@ -48,7 +47,6 @@ header {
 
 nav {
   display: flex;
-  position: fixed; /* Keeps it at the top even when scrolling */  
   justify-content: space-between;
   align-items: center; /* Align items vertically */
   width: 100%;/* Shrinks to fit content */
@@ -110,6 +108,7 @@ nav a:first-of-type {
 }
 
 #pageContent {
+  margin-top: 10rem;
   width: 100%;
   height: 100%;
 }
