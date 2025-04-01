@@ -21,7 +21,7 @@ const route = useRoute()
             <img src="@/images/Account-icon.png" alt="Account Icon" class="nav-icon" />
           </RouterLink>
 
-          <RouterLink to="/login">Sign Out</RouterLink>
+          <RouterLink to="/">Sign Out</RouterLink>
         </div>
       </nav>
   </header>
@@ -56,7 +56,7 @@ nav {
 } 
 
 .logo{
-  width: 20%;
+  width: 20rem;
   height: auto;
 }
 .nav-left {
@@ -100,7 +100,6 @@ nav a {
   color: #602809;
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
