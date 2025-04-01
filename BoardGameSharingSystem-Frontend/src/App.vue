@@ -4,9 +4,9 @@ const route = useRoute()
 </script>
 
 <template>
-  <header>
+  <header v-if="!$route.meta.hideNavbar">
     <!--The navigation bar-->
-      <nav v-if="!$route.meta.hideNavbar">
+      <nav>
         <img class="logo" src="@/images/GameNest-logo.png">
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
