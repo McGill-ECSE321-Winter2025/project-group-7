@@ -100,7 +100,6 @@ nav a {
   color: #602809;
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
