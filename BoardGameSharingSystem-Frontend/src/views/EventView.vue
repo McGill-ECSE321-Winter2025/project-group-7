@@ -8,7 +8,7 @@
             <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
-        <button id="createEventButton" @click="createEvent">Create An Event</button>
+        <button id="createEventButton" @click="getAllEvents">Create An Event</button>
         <table id="eventTable">
             <tr>
                 <td class="eventTableDataContainer">
@@ -34,20 +34,20 @@
 </template>
 
 <script>
+import api from '../services/api'
 
 export default {
   methods: {
-    async Test() {
-        try {
-            console.log("Testing 1 2 3");
-        events.forEach((event) => {
-            console.log(event.id);
-        });
-        } catch (e) {
-        // TODO: Show a message to the user or something
-        console.error(e);
-        }
-    },
+    async getAllEvents() {
+    try {
+      const response = await api.get('/events')
+      console.log(response.data);
+      return response.data
+    } catch (error) {
+      console.error('Error fetching events:', error)
+      throw error
+    }
+  },
     async createEvent()
     {
         console.log("create an event!");
