@@ -4,7 +4,7 @@ import { ref,onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const loginBg = new URL('@/images/GameNest-login-bg.png', import.meta.url).href;
-const defaultBg = new URL('@/images/GameNest-app-bg.png', import.meta.url).href;
+const defaultBg = new URL('@/images/GameNest-app-bg-plain.png', import.meta.url).href;
 
 onMounted(() => {
   document.getElementById("app").style.backgroundImage = `url('${loginBg}')`;

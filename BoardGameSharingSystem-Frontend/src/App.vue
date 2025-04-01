@@ -4,10 +4,10 @@ const route = useRoute()
 </script>
 
 <template>
-  <header>
+  <header v-if="!$route.meta.hideNavbar">
     <!--The navigation bar-->
-      <nav v-if="!$route.meta.hideNavbar">
-        
+      <nav>
+        <img class="logo" src="@/images/GameNest-logo.png">
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
           <RouterLink to="/events">Event</RouterLink>
@@ -21,19 +21,24 @@ const route = useRoute()
             <img src="@/images/Account-icon.png" alt="Account Icon" class="nav-icon" />
           </RouterLink>
 
-          <RouterLink to="/login">Sign Out</RouterLink>
+          <RouterLink to="/">Sign Out</RouterLink>
         </div>
-        </nav>
+      </nav>
   </header>
 
-  <RouterView />
+  <RouterView id="pageContent"/>
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
-  padding: 2rem;
+  display: flex;
+  position: fixed;
+  place-items: center;
+  max-height: 6.5rem;
+  width: 100%;
+  background-color: rgba(221, 216, 201, 0.7);
+  mix-blend-mode: additive;
+  z-index: 1000;
 }
 
 /* .logo {
@@ -43,28 +48,23 @@ header {
 
 nav {
   display: flex;
-  position: fixed; /* Keeps it at the top even when scrolling */
+  justify-content: space-between;
   align-items: center; /* Align items vertically */
-  top: -3.5rem;
-  left: 50%;
-  transform: translateX(-50%); /* Shift it back by half of its width */
-  width: max-content;/* Shrinks to fit content */
+  width: 100%;/* Shrinks to fit content */
   font-size: 55px;
   text-align: center;
-  z-index: 1000; /* Ensures it stays above other elements */
-  gap: 1.5rem; /* Adds spacing between links */
 } 
 
-.nav-center {
-  position: absolute;
+.logo{
+  width: 20rem;
+  height: auto;
+}
+.nav-left {
   display: flex;
   align-items: center;
-  left: 50%;
-  transform: translateX(-50%);
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 0rem;
   color: rgb(230, 204, 189);
-  background-color: rgba(2, 1, 0, 0.411);
   mix-blend-mode: add;
   gap: 1rem;
   justify-content: center;
@@ -76,15 +76,15 @@ nav {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-left: auto;
+  padding-right: 10rem;
+  margin-top: 0rem;
   font-size: 2.5rem;
 }
 
-nav .nav-icon {
-  width: 150px; /* Adjust to the desired size */
-  height: 150px; /* Same as width to keep it circular */
-  border-radius: 50%; /* Ensures it remains circular */
-  object-fit: cover; /* Ensures image is cropped to fit inside the circle */
+.nav-icon {
+  width: 60px; /* Adjust to the desired size */
+  height: 60px; /* Same as width to keep it circular */
+  margin-top: 1rem;
 }
 
 nav a.router-link-exact-active {
@@ -100,7 +100,6 @@ nav a {
   color: #602809;
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
@@ -108,48 +107,8 @@ nav a:first-of-type {
 }
 
 #pageContent {
+  margin-top: 10rem;
   width: 100%;
   height: 100%;
-}
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: center;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 0;
-  }
-}
-
-</style>
-
-<style>
-#app {
-  /* Default background */
-  background-image: url('@/images/GameNest-app-bg.png'); 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  min-width: 100vw; 
-  width: 100%;
-
-  /* Allow views to override */
-  transition: background 0.3s ease-in-out;
 }
 </style>
