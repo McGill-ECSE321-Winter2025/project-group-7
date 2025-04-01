@@ -67,9 +67,9 @@ import { Button } from 'primevue';
 
 <style scoped>
  .game-card-wrapper {
-  /* position: relative;
-  max-width: 200px; */
-  /* margin-top: 10vh; */
+  position: relative;
+  max-width: auto;
+  margin-top: 10vh;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -121,19 +121,6 @@ import { Button } from 'primevue';
 .flip-card-back {
   transform: rotateY(180deg);
 }
-
-/* .game-title {
-  width: auto;
-  text-align: left;
-  position: fixed;
-  margin-left: 0;
-  margin-bottom: 10vh;
-  margin-top: 10vh;
-} */
-
-/* .game-images{
-  c
-} */
 
 .game-card{
   height: 300px ;
