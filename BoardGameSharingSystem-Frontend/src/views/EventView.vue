@@ -35,7 +35,7 @@
                         <p class="eventName">Event Name</p>
                         <div>    
                             <p class="eventCapacity">8/9</p>
-                            <button class="registerToEventButton">Register</button>
+                            <button class="deregisterFromEventButton">Deregister</button>
                         </div>
                     </div>
                     
@@ -54,7 +54,8 @@
                         <p class="eventName">Event Name</p>
                         <div>    
                             <p class="eventCapacity">8/9</p>
-                            <button class="registerToEventButton">Register</button>
+                            <button class="updateEvent">Update</button>
+                            <button class="cancelEvent">Cancel</button>
                         </div>
                     </div>
                     
@@ -135,7 +136,7 @@ export default {
 
 <style scoped>
 td{
-    border-top: 0.1em solid black;
+    border-top: 0.2em solid rgb(234, 240, 154, 0.9);;
     width: 100%;
 }
 tr:first-child td{
@@ -189,10 +190,21 @@ button{
     border-color: grey;
     border-width: 0.1em;
     padding: 0.5em;
-    color: #dff5df;
+    color: rgba(255, 254, 198, 1);
 }
 .registerToEventButton{
-    color: rgba(255, 253, 143, 0.9);
+    color: rgba(255, 254, 198, 1);
+}
+.deregisterFromEventButton{
+    background-color: rgba(189, 0, 0, 0.9);
+    color: rgb(255, 180, 203);
+}
+.cancelEvent{
+    background-color: rgba(189, 0, 0, 0.9);
+    color: rgb(255, 180, 203);
+}
+.updateEvent {
+margin-right: 1rem;
 }
 button:hover{
     background-color: rgba(172, 117, 86, 0.9);
