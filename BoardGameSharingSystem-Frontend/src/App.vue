@@ -38,6 +38,7 @@ header {
   width: 100%;
   background-color: rgba(221, 216, 201, 0.7);
   mix-blend-mode: additive;
+  z-index: 1000;
 }
 
 /* .logo {
@@ -52,7 +53,6 @@ nav {
   width: 100%;/* Shrinks to fit content */
   font-size: 55px;
   text-align: center;
-  z-index: 1000; /* Ensures it stays above other elements */
 } 
 
 .logo{
