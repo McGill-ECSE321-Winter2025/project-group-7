@@ -34,7 +34,7 @@ header {
   display: flex;
   position: fixed;
   place-items: center;
-  max-height: 10rem;
+  max-height: 6.5rem;
   width: 100%;
   background-color: rgba(221, 216, 201, 0.7);
   mix-blend-mode: additive;

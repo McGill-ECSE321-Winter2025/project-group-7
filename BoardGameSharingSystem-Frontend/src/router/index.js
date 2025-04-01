@@ -20,6 +20,15 @@ const router = createRouter({
     },
 
     {
+      path: '/users',
+      name: 'users',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/AccountView.vue'),
+    },
+
+    {
       path: '/requests',
       name: 'requests',
       // route level code-splitting
