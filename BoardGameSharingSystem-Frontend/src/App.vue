@@ -76,7 +76,7 @@ nav {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding-right: 10rem;
+  padding-right: 0rem;
   margin-top: 0rem;
   font-size: 2.5rem;
 }
