@@ -9,6 +9,7 @@
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
         <button id="createEventButton" @click="createEvent">Create An Event</button>
+        <p v-if="error" class="error-message">{{ error }}</p>
         <table v-if="filteredEvents && filteredEvents.length > 0" id="eventTable">
             <tr v-for="(event, index) in filteredEvents" :key="event.id">
                 <td class="eventTableDataContainer">
@@ -90,12 +91,14 @@ const fetchEvents = async () => {
             gameTitle = games[0].gameTitle // Adjust if multiple games
           }
         } catch (e) {
+          error.value = `Error Fetching Games for Event: ${e}`
           console.warn(`Error Fetching Games for Event: ${e}`)
         }
         try {
           const user = await userService.findUserAccount(event.creatorId)
           creatorName = user.name
         } catch (e) {
+          error.value = `Error Fetching Creator for Event: ${e}`
           console.warn(`Error Fetching Creator for Event: ${e}`)
         }
         try {
@@ -105,6 +108,7 @@ const fetchEvents = async () => {
           eventHasCapacity = registrations.length < event.maxNumParticipants
           registrations.forEach(registration => { if (registration.userId == currentUserId.value) eventIsRegistered = true});
         } catch (e) {
+          error.value = `Error Fetching Registrations for Event: ${e}`
           console.warn(`Error Fetching Registrations for Event: ${e}`)
         }
         eventFormattedDateTime =`${formatTime(event.startTime)} ${formatDate(event.startDate)} - ${formatTime(event.endTime)} ${formatDate(event.endDate)}`
@@ -337,5 +341,11 @@ label[for="registeredEventCheckbox"]{
     align-items: center;
     justify-content: center;
     font-size: 2rem;
+}
+.error-message{
+    color: rgb(209, 15, 15);
+    text-shadow: 1px 1px 0.2rem rgba(255, 195, 66, 0.9);
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 </style>
