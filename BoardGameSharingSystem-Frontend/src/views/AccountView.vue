@@ -124,9 +124,14 @@
             <!-- Games Section (Only for Game Owners) -->
             <div v-if="activeSection === 'games' && isGameOwner" class="card">
               <div class="card__texture"></div>
-              <div class="card__header">
-                <h2 class="card__title">Games You Own</h2>
-                <p class="card__subtitle">Manage your board game collection</p>
+              <div class="card__header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h2 class="card__title">My Games</h2>
+                  <p class="card__subtitle">Manage your board game collection</p>
+                </div>
+                <button class="btn btn--add btn--with-icon">
+                  <Package class="btn__icon" /> Add New Game
+                </button>
               </div>
               <div class="card__content">
                 <div class="games-list">
@@ -134,7 +139,8 @@
                     <div class="game-item__wrapper">
                       <div class="game-item__info">
                         <div class="game-item__icon-wrapper">
-                          <Dice class="game-item__icon" />
+                          <img v-if="game.pictureUrl" :src= game.pictureUrl alt="Game Icon" class="game-item__icon" />
+                          <Dice v-else class="game-item__icon" />
                         </div>
                         <div>
                           <p class="game-item__title">{{ game.title }}</p>
@@ -142,29 +148,28 @@
                             <span 
                               :class="[
                                 'game-item__status',
-                                game.status === 'Available' ? 'game-item__status--available' : 'game-item__status--borrowed'
+                                'game-item__players'
                               ]"
                             >
-                              {{ game.status }}
+                            {{ game.numMinPlayers === game.numMaxPlayers ? game.numMinPlayers + ' players': game.numMinPlayers + '-' + game.numMaxPlayers + ' players' }}
                             </span>
-                            <template v-if="game.borrower">Borrowed by: {{ game.borrower }}</template>
-                            <template v-if="game.dueDate"> • Due: {{ game.dueDate }}</template>
+                            <template v-if="game.description">• {{ game.description }}</template>
                           </p>
                         </div>
                       </div>
-                      <button class="btn btn--outline">
-                        {{ game.status === "Available" ? "Mark Borrowed" : "Mark Returned" }}
+                      <button class="btn btn--danger">
+                        Delete
                       </button>
                     </div>
                     <div v-if="index < ownedGames.length - 1" class="separator"></div>
                   </div>
                 </div>
               </div>
-              <div class="card__footer">
+              <!--<div class="card__footer">
                 <button class="btn btn--primary btn--with-icon">
                   <Package class="btn__icon" /> Add New Game
                 </button>
-              </div>
+              </div>-->
             </div>
             
             <!-- Events Section -->
@@ -302,22 +307,33 @@
       const ownedGames = ref([
         {
           title: 'Catan',
-          status: 'Available',
-          borrower: null,
-          dueDate: null
+          numMinPlayers: 2,
+          numMaxPlayers: 4,
+          description: "Multiplayer board game designed by Klaus Teuber",
+          pictureUrl: null
         },
         {
           title: 'Ticket to Ride',
-          status: 'Borrowed',
-          borrower: 'Alex Smith',
-          dueDate: 'May 2, 2025'
+          numMinPlayers: 2,
+          numMaxPlayers: 5,
+          description: null,
+          pictureUrl: null
         },
         {
           title: 'Pandemic',
-          status: 'Available',
-          borrower: null,
-          dueDate: null
-        }
+          numMinPlayers: 2,
+          numMaxPlayers: 5,
+          description: "As members of an elite disease control team, you must keep four deadly diseases at bay",
+          pictureUrl: null
+        },
+        {
+          title: 'Chess',
+          numMinPlayers: 2,
+          numMaxPlayers: 2,
+          description: "Strategy board game for two players",
+          pictureUrl: "/test-image2.jpg"
+        },
+        
       ])
       
       const events = ref([
@@ -715,7 +731,7 @@
     align-items: center;
     gap: 0.75rem;
   }
-  
+
   .game-item__icon-wrapper {
     padding: 0.5rem;
     background-color: #8d6e63;
@@ -745,13 +761,13 @@
     border-radius: 9999px;
     margin-right: 0.5rem;
   }
-  
+
   .game-item__status--available {
     border: 1px solid #22c55e;
     color: #15803d;
   }
   
-  .game-item__status--borrowed {
+  .game-item__players {
     background-color: #8d6e63;
     color: white;
   }
@@ -859,6 +875,15 @@
   
   .btn--primary:hover {
     background-color: #3e2723;
+  }
+
+  .btn--add {
+    background-color: #81cb81;
+    color: white;
+  }
+
+  .btn--add:hover{
+    background-color: #5dac5d;
   }
   
   .btn--outline {
