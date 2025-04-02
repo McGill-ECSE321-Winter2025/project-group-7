@@ -53,41 +53,37 @@ export default {
 </script>
 
 <style>
-html, body {
-    height: 100%;
-    overflow-y: auto;    /* Vertical scrollbar appears when needed */
-    margin: 0;           /* Remove default margin */
-}
+
 
 .title-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 10%;
+    top: 0em;
+    left: 0em;
+    width: 200em;
+    height: 5em;
     background-size: cover;
     text-align: left;
-    padding-bottom: 10px;
+    padding-bottom: 1em;
 }
 
 #createReview {
     position:fixed;
-    top: 87%;
+    top: 38em;
     left: 85em;
 }
 
 #plantImg {
     z-index:10;
     position:absolute;
-    top: 9%;
+    top: 5.8em;
     left: 14em;
 }
 
 h1 {
     position: absolute;
-    bottom: 0; 
-    left: 5%;
-    margin: 0;
+    bottom: 0em; 
+    left: 3em;
+    margin: 0em;
     font-family: 'Kantumruy Pro', sans-serif;
     color: white;
 
@@ -106,7 +102,7 @@ h1 {
 
 #updateReview {
     position: fixed;
-    top: 87%;
+    top: 38em;
     left: 75em;
 
 
@@ -114,17 +110,17 @@ h1 {
 
 #deleteReview {
     position: fixed;
-    top: 87%;
+    top: 38em;
     left: 65em;
 }
 
 
 #imageGame{
     position:fixed;
-    top: 22.5%;
-    left: 5%;
-    width: 25%;
-    height:60%;
+    top: 12em;
+    left: 5em;
+    width: 25em;
+    height:25em;
 
 }
 
@@ -135,7 +131,7 @@ body {
 
 #borrowButton {
     position: fixed;
-    top: 13%;
+    top: 6em;
     left: 85em;
     
 
@@ -154,8 +150,8 @@ h2 {
     text-align: center;
     display: grid;
     padding: 0.7em;
-    top:13%;
-    left: 5%;
+    top: 6em;
+    left: 5em;
     width: 8.5em;
     height: 3em;
     font-size: 106%;
