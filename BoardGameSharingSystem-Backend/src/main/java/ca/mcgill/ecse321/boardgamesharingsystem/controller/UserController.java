@@ -42,7 +42,7 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserAccountResponseDto findUserAccount(@PathVariable int id)
+    public UserAccountResponseDto findUserAccount(@PathVariable("id") int id)
     {
         return new UserAccountResponseDto(accountService.findUserAccountById(id));
     }
@@ -54,7 +54,7 @@ public class UserController {
      */
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserAccountResponseDto deleteUserAccount(@PathVariable int id)
+    public UserAccountResponseDto deleteUserAccount(@PathVariable("id") int id)
     {
         return new UserAccountResponseDto(accountService.deleteUserAccount(id));
     }
@@ -78,7 +78,7 @@ public class UserController {
      */
     @PutMapping("/users/{id}/toPlayer")
     @ResponseStatus(HttpStatus.OK)
-    public UserAccountResponseDto toggleUserToPlayer(@PathVariable int id) 
+    public UserAccountResponseDto toggleUserToPlayer(@PathVariable("id") int id) 
     {
         return new UserAccountResponseDto(accountService.toggleUserToPlayer(id));
     }
@@ -90,7 +90,7 @@ public class UserController {
      */
     @PutMapping("/users/{id}/toGameOwner")
     @ResponseStatus(HttpStatus.OK)
-    public GameOwnerResponseDto toggleUserToGameOwner(@PathVariable int id)
+    public GameOwnerResponseDto toggleUserToGameOwner(@PathVariable("id") int id)
     {
         return new GameOwnerResponseDto(accountService.toggleUserToGameOwner(id));
     }
