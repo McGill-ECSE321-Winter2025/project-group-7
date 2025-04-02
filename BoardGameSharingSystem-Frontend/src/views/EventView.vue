@@ -1,16 +1,16 @@
 <template>
     <main>
         <div class="search">
-            <input type="search" name="eventName" id="eventSearch" placeholder="Search Events">
+            <input type="search" name="eventName" id="eventSearch" v-model="searchString" placeholder="Search Events">
             <img id="searchIconImg" src="./search.png">
         </div>
         <div class="searchFilters">
             <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
-        <button id="createEventButton" @click="fetchEvents">Create An Event</button>
-        <table v-if="events && events.length > 0" id="eventTable">
-            <tr v-for="(event, index) in events" :key="event.id">
+        <button id="createEventButton" @click="createTestEvent">Create An Event</button>
+        <table v-if="filteredEvents && filteredEvents.length > 0" id="eventTable">
+            <tr v-for="(event, index) in filteredEvents" :key="event.id">
                 <td class="eventTableDataContainer">
                     <div class="eventBox">
                         <p class="eventName">{{event.eventName}}</p>
@@ -36,20 +36,62 @@
             </tr>
         </table>
         <div v-else class="noContent">
-            There are no Events yet,<br> Create one!
+            No events found,<br> Create one!
         </div>
     </main>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue'
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 import { eventService } from '@/services/eventService'
 import { userService } from '@/services/userService'
 import { eventGameService } from '@/services/eventGameService'
-import { registrationService } from '@/services/registrationServices'
-let events = ref([])
-let error = ref(null)
+import { registrationService } from '@/services/registrationService'
+const events = ref([])
+const error = ref(null)
+const searchString = ref('')
+const filteredEvents = computed(() => {
+  if (!searchString.value) return events.value
 
+  const query = searchString.value.toLowerCase()
+
+  return events.value.filter(event =>
+    Object.values(event).some(val =>
+      String(val).toLowerCase().includes(query)
+    )
+  )
+})
+// const testUser = {
+//   username: "testUser",
+//   email: "testUser@mail.com",
+//   password: "testUserPassword"
+// }
+// let creatorId = null
+
+// const createTestEvent = async () => {
+//     try {
+//     const testEvent = {
+//       startDate: "2025-05-12",
+//       startTime: "09:00:00",
+//       endDate: "2025-05-12",
+//       endTime: "11:00:00",
+//       maxNumParticipants: 10,
+//       location: "Event Location",
+//       description: "Event Description",
+//       contactEmail: "contactme@example.com",
+//       creatorId:  6952
+//     }
+
+//     // 3. Create the event
+//     const createdEvent = await eventService.createEvent(testEvent)
+//     console.log("Test event created:", createdEvent)
+
+//     // 4. Refresh the list to show the new event
+//     await fetchEvents()
+//   } catch (error) {
+//     console.error("Error creating user or event:", error)
+//   }
+// }
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
   weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
 })
@@ -78,7 +120,7 @@ const fetchEvents = async () => {
           console.warn(`Error Fetching Games for Event: ${e}`)
         }
         try {
-          const user = await userService.findUserAccountById(event.creatorId)
+          const user = await userService.findUserAccount(event.creatorId)
           creatorName = user.name
         } catch (e) {
           console.warn(`Error Fetching Creator for Event: ${e}`)
@@ -106,6 +148,17 @@ const fetchEvents = async () => {
     console.error('Error loading events:', err)
   }
 }
+
+const createEvent = async () => {
+    try {
+        eventService.createEvent();
+    }
+    catch (e)
+    {
+
+    }
+}
+
 onMounted(() => {
   fetchEvents()
 })
@@ -128,6 +181,7 @@ main{
     align-items: center;
     min-height: 100%;
     color: rgb(85, 40, 17);
+    font-family: "Mansalva", sans-serif;
 }
 table{
     border-radius: 1em;
@@ -138,6 +192,7 @@ table{
     background-color: rgba(221, 219, 119, 0.9);
     mix-blend-mode:add;
     margin-top: 1%;
+    font-size: 1.1rem;
 }
 .eventTableDataContainer{
     padding: 1%;
@@ -167,8 +222,11 @@ button{
     border-style: solid;
     border-color: grey;
     border-width: 0.1em;
-    padding: 0.5em;
+    padding: 0.2em;
     color: rgba(255, 254, 198, 1);
+    font-family: "Mansalva", sans-serif;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
 }
 .registerToEventButton{
     color: rgba(255, 254, 198, 1);
@@ -218,6 +276,8 @@ button:active{
     caret-color: rgb(85, 40, 17);
     color: rgb(85, 40, 17);
     mix-blend-mode:add;
+    font-family: "Mansalva", sans-serif;
+    font-size: 1.1rem;
 }
 #eventSearch::placeholder{
     color: rgb(124, 68, 40);;
@@ -227,12 +287,14 @@ button:active{
     margin-right: 5em;
 }
 #registeredEventCheckbox{
-    margin-right: 0.2em;
-    accent-color: rgba(167, 166, 160, 0.9);
+    accent-color: rgba(221, 219, 119, 0.9);
     mix-blend-mode:add;
+    margin: 1rem;
 }
 label[for="registeredEventCheckbox"]{
     color: rgb(255, 235, 123);
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
 }
 .eventName{
     text-decoration: underline;
@@ -251,7 +313,7 @@ label[for="registeredEventCheckbox"]{
     background-color: rgba(221, 219, 119, 0.9);
     flex: 1;
     width: 60%;
-    margin: 10vh;
+    margin: 5vh;
     border-radius: 1em;
     border-style: solid;
     border-color: rgb(234, 240, 154, 0.9);
