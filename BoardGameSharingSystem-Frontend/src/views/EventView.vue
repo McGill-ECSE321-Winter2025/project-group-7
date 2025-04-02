@@ -5,7 +5,7 @@
             <img id="searchIconImg" src="@/images/search.png">
         </div>
         <div class="searchFilters">
-            <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
+            <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox" v-model="filterByRegistered">
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
         <button id="createEventButton" @click="createEvent">Create An Event</button>
@@ -55,16 +55,21 @@ const error = ref(null)
 const searchString = ref('')
 const authStore = useAuthStore();
 const currentUserId = computed(() => authStore.user.id);
+const filterByRegistered = ref(false)
 const filteredEvents = computed(() => {
-  if (!searchString.value) return events.value
-
-  const query = searchString.value.toLowerCase()
-
-  return events.value.filter(event =>
-    Object.values(event).some(val =>
-      String(val).toLowerCase().includes(query)
+    const now = new Date()
+    return events.value.filter(event =>
+    {
+        const eventEnd = new Date(`${event.endDate}T${event.endTime}`)
+        if (eventEnd <= now) return false
+        if (filterByRegistered.value && !event.eventIsRegistered) return false
+        if (!searchString.value) return true
+        const query = searchString.value.toLowerCase()
+        return Object.values(event).some(val =>
+        String(val).toLowerCase().includes(query)
+        )
+        }
     )
-  )
 })
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
   weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
@@ -137,7 +142,7 @@ const createEvent = async () => {
         startDate: new Date().toISOString().split('T')[0], // today
         startTime: '14:00', // 2 PM
         endDate: new Date().toISOString().split('T')[0], // today
-        endTime: '20:00', // 4 PM
+        endTime: '19:38', // 4 PM
         maxNumParticipants: 10,
         location: '123 Game Street, Montreal',
         description: 'Test event for board games',
