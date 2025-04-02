@@ -43,11 +43,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router';
 import { eventService } from '@/services/eventService'
 import { userService } from '@/services/userService'
 import { eventGameService } from '@/services/eventGameService'
 import { registrationService } from '@/services/registrationService'
 import { useAuthStore } from '@/stores/authStore';
+const router = useRouter();
 const events = ref([])
 const error = ref(null)
 const searchString = ref('')
@@ -179,7 +181,14 @@ const cancelEvent = async (eventId) => {
     }
 }
 onMounted(() => {
-  fetchEvents()
+    
+    console.log("mounted")
+    if (!authStore.user.isAuthenticated) {
+        router.push('/')
+    }
+    else{
+        fetchEvents()
+    }
 })
 
 </script>
