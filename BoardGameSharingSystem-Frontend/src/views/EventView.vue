@@ -2,7 +2,7 @@
     <main>
         <div class="search">
             <input type="search" name="eventName" id="eventSearch" v-model="searchString" placeholder="Search Events">
-            <img id="searchIconImg" src="./search.png">
+            <img id="searchIconImg" src="@/images/search.png">
         </div>
         <div class="searchFilters">
             <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
@@ -258,12 +258,11 @@ button:active{
 }
 #searchIconImg{
     position: absolute;  
-    left: 20em;
-    top: 1em;
+    left: 26.5em;
+    top: 1.5em;
     width: 1.6em;
     height: 1.6em;
     pointer-events: none;
-    filter: brightness(10);
 }
 #eventSearch{
     height: 4em;
@@ -284,7 +283,8 @@ button:active{
 }
 #eventSearch::-webkit-search-cancel-button{
     color:rgb(85, 40, 17);
-    margin-right: 5em;
+    margin-right: 3em;
+    display: none;
 }
 #registeredEventCheckbox{
     accent-color: rgba(221, 219, 119, 0.9);
