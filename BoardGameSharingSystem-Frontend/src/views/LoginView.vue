@@ -1,10 +1,25 @@
 <script setup>
 import { ref,onMounted, onUnmounted } from 'vue';
-// *** TEMPORARY OVERRIDE ***
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
+import axios from 'axios'
+
+const axiosClient = axios.create({
+  baseURL: "http://localhost:8080",
+});
+
 
 const loginBg = new URL('@/images/GameNest-login-bg.png', import.meta.url).href;
 const defaultBg = new URL('@/images/GameNest-app-bg-plain.png', import.meta.url).href;
+
+const isActive = ref(false);
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const errorMessage = ref('');
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 onMounted(() => {
   document.getElementById("app").style.backgroundImage = `url('${loginBg}')`;
@@ -14,7 +29,6 @@ onUnmounted(() => {
   document.getElementById("app").style.backgroundImage = `url('${defaultBg}')`;
 });
 
-const isActive = ref(false);
 
 const activateRegister = () => {
   isActive.value = true;
@@ -24,49 +38,89 @@ const activateLogin = () => {
   isActive.value = false;
 };
 
-// *** TEMPORARY OVERRIDE ***
-// Use router for programmatic navigation
-const router = useRouter();
+// Method for handling sign-up 
+const handleSignUp = async () => {
+  try {
+    const response = await axiosClient.post('/users', {
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    });
+    
+    router.push('/'); // Redirect to login page after successful sign-up
+
+  } catch (error) {
+    console.error('Error during sign-up:', error);
+    if (error.response && error.response.data) {
+      errorMessage.value = error.response.data.message;
+    } else {
+      errorMessage.value = 'An error occurred during sign-up. Please try again.';
+    }
+  }
+};
+
+// Method for handling login 
+const handleLogin = async () => {
+  try {
+    await authStore.login(username.value, email.value, password.value); // Call authStore's login method
+    router.push('/games'); // Redirect after successful login
+  } catch (error) {
+    console.error('Error during login:', error);
+    errorMessage.value = error.message || 'Login failed. Please try again.';
+  }
+};
+
 
 // Method for handling override button click
 const activateOverride = () => {
   router.push('/games'); // Navigate to the /games route
 };
+
 </script>
 
 <template>
   <div :class="['container', { active: isActive }]">
     <div class="form-box login">
-      <form action="#">
+      <form @submit.prevent="handleLogin">
         <h1>Login</h1>
         <div class="input-box">
-          <input type="text" placeholder="Username" required>
+          <input type="text" v-model="username" placeholder="Username" required />
           <i class='bx bxs-user'></i>
         </div>
         <div class="input-box">
-          <input type="password" placeholder="Password" required>
+          <input type="text" v-model="email" placeholder="Email" required />
+          <i class='bx bxs-user'></i>
+        </div>
+        <div class="input-box">
+          <input type="password" v-model="password" placeholder="Password" required />
           <i class='bx bxs-lock-alt'></i>
         </div>
-        <p></p>
+        <!-- Error Message -->
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
         <button type="submit" class="btn">Login</button>
       </form>
     </div>
 
     <div class="form-box register">
-      <form action="#">
+      <form @submit.prevent="handleSignUp">
         <h1>Sign Up</h1>
         <div class="input-box">
-          <input type="text" placeholder="Username" required>
+          <input type="text" v-model="username" placeholder="Username" required />
           <i class='bx bxs-user'></i>
         </div>
         <div class="input-box">
-          <input type="email" placeholder="Email" required>
+          <input type="email" v-model="email" placeholder="Email" required />
           <i class='bx bxs-envelope'></i>
         </div>
         <div class="input-box">
-          <input type="password" placeholder="Password" required>
+          <input type="password" v-model="password" placeholder="Password" required />
           <i class='bx bxs-lock-alt'></i>
         </div>
+
+        <!-- Error Message -->
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        
         <button type="submit" class="btn">Sign Up</button>
       </form>
     </div>
@@ -85,11 +139,6 @@ const activateOverride = () => {
       </div>
     </div>
   </div>
-
-   <!-- *** TEMPORARY OVERRIDE *** -->
-    <div class="override-button">
-        <button class="btn override-btn" @click="activateOverride">Override</button>
-    </div>
 </template>
 
 <style scoped>
@@ -103,6 +152,11 @@ body {
   min-width: 100vw; 
   width: 100%;
 }
+
+/* Error Msg */
+.error-message {
+  color: red;
+  font-size: 14px;}
 
 /* Login Box */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
@@ -124,21 +178,6 @@ body{
     background: linear-gradient(90deg, #e2e2e2, #c9d6ff);
 }
 
-/* *** TEMPORARY OVERRIDE *** */
-.override-button{
-    position: absolute;
-    top: 1rem;
-    width: 10%;
-    height: 48px;
-    background: #b96d39;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
-}
 .container{
     position: absolute;
     bottom: 0;
