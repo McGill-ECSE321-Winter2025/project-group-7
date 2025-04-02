@@ -58,7 +58,7 @@ public class EventController {
      * @return the updated Event including id and response timestamp
      */
     @PutMapping("/events/{id}")
-    public EventResponseDto updateEvent(@PathVariable int id, @RequestBody EventDto event)
+    public EventResponseDto updateEvent(@PathVariable("id") int id, @RequestBody EventDto event)
     {
         return new EventResponseDto(eventService.updateEvent(id, event));
     }
@@ -69,7 +69,7 @@ public class EventController {
      * @return the deleted Event including id and response timestamp
      */
     @DeleteMapping("/events/{id}")
-    public EventResponseDto deleteEvent(@PathVariable int id)
+    public EventResponseDto deleteEvent(@PathVariable("id") int id)
     {
         return new EventResponseDto(eventService.deleteEvent(id));
     }

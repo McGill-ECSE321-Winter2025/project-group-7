@@ -32,7 +32,7 @@ public class RegistrationController {
      */
     @PutMapping("/registrations/{eventId}/{participantId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationResponseDto registerUserToEvent(@PathVariable int eventId, @PathVariable int participantId)
+    public RegistrationResponseDto registerUserToEvent(@PathVariable("eventId") int eventId, @PathVariable("participantId") int participantId)
     {
         return new RegistrationResponseDto(eventService.registerUserToEvent(participantId, eventId));
     }
@@ -84,7 +84,7 @@ public class RegistrationController {
      * @return the Registration deleted including the timestamp of the response
      */
     @DeleteMapping("/registrations/{eventId}/{participantId}")
-    public RegistrationResponseDto deregisterParticipantFromEvent(@PathVariable int eventId, @PathVariable int participantId)
+    public RegistrationResponseDto deregisterParticipantFromEvent(@PathVariable("eventId") int eventId, @PathVariable("participantId") int participantId)
     {
         return new RegistrationResponseDto(eventService.deregisterParticipantFromEvent(participantId, eventId));
     }

@@ -8,7 +8,7 @@
             <input type="checkbox" name="FilterByRegistered" id="registeredEventCheckbox">
             <label for="registeredEventCheckbox">Filter By Registered Events</label>
         </div>
-        <button id="createEventButton" @click="createTestEvent">Create An Event</button>
+        <button id="createEventButton" @click="createEvent">Create An Event</button>
         <table v-if="filteredEvents && filteredEvents.length > 0" id="eventTable">
             <tr v-for="(event, index) in filteredEvents" :key="event.id">
                 <td class="eventTableDataContainer">
@@ -16,16 +16,15 @@
                         <p class="eventName">{{event.eventName}}</p>
                         <div>    
                             <p class="eventCapacity">{{event.eventCapacity}}</p>
-                            <button v-if="event.eventHasCapacity" class="registerToEventButton">Register</button>
-                            <!--NEEDS CURRENT USER ID TO IMPLEMENT
-                            <button class="dangerButton">Deregister</button>
-                            <button class="updateEvent">Update</button>
-                            <button class="dangerButton">Cancel</button>
-                            -->
+                            <button v-if="event.eventHasCapacity && !event.eventIsRegistered && !event.eventIsCreator" class="registerToEventButton" @click="registerToEvent(event.id)">Register</button>
+                            <button v-if="event.eventIsRegistered && !event.eventIsCreator" class="dangerButton" @click="deregisterFromEvent(event.id)">Deregister</button>
+                            <button v-if="event.eventIsCreator" class="updateEvent">Update</button>
+                            <button v-if="event.eventIsCreator" class="dangerButton" @click="cancelEvent(event.id)">Cancel</button>
                         </div>
                     </div>
                     
                     <div class="eventDetails">
+                        <p class="eventContactEmail">{{ event.contactEmail }}</p>
                         <p class="eventDateTime">{{event.eventFormattedDateTime}}</p>
                         <div class="eventDetailsLeft">
                             <p class="eventLocation">{{event.location}}</p>
@@ -47,9 +46,12 @@ import { eventService } from '@/services/eventService'
 import { userService } from '@/services/userService'
 import { eventGameService } from '@/services/eventGameService'
 import { registrationService } from '@/services/registrationService'
+import { useAuthStore } from '@/stores/authStore';
 const events = ref([])
 const error = ref(null)
 const searchString = ref('')
+const authStore = useAuthStore();
+const currentUserId = computed(() => authStore.user.id);
 const filteredEvents = computed(() => {
   if (!searchString.value) return events.value
 
@@ -61,37 +63,6 @@ const filteredEvents = computed(() => {
     )
   )
 })
-// const testUser = {
-//   username: "testUser",
-//   email: "testUser@mail.com",
-//   password: "testUserPassword"
-// }
-// let creatorId = null
-
-// const createTestEvent = async () => {
-//     try {
-//     const testEvent = {
-//       startDate: "2025-05-12",
-//       startTime: "09:00:00",
-//       endDate: "2025-05-12",
-//       endTime: "11:00:00",
-//       maxNumParticipants: 10,
-//       location: "Event Location",
-//       description: "Event Description",
-//       contactEmail: "contactme@example.com",
-//       creatorId:  6952
-//     }
-
-//     // 3. Create the event
-//     const createdEvent = await eventService.createEvent(testEvent)
-//     console.log("Test event created:", createdEvent)
-
-//     // 4. Refresh the list to show the new event
-//     await fetchEvents()
-//   } catch (error) {
-//     console.error("Error creating user or event:", error)
-//   }
-// }
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
   weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
 })
@@ -111,6 +82,8 @@ const fetchEvents = async () => {
         let eventCapacity = "N/A"
         let eventHasCapacity = false
         let eventFormattedDateTime = "UnknownTime UnknownDate - UnknownTime UnknownDate"
+        let eventIsRegistered = false
+        let eventIsCreator = event.creatorId == currentUserId.value
         try {
           const games = await eventGameService.findEventGamesByEvent(event.id)
           if (games.length > 0) {
@@ -130,6 +103,7 @@ const fetchEvents = async () => {
           const registrationCount = registrations.length
           eventCapacity = registrations.length + "/" + event.maxNumParticipants 
           eventHasCapacity = registrations.length < event.maxNumParticipants
+          registrations.forEach(registration => { if (registration.userId == currentUserId.value) eventIsRegistered = true});
         } catch (e) {
           console.warn(`Error Fetching Registrations for Event: ${e}`)
         }
@@ -139,7 +113,9 @@ const fetchEvents = async () => {
           eventName: `${gameTitle} by ${creatorName}`,
           eventCapacity: eventCapacity,
           eventHasCapacity : eventHasCapacity,
-          eventFormattedDateTime: eventFormattedDateTime
+          eventFormattedDateTime: eventFormattedDateTime,
+          eventIsRegistered : eventIsRegistered,
+          eventIsCreator : eventIsCreator,
         }
     }))
     events.value = formattedEvents
@@ -151,14 +127,53 @@ const fetchEvents = async () => {
 
 const createEvent = async () => {
     try {
-        eventService.createEvent();
+        const testEvent = {
+        startDate: new Date().toISOString().split('T')[0], // today
+        startTime: '14:00', // 2 PM
+        endDate: new Date().toISOString().split('T')[0], // today
+        endTime: '20:00', // 4 PM
+        maxNumParticipants: 10,
+        location: '123 Game Street, Montreal',
+        description: 'Test event for board games',
+        contactEmail: 'testuser@example.com',
+        creatorId: currentUserId.value
+        };
+        let createdEvent = await eventService.createEvent(testEvent);
+        await registerToEvent(createdEvent.id)
+        fetchEvents()
     }
     catch (e)
     {
-
+        console.log(e);
     }
 }
-
+const registerToEvent = async (eventId) => {
+    try{
+        await registrationService.registerParticipantToEvent(eventId, currentUserId.value)
+        fetchEvents()
+    } catch (e){
+        error.value = 'Failed to register Participant. Please try again later'
+        console.error('Error register participant:', e)
+    }
+}
+const deregisterFromEvent = async (eventId) => {
+    try{
+        await registrationService.deregisterParticipantFromEvent(eventId, currentUserId.value)
+        fetchEvents()
+    } catch (e){
+        error.value = 'Failed to deregister Participant. Please try again later'
+        console.error('Error deregistering participant:', e)
+    }
+}
+const cancelEvent = async (eventId) => {
+    try {
+        await eventService.deleteEvent(eventId)
+        fetchEvents()
+    } catch (e){
+        error.value = 'Failed to Cancel Event. Please try again later'
+        console.error('Error deleting event:', e)
+    }
+}
 onMounted(() => {
   fetchEvents()
 })
@@ -222,7 +237,7 @@ button{
     border-style: solid;
     border-color: grey;
     border-width: 0.1em;
-    padding: 0.2em;
+    padding: 0em 1rem;
     color: rgba(255, 254, 198, 1);
     font-family: "Mansalva", sans-serif;
     font-size: 1.1rem;
