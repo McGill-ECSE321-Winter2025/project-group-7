@@ -70,12 +70,6 @@ const handleLogin = async () => {
   }
 };
 
-
-// Method for handling override button click
-const activateOverride = () => {
-  router.push('/games'); // Navigate to the /games route
-};
-
 </script>
 
 <template>
@@ -180,11 +174,13 @@ body{
 
 .container{
     position: absolute;
-    bottom: 0;
+    bottom: 1.7rem;
     left: 50%;  /* Centers it horizontally */
     transform: translateX(-50%);
     width: 850px;
+    max-width: 60vw;
     height: 550px;
+    max-height: 67vh;
     background-color: rgba(59, 24, 4, 1);
     margin: 20px;
     border-radius: 30px;
