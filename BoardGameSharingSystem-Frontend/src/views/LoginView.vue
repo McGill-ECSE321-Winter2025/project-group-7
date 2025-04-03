@@ -47,7 +47,9 @@ const handleSignUp = async () => {
       password: password.value,
     });
     
-    router.push('/'); // Redirect to login page after successful sign-up
+    // Log the user in immediately after successful sign-up
+    await authStore.login(username.value, email.value, password.value);
+    router.push('/games');
 
   } catch (error) {
     console.error('Error during sign-up:', error);
