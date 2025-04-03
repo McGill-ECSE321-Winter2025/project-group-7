@@ -2,31 +2,64 @@
 
 import Card from 'primevue/card';
 import { Button } from 'primevue';
+import { ref } from 'vue';
+
+let games = ref([
+  {
+    title: "Monopoly",
+    description:"this is a description of the game make sure",
+    pictureURL:"/test-image2.jpg",
+    minNumPlayers:2,
+    maxNumPlayers: 7
+  },
+  {
+    title: "Monopoly",
+    description:"this is a description of the game make sure",
+    pictureURL:"/test-image2.jpg",
+    minNumPlayers:2,
+    maxNumPlayers: 7
+  },
+  {
+    title: "Monopoly",
+    description:"this is a description of the game make sure",
+    pictureURL:"/test-image2.jpg",
+    minNumPlayers:2,
+    maxNumPlayers: 7
+  },
+  {
+    title: "Monopoly",
+    description:"this is a description of the game make sure",
+    pictureURL:"/test-image2.jpg",
+    minNumPlayers:2,
+    maxNumPlayers: 7
+  }
+]);
+
 </script>
 
 <template>
   <h1 class="game-title">Browse Games</h1>
   <div class="game-card-wrapper">
-    <div class="game-card-content">
+    <div class="game-card-content" v-for="game in games">
       <div class="flip-card">
         <div class="flip-card-inner">
           <div class="flip-card-front">
     <Card style="width: 20rem; overflow: hidden" class="game-card">
         <template #header>
-          <img src="/test-image2.jpg" alt="game image1" class="game-images">
+          <img :src="game.pictureURL" :alt="game.title" class="game-images">
         </template>
     </Card>
     </div>
     <div class="flip-card-back">
       <Card style="width: 20rem; overflow: hidden" class="game-card game-card-back">
-        <template #title class="game-card-title">Game Title</template>
+        <template #title class="game-card-title">{{ game.title }}</template>
         <template #content>
           <p class="card-text">Min # Players:</p>
-          <p class="card-text-center">Min # Players:</p>
+          <p class="card-text-center">{{ game.minNumPlayers }}</p>
           <p class="card-text">Max # Players:</p>
-          <p class="card-text-center">Min # Players:</p>
+          <p class="card-text-center">{{ game.maxNumPlayers }}</p>
             <p class="description">
-              This is a short description about the game and it is getting increasingly longer so i have to deal with it 
+              {{ game.description }} 
             </p>
             <Button class="details-button">View Details</Button>
         </template>
@@ -57,6 +90,8 @@ import { Button } from 'primevue';
   height: 100%;
   transition: transform 0.2s ease;
   margin-bottom: 0;
+  margin-left: 10vh;
+  margin-right: 5vh;
   text-align: center;
 }
 
