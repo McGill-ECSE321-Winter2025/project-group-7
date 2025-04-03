@@ -3,6 +3,7 @@
 import Card from 'primevue/card';
 import { Button } from 'primevue';
 import { ref } from 'vue';
+import { RouterView } from 'vue-router';
 
 let games = ref([
   {
@@ -61,7 +62,11 @@ let games = ref([
             <p class="description">
               {{ game.description }} 
             </p>
-            <Button class="details-button">View Details</Button>
+            <Button class="details-button">
+              <RouterLink class="link" to="game">
+                View details
+              </RouterLink>
+            </Button>
         </template>
     </Card>
     </div>
@@ -186,6 +191,16 @@ let games = ref([
 
 .game-card-title{
   height: 10%;
+}
+
+.link{
+  color: beige;
+  width: 100%;
+  margin-top: 0%;
+  margin-bottom: 0%;
+  margin-left: 0%;
+  margin-right: 0;
+  height: max-content;
 }
 
 
