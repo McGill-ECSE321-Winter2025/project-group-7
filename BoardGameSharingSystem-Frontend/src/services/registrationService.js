@@ -11,6 +11,7 @@ export const registrationService = {
       throw error
     }
   },
+
   // PUT /registrations/{eventId}/{participantId}
   async registerParticipantToEvent(eventId, participantId)
   {
@@ -22,6 +23,7 @@ export const registrationService = {
       throw error
     }
   },
+  
   // DELETE /registrations/{eventId}/{participantId}
   async deregisterParticipantFromEvent(eventId, participantId)
   {
