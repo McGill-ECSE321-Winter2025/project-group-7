@@ -48,7 +48,7 @@ export const userService = {
     // PUT /users/{id}/toPlayer
     async toggleUserToPlayer(id) {
       try {
-        const response = await api.delete(`/users/${id}/toPlayer`)
+        const response = await api.put(`/users/${id}/toPlayer`)
         return response.data
       } catch (error) {
         console.error('Error toggling user to player:', error)
@@ -59,7 +59,7 @@ export const userService = {
     // PUT /users/{id}/toGameOwner
     async toggleUserToGameOwner(id) {
       try {
-        const response = await api.delete(`/users/${id}/toGameOwner`)
+        const response = await api.put(`/users/${id}/toGameOwner`)
         return response.data
       } catch (error) {
         console.error('Error toggling user to game owner:', error)
