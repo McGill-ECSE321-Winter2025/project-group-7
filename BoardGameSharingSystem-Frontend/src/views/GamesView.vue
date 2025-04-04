@@ -161,7 +161,7 @@ const show = () => {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0%;
-  text-justify: auto;
+  width: 100%;
 }
 
 .details-button:hover{
@@ -200,6 +200,7 @@ const show = () => {
   text-decoration: none; /* Remove underline */
   padding: 0;
   height: 100%;
+  padding: 0;
 }
 
 .button-link-wrapper {
