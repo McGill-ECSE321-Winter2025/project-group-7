@@ -51,7 +51,7 @@
                   <label for="name" class="form-label">Name</label>
                   <input 
                     id="name" 
-                    v-model="profile.name" 
+                    v-model="authStore.user.username"
                     class="form-input"
                   />
                 </div>
@@ -60,7 +60,7 @@
                   <input 
                     id="email" 
                     type="email" 
-                    v-model="profile.email" 
+                    v-model="authStore.user.userEmail"
                     class="form-input"
                   />
                 </div>
@@ -108,6 +108,7 @@
                     <input 
                       type="checkbox" 
                       v-model="isGameOwner" 
+                      @change="toggleAccountType"
                       class="toggle__input"
                     />
                     <span class="toggle__slider"></span>
@@ -139,8 +140,7 @@
                     <div class="game-item__wrapper">
                       <div class="game-item__info">
                         <div class="game-item__icon-wrapper">
-                          <img v-if="game.pictureUrl" :src= game.pictureUrl alt="Game Icon" class="game-item__icon" />
-                          <Dice v-else class="game-item__icon" />
+                          <Dice class="game-item__icon" />
                         </div>
                         <div>
                           <p class="game-item__title">{{ game.title }}</p>
@@ -188,31 +188,19 @@
                           <Calendar class="event-item__icon" />
                         </div>
                         <div>
-                          <p class="event-item__title">{{ event.title }}</p>
+                          <p class="event-item__title">{{ event.game }}</p>
                           <div class="event-item__details">
-                            <Clock class="event-item__details-icon" /> {{ event.date }} • {{ event.location }}
+                            <Clock class="event-item__details-icon" />
+                            {{ event.startDate }}
+                            <template v-if="event.startDate !== event.endDate"> - {{ event.endDate }}</template>
+                            • {{ event.location }} • {{ event.contactEmail }}
                           </div>
                         </div>
                       </div>
-                      <span 
-                        :class="[
-                          'event-item__status',
-                          event.status === 'Attended' ? 'event-item__status--attended' : 
-                          event.status === 'Cancelled' ? 'event-item__status--cancelled' : 
-                          'event-item__status--pending'
-                        ]"
-                      >
-                        {{ event.status }}
-                      </span>
                     </div>
                     <div v-if="index < events.length - 1" class="separator"></div>
                   </div>
                 </div>
-              </div>
-              <div class="card__footer">
-                <button class="btn btn--primary">
-                  View All Events
-                </button>
               </div>
             </div>
             
@@ -268,6 +256,9 @@
   
   <script>
   import { ref, computed, watch } from 'vue'
+  import { useAuthStore } from '@/stores/authStore'
+  import { userService } from '@/services/userService';
+  import { nextTick } from 'vue';
   import { 
     Calendar, 
     Clock, 
@@ -277,7 +268,7 @@
     Package, 
     Settings, 
     User, 
-    Users 
+    Users ,
   } from 'lucide-vue-next'
   
   export default {
@@ -291,18 +282,47 @@
       Package,
       Settings,
       User,
-      Users
+      Users,
     },
+
     setup() {
-      const isGameOwner = ref(false)
-      const activeSection = ref('profile')
-      const showDeleteConfirm = ref(false)
+      const authStore = useAuthStore();
+      const currentUserName = computed(() => authStore.user.username);
+      const currentUserEmail = computed(() => authStore.user.userEmail);
+      const isGameOwner = computed(() => authStore.user.isGameOwner);
+      const activeSection = ref('profile');
+      const showDeleteConfirm = ref(false);
       
+      
+      // Directly bind the profile fields to authStore properties
       const profile = ref({
-        name: 'Meeple Master',
-        email: 'meeple@boardgames.com',
-        password: ''
-      })
+        name: currentUserName,
+        email: currentUserEmail,
+        password: '' // Do not store passwords in plain text!
+      });
+
+      // Function to toggle account type
+      const toggleAccountType = async () => {
+        try {
+
+          // Wait for isGameOwner to actually update from the toggle
+          await nextTick();
+
+          if (isGameOwner.value) {
+            await userService.toggleUserToGameOwner(authStore.user.id);
+            console.log("Checkbox is now:", isGameOwner.value);
+          } else {
+            await userService.toggleUserToPlayer(authStore.user.id);
+            console.log("Checkbox is now:", isGameOwner.value);
+          }
+
+        // Refresh user data after toggle
+        const updatedUser = await userService.getUser(authStore.user.id);
+        authStore.user = updatedUser.data; // Update the store with new user data
+        } catch (error) {
+        console.error("Error toggling account type:", error);
+    }
+  };
       
       const ownedGames = ref([
         {
@@ -338,22 +358,34 @@
       
       const events = ref([
         {
-          title: 'Weekly Game Night',
-          date: 'March 20, 2025',
+          game: 'Monopoly',
+          startDate: 'March 20, 2025',
+          endDate: 'March 21, 2025',
+          startTime: '2PM',
+          endTime: '3PM',
           location: 'Community Center',
-          status: 'Attended'
+          status: 'Attended',
+          contactEmail: 'sen@gmail.com'
         },
         {
-          title: 'Catan Tournament',
-          date: 'February 15, 2025',
+          game: 'Catan',
+          startDate: 'February 15, 2025',
+          endDate: 'February 19, 2025',
+          startTime: '2PM',
+          endTime: '3PM',
           location: 'Board Game Cafe',
-          status: 'Attended'
+          status: 'Attended',
+          contactEmail: 'peter_parker@gmail.com'
         },
         {
-          title: 'RPG Weekend',
-          date: 'January 10, 2025',
+          game: 'UNO',
+          startDate: 'January 10, 2025',
+          endDate: 'January 10, 2025',
+          startTime: '2PM',
+          endTime: '3PM',
           location: 'Game Store',
-          status: 'Cancelled'
+          status: 'Cancelled',
+          contactEmail: 'spooderman@gmail.com'
         }
       ])
       
@@ -404,13 +436,17 @@
       })
       
       return {
+        authStore,
+        currentUserName,
+        currentUserEmail,
         isGameOwner,
         activeSection,
         profile,
         ownedGames,
         events,
         navItems,
-        showDeleteConfirm
+        showDeleteConfirm,
+        toggleAccountType
       }
     }
   }

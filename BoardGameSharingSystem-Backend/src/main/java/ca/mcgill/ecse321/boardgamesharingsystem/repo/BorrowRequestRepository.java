@@ -10,4 +10,7 @@ public interface BorrowRequestRepository extends CrudRepository<BorrowRequest, I
     public BorrowRequest findBorrowRequestById(int id);
     public List<BorrowRequest> findByBorrowerId(int borrowerId);
     public List<BorrowRequest> findByGameCopyId(int gameCopyId);
+
+    //new
+    public List<BorrowRequest> findAll();
 }
