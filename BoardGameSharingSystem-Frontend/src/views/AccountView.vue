@@ -915,12 +915,12 @@
   }
 
   .btn--add {
-    background-color: #81cb81;
+    background-color: rgb(160, 198, 34);
     color: white;
   }
 
   .btn--add:hover{
-    background-color: #5dac5d;
+    background-color: rgb(135, 168, 29);
   }
   
   .btn--outline {
