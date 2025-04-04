@@ -77,8 +77,7 @@
 <script>
 import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
-
-import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-2466520193-removebg-preview1(1).png';
+import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-2466520193-removebg-preview1.png';
 import { reviewService } from '@/services/reviewService';
 import {ref, onMounted} from 'vue';
 import {useRoute} from 'vue-router';

@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.BorrowRequestResponseDto;
+import ca.mcgill.ecse321.boardgamesharingsystem.dto.EventResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 
 @RestController
@@ -34,6 +37,20 @@ public class BorrowRequestController {
     public BorrowRequestResponseDto createBorrowingRequest(@RequestParam int gameCopyId, @RequestParam int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
     {
         return new BorrowRequestResponseDto(borrowingService.createBorrowingRequest(gameCopyId, borrowerId, borrowRequest.getStartDate(), borrowRequest.getEndDate()));
+    }
+
+    //new
+        /**
+     * Returns a list of all Borrow Requests.
+     * @return a list of all Borrow Requests
+     */
+    @GetMapping("/borrowrequests/all")
+    public List<BorrowRequestResponseDto> findAllRequests()
+    {
+        List<BorrowRequest> requests = borrowingService.findAllEvents();
+        List<BorrowRequestResponseDto> responses = new ArrayList<>();
+        requests.forEach(borrowRequest -> responses.add(new BorrowRequestResponseDto(borrowRequest)));
+        return responses;
     }
     
     /**

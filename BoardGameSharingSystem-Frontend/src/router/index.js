@@ -61,6 +61,15 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/EventView.vue'),
     },
+    {
+      path: '/game/:gameId',
+      name: 'game',
+      props: true,
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/SpecificGame.vue'),
+    },
   ],
 })
 

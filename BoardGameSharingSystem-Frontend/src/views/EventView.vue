@@ -200,8 +200,9 @@ onMounted(() => {
 
 <style scoped>
 td{
-    border-top: 0.2em solid rgb(234, 240, 154, 0.9);;
+    border-top: 0.2em solid rgba(134, 73, 37, 0.9);
     width: 100%;
+    color:rgb(230, 204, 189);
 }
 tr:first-child td{
     border-top: none;
@@ -219,16 +220,16 @@ main{
 table{
     border-radius: 1em;
     border-style: solid;
-    border-color: rgb(234, 240, 154, 0.9);
+    border-color: rgba(134, 73, 37, 0.9);
     width: 60%;
     border-spacing: 0;
-    background-color: rgba(221, 219, 119, 0.9);
+    background-color: rgba(59, 24, 4, 0.9);
     mix-blend-mode:add;
     margin-top: 1%;
     font-size: 1.1rem;
 }
 .eventTableDataContainer{
-    padding: 1%;
+    padding: 1rem;
     width: 100%;
 }
 .eventBox{
@@ -256,17 +257,17 @@ button{
     border-color: grey;
     border-width: 0.1em;
     padding: 0em 1rem;
-    color: rgba(255, 254, 198, 1);
+    color: rgb(230, 204, 189);
     font-family: "Mansalva", sans-serif;
     font-size: 1.1rem;
     text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
 }
 .registerToEventButton{
-    color: rgba(255, 254, 198, 1);
+    color: rgb(230, 204, 189);
 }
 .dangerButton{
     background-color: rgba(189, 0, 0, 0.9);
-    color: rgb(255, 255, 255);
+    color: rgb(230, 204, 189);
 }
 .dangerButton:hover{
     background-color: rgba(226, 12, 12, 0.9);
@@ -282,7 +283,7 @@ button:hover{
     mix-blend-mode:add;
 }
 button:active{
-    background-color: rgba(241, 187, 155, 0.9);
+    background-color: rgba(77, 43, 24, 0.9);
     mix-blend-mode:add;
 }
 .search{
@@ -304,23 +305,22 @@ button:active{
     border-style: none;
     outline: none;
     text-indent: 2em;
-    background-color: rgba(221, 219, 119, 0.9);
-    caret-color: rgb(85, 40, 17);
-    color: rgb(85, 40, 17);
+    background-color: rgba(59, 24, 4, 0.9);
+    caret-color: rgb(230, 204, 189);
+    color: rgb(230, 204, 189);
     mix-blend-mode:add;
     font-family: "Mansalva", sans-serif;
     font-size: 1.1rem;
 }
 #eventSearch::placeholder{
-    color: rgb(124, 68, 40);;
+    color: rgb(230, 204, 189);
 }
 #eventSearch::-webkit-search-cancel-button{
-    color:rgb(85, 40, 17);
     margin-right: 3em;
     display: none;
 }
 #registeredEventCheckbox{
-    accent-color: rgba(221, 219, 119, 0.9);
+    accent-color: rgba(59, 24, 4, 0.9);
     mix-blend-mode:add;
     margin: 1rem;
 }
@@ -340,21 +340,22 @@ label[for="registeredEventCheckbox"]{
 }
 .eventLocation{
     font-style: italic;
-    color: rgb(197, 102, 54);
+    color: rgb(228, 187, 140);
 }
 .noContent{
-    background-color: rgba(221, 219, 119, 0.9);
+    background-color: rgba(59, 24, 4, 0.9);
     flex: 1;
     width: 60%;
     margin: 5vh;
     border-radius: 1em;
     border-style: solid;
-    border-color: rgb(234, 240, 154, 0.9);
+    border-color: rgba(134, 73, 37, 0.9);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
+    color: rgb(230, 204, 189);
 }
 .error-message{
     color: rgb(209, 15, 15);
