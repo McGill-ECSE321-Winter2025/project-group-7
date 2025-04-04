@@ -39,7 +39,6 @@ let games = ref([
 </script>
 
 <template>
-  <h1 class="game-title">Browse Games</h1>
   <div class="game-card-wrapper">
     <div class="game-card-content" v-for="game in games">
       <div class="flip-card">
@@ -62,11 +61,13 @@ let games = ref([
             <p class="description">
               {{ game.description }} 
             </p>
+            <div class="button-wrapper">
             <Button class="details-button">
               <RouterLink class="link" to="game">
                 View details
               </RouterLink>
             </Button>
+            </div>
         </template>
     </Card>
     </div>
@@ -194,15 +195,19 @@ let games = ref([
 }
 
 .link{
-  color: beige;
-  width: 100%;
-  margin-top: 0%;
-  margin-bottom: 0%;
-  margin-left: 0%;
-  margin-right: 0;
-  height: max-content;
+  display: block;
+  width: 100%; /* Make the link take up full width of the button */
+  text-align: center;
+  background-color: transparent; /* Make the link behave like a button */
+  color: white; /* Set color to white to match button text color */
+  text-decoration: none; /* Remove underline */
 }
 
+.button-link-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center; /* Center the button and link wrapper */
+}
 
 
 </style>
