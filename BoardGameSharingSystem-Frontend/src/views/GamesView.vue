@@ -7,33 +7,13 @@ import { RouterView } from 'vue-router';
 
 let games = ref([
   {
+    id: 567899,
     title: "Monopoly",
     description:"this is a description of the game make sure",
     pictureURL:"/test-image2.jpg",
     minNumPlayers:2,
     maxNumPlayers: 7
   },
-  {
-    title: "Monopoly",
-    description:"this is a description of the game make sure",
-    pictureURL:"/test-image2.jpg",
-    minNumPlayers:2,
-    maxNumPlayers: 7
-  },
-  {
-    title: "Monopoly",
-    description:"this is a description of the game make sure",
-    pictureURL:"/test-image2.jpg",
-    minNumPlayers:2,
-    maxNumPlayers: 7
-  },
-  {
-    title: "Monopoly",
-    description:"this is a description of the game make sure",
-    pictureURL:"/test-image2.jpg",
-    minNumPlayers:2,
-    maxNumPlayers: 7
-  }
 ]);
 
 </script>
@@ -63,7 +43,7 @@ let games = ref([
             </p>
             <div class="button-wrapper">
             <Button class="details-button">
-              <RouterLink class="link" to="game">
+              <RouterLink class="link" :to="{name:'game',params:{gameId:game.id}}">
                 View details
               </RouterLink>
             </Button>
