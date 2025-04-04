@@ -1,24 +1,38 @@
 <script setup>
 
 import Card from 'primevue/card';
-import { Button } from 'primevue';
-import { ref } from 'vue';
-import { RouterView } from 'vue-router';
+import { Button, Toast, useToast } from 'primevue';
+import { onMounted, ref } from 'vue';
+import { gameService } from '@/services/gameService';
 
-let games = ref([
-  {
-    id: 567899,
-    title: "Monopoly",
-    description:"this is a description of the game make sure",
-    pictureURL:"/test-image2.jpg",
-    minNumPlayers:2,
-    maxNumPlayers: 7
-  },
-]);
+let games = ref([]);
+const error = ref(null);
+const toast = useToast();
+
+const findAllGames = async () => {
+  try{
+    let fetchedGames = await gameService.findAllGames()
+    games.value = fetchedGames;
+  }catch (err){
+    error.value = 'Failed to load available games. PLease try later'
+    console.error('Error loading games', err)
+    show()
+  }
+}
+
+onMounted( () =>{
+  findAllGames()
+})
+
+const show = () => {
+    toast.add({ severity: 'error', summary: 'Could not load available games', detail: 'Please try again later', });
+};
 
 </script>
 
-<template>
+<template class="top">
+  <Toast />
+  <h1 class="game-title"></h1>
   <div class="game-card-wrapper">
     <div class="game-card-content" v-for="game in games">
       <div class="flip-card">
@@ -41,7 +55,7 @@ let games = ref([
             <p class="description">
               {{ game.description }} 
             </p>
-            <div class="button-wrapper">
+            <div class="button-link-wrapper">
             <Button class="details-button">
               <RouterLink class="link" :to="{name:'game',params:{gameId:game.id}}">
                 View details
@@ -63,11 +77,13 @@ let games = ref([
   position: relative;
   max-width: auto;
   margin-top: 10vh;
+  margin-bottom: 20vh;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   flex-direction: row;
   gap: 20px;
+  top: 10vh;
 } 
 
 
@@ -144,7 +160,8 @@ let games = ref([
   border-color: white;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-
+  padding: 0%;
+  text-justify: auto;
 }
 
 .details-button:hover{
@@ -167,7 +184,7 @@ let games = ref([
 
 .description{
   text-align: left;
-  height: 15%;
+  max-height: 10%;
 }
 
 .game-card-title{
@@ -181,6 +198,8 @@ let games = ref([
   background-color: transparent; /* Make the link behave like a button */
   color: white; /* Set color to white to match button text color */
   text-decoration: none; /* Remove underline */
+  padding: 0;
+  height: 100%;
 }
 
 .button-link-wrapper {
