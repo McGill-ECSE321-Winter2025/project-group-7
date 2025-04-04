@@ -51,7 +51,7 @@
                   <label for="name" class="form-label">Name</label>
                   <input 
                     id="name" 
-                    v-model="profile.name" 
+                    v-model="authStore.user.username"
                     class="form-input"
                   />
                 </div>
@@ -60,7 +60,7 @@
                   <input 
                     id="email" 
                     type="email" 
-                    v-model="profile.email" 
+                    v-model="authStore.user.userEmail"
                     class="form-input"
                   />
                 </div>
@@ -108,6 +108,7 @@
                     <input 
                       type="checkbox" 
                       v-model="isGameOwner" 
+                      @change="toggleAccountType"
                       class="toggle__input"
                     />
                     <span class="toggle__slider"></span>
@@ -268,6 +269,9 @@
   
   <script>
   import { ref, computed, watch } from 'vue'
+  import { useAuthStore } from '@/stores/authStore'
+  import { userService } from '@/services/userService';
+  import { nextTick } from 'vue';
   import { 
     Calendar, 
     Clock, 
@@ -293,16 +297,45 @@
       User,
       Users
     },
+
     setup() {
-      const isGameOwner = ref(false)
-      const activeSection = ref('profile')
-      const showDeleteConfirm = ref(false)
+      const authStore = useAuthStore();
+      const currentUserName = computed(() => authStore.user.username);
+      const currentUserEmail = computed(() => authStore.user.userEmail);
+      const isGameOwner = computed(() => authStore.user.isGameOwner);
+      const activeSection = ref('profile');
+      const showDeleteConfirm = ref(false);
       
+      
+      // Directly bind the profile fields to authStore properties
       const profile = ref({
-        name: 'Meeple Master',
-        email: 'meeple@boardgames.com',
-        password: ''
-      })
+        name: currentUserName,
+        email: currentUserEmail,
+        password: '' // Do not store passwords in plain text!
+      });
+
+      // Function to toggle account type
+      const toggleAccountType = async () => {
+        try {
+
+          // Wait for isGameOwner to actually update from the toggle
+          await nextTick();
+
+          if (isGameOwner.value) {
+            await userService.toggleUserToGameOwner(authStore.user.id);
+            console.log("Checkbox is now:", isGameOwner.value);
+          } else {
+            await userService.toggleUserToPlayer(authStore.user.id);
+            console.log("Checkbox is now:", isGameOwner.value);
+          }
+
+        // Refresh user data after toggle
+        const updatedUser = await userService.getUser(authStore.user.id);
+        authStore.user = updatedUser.data; // Update the store with new user data
+        } catch (error) {
+        console.error("Error toggling account type:", error);
+    }
+  };
       
       const ownedGames = ref([
         {
@@ -404,13 +437,17 @@
       })
       
       return {
+        authStore,
+        currentUserName,
+        currentUserEmail,
         isGameOwner,
         activeSection,
         profile,
         ownedGames,
         events,
         navItems,
-        showDeleteConfirm
+        showDeleteConfirm,
+        toggleAccountType
       }
     }
   }
