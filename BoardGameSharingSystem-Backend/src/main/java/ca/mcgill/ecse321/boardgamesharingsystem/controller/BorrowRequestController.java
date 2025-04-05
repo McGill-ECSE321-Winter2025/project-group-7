@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.BorrowRequestResponseDto;
-import ca.mcgill.ecse321.boardgamesharingsystem.dto.EventResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 
 @CrossOrigin(origins="http://localhost:8090")
@@ -42,7 +40,7 @@ public class BorrowRequestController {
     }
 
     //new
-        /**
+    /**
      * Returns a list of all Borrow Requests.
      * @return a list of all Borrow Requests
      */

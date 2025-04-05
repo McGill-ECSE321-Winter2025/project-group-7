@@ -47,10 +47,10 @@ public class BorrowingServiceTests {
     private GameCopyRepository gameCopyRepository;
 
     @Mock
-    private GameOwnerRepository gameOwnerRepo;
+    private GameRepository gameRepository;
 
     @Mock
-    private GameRepository gameRepository;
+    private GameOwnerRepository gameOwnerRepository;
 
     @InjectMocks
     private BorrowingService borrowingService;
@@ -93,43 +93,48 @@ public class BorrowingServiceTests {
         assertEquals(RequestStatus.Pending, request.getRequestStatus());
     }
 
-    //new
     @Test
     public void testFindAllRequests() {
-        // Arrange
-        UserAccount borrower = new UserAccount("testUser", "user@mail.com", "pass");
-        borrower = userAccountRepository.save(borrower);
-        System.out.println("Saved owner: " + borrower); 
-
-        UserAccount owner = new UserAccount("owner", "owner@mail.com", "pass");
-        owner = userAccountRepository.save(owner);
-        System.out.println("Saved owner: " + owner); 
-
+        //Arrange
+        UserAccount borrower1 = new UserAccount("John", "john@test.com", "password");
+        UserAccount borrower2 = new UserAccount("Lisa", "lisa@test.com", "123456");
+    
+        UserAccount owner = new UserAccount("Owner", "owner@test.com", "ownerPass");
         GameOwner gameOwner = new GameOwner(owner);
-        gameOwner = gameOwnerRepo.save(gameOwner);
-        System.out.println("Saved Game Owner: " + gameOwner);
-
-        Game game = new Game("Catan", 3, 4, "url", "classic game");
-        game = gameRepository.save(game);
-
-        GameCopy gameCopy = new GameCopy(game, gameOwner);
-        gameCopy = gameCopyRepository.save(gameCopy);
-
-        LocalDate startDate = LocalDate.of(2025, 4, 1);
-        LocalDate endDate = LocalDate.of(2025, 4, 10);
-
-        BorrowRequest request = new BorrowRequest(startDate, endDate, borrower, gameCopy);
-        borrowRequestRepository.save(request);
-
-        // Act
+    
+        Game game1 = new Game("Chess", 2, 2, "chess.com", "Classic chess game");
+        Game game2 = new Game("Catan", 3, 4, "catan.com", "Famous board game");
+    
+        GameCopy gameCopy1 = new GameCopy(game1, gameOwner);
+        GameCopy gameCopy2 = new GameCopy(game2, gameOwner);
+    
+        LocalDate startDate1 = LocalDate.of(2025, 4, 1);
+        LocalDate endDate1 = LocalDate.of(2025, 4, 10);
+    
+        LocalDate startDate2 = LocalDate.of(2025, 5, 1);
+        LocalDate endDate2 = LocalDate.of(2025, 5, 5);
+    
+        BorrowRequest request1 = new BorrowRequest(startDate1, endDate1, borrower1, gameCopy1);
+        BorrowRequest request2 = new BorrowRequest(startDate2, endDate2, borrower2, gameCopy2);
+    
+        List<BorrowRequest> mockList = List.of(request1, request2);
+    
+        when(borrowRequestRepository.findAll()).thenReturn(mockList);
+    
+        //Act
         List<BorrowRequest> result = borrowingService.findAllRequests();
-
-        // Assert
+    
+        //Assert
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("testUser", result.get(0).getBorrower().getName());
-        assertEquals("Catan", result.get(0).getGameCopy().getGame().getTitle());
+        assertEquals(2, result.size());
+    
+        assertEquals("John", result.get(0).getBorrower().getName());
+        assertEquals("Chess", result.get(0).getGameCopy().getGame().getTitle());
+    
+        assertEquals("Lisa", result.get(1).getBorrower().getName());
+        assertEquals("Catan", result.get(1).getGameCopy().getGame().getTitle());
     }
+    
 
     /**
      * Tests that creating a borrowing request with null dates throws an exception.
