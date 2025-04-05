@@ -107,7 +107,7 @@
                   <label class="toggle">
                     <input 
                       type="checkbox" 
-                      v-model="isGameOwner" 
+                      :checked="isGameOwner" 
                       @change="toggleAccountType"
                       class="toggle__input"
                     />
@@ -258,7 +258,8 @@
   import { ref, computed, watch } from 'vue'
   import { useAuthStore } from '@/stores/authStore'
   import { userService } from '@/services/userService';
-  import { nextTick } from 'vue';
+  import { gameOwningService } from '@/services/gameOwningService';
+
   import { 
     Calendar, 
     Clock, 
@@ -287,9 +288,10 @@
 
     setup() {
       const authStore = useAuthStore();
+      //const currentUserId = computed(() => authStore.user.id);
       const currentUserName = computed(() => authStore.user.username);
       const currentUserEmail = computed(() => authStore.user.userEmail);
-      const isGameOwner = computed(() => authStore.user.isGameOwner);
+      const isGameOwner = ref(null);
       const activeSection = ref('profile');
       const showDeleteConfirm = ref(false);
       
@@ -305,13 +307,31 @@
       const toggleAccountType = async () => {
         try {
 
-          // Wait for isGameOwner to actually update from the toggle
-          await nextTick();
+          // find the gameOwnerResponse to update isGameOwner
 
-          if (isGameOwner.value) {
+          /* WILL ONLY WORK ONCE DIAGLOG BOX FOR ADDING GAME WHEN TOGGLING FOR THE FIRST TIME IS IMPLEMENTED
+          SO UNCOMMENT THIS BLOCK ONCE ADD GAME IS IMPLEMENTED 
+          AND REMOVE : "isGameOwner.value = ref(true);" BELOW 
+
+          //const response = await gameOwningService.findGameOwner(currentUserId.value);
+          //isGameOwner.value = response.isGameOwner; 
+          //console.log("Checkbox is now:", isGameOwner.value);
+          */
+          isGameOwner.value = ref(true);
+          if (checked) {
             await userService.toggleUserToGameOwner(authStore.user.id);
             console.log("Checkbox is now:", isGameOwner.value);
-          } else {
+          } 
+          // // else if it failed because of no games
+          // // Uncomment this when add game dialog exists
+          // else if (error.response?.data?.message?.includes("gameOwner has no associated games")) {
+          //   triggerAddGameDialog(); // Replace with your actual dialog trigger + make sure it actually 
+                                      // adds game by calling api
+          // //re-try toggle
+          //   await userService.toggleUserToGameOwner(authStore.user.id);
+          //   console.log("Checkbox is now:", isGameOwner.value);
+          // }
+          else {
             await userService.toggleUserToPlayer(authStore.user.id);
             console.log("Checkbox is now:", isGameOwner.value);
           }
@@ -365,7 +385,7 @@
           endTime: '3PM',
           location: 'Community Center',
           status: 'Attended',
-          contactEmail: 'sen@gmail.com'
+          contactEmail: 'sniggy_the_piggy@gmail.com'
         },
         {
           game: 'Catan',
@@ -385,7 +405,7 @@
           endTime: '3PM',
           location: 'Game Store',
           status: 'Cancelled',
-          contactEmail: 'spooderman@gmail.com'
+          contactEmail: 'tom_loves_zendaya@gmail.com'
         }
       ])
       

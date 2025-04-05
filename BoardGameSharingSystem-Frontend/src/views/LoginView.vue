@@ -2,6 +2,8 @@
 import { ref,onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
+import { gameOwningService } from '@/services/gameOwningService';
+import { userService } from '@/services/userService';
 import axios from 'axios'
 
 const axiosClient = axios.create({
@@ -49,6 +51,14 @@ const handleSignUp = async () => {
     
     // Log the user in immediately after successful sign-up
     await authStore.login(username.value, email.value, password.value);
+
+    // Create a game owner placeholder for user after successful sign-up (to switch to later if toggling)
+    await gameOwningService.createGameOwner(authStore.user.id);
+    console.log("User is now a gameOwner");
+    await userService.toggleUserToPlayer(authStore.user.id);
+    console.log("User has been toggled to player");
+    console.log("Placeholder GameOwner account successfully created");
+    
     router.push('/games');
 
   } catch (error) {
