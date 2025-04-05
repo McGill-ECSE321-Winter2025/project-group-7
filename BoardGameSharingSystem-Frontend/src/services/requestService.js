@@ -32,6 +32,7 @@ export const requestService = {
       console.error(`Error declining request ${id}:`, error)
       throw error
     }
+
   },
 
     // POST /borrowrequests
@@ -48,5 +49,7 @@ export const requestService = {
           console.error('Error creating borrowing request:', error)
           throw error
         }
-      }
     }
+}
+
+

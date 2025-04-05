@@ -16,8 +16,6 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest.RequestStatus;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
-
 import org.springframework.validation.annotation.Validated;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import org.springframework.http.HttpStatus;
@@ -66,10 +64,6 @@ public class BorrowingService
     }
 
     //new
-        /**
-     * Returns all Events in the database as a List
-     * @return Events found as List<Event>
-     */
     public List<BorrowRequest> findAllRequests()
     {
         List<BorrowRequest> requests = borrowingRequestRepository.findAll();
