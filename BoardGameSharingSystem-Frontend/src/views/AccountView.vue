@@ -188,12 +188,12 @@
                           <Calendar class="event-item__icon" />
                         </div>
                         <div>
-                          <p class="event-item__title">{{ event.game }}</p>
+                          <p class="event-item__title">{{ event.Name }}</p>
                           <div class="event-item__details">
                             <Clock class="event-item__details-icon" />
-                            {{ event.startDate }}
-                            <template v-if="event.startDate !== event.endDate"> - {{ event.endDate }}</template>
-                            • {{ event.location }} • {{ event.contactEmail }}
+                            {{ event.FormattedDate }}
+                            <!--<template v-if="event.startDate !== event.endDate"> - {{ event.endDate }}</template>-->
+                            • {{ event.Location }} • {{ event.ContactEmail }}
                           </div>
                         </div>
                       </div>
@@ -252,13 +252,15 @@
         </div>
       </div>
     </div>
-  </template>
+</template>
   
-  <script>
-  import { ref, computed, watch } from 'vue'
+<script>
+  import { ref, computed, watch, onMounted } from 'vue'
   import { useRouter } from 'vue-router';
   import { useAuthStore } from '@/stores/authStore'
   import { userService } from '@/services/userService';
+  import { eventService } from '@/services/eventService';
+  import { registrationService } from '@/services/registrationService'
   import { gameOwningService } from '@/services/gameOwningService';
 
   import { 
@@ -296,7 +298,8 @@
       const isGameOwner = ref(null);
       const activeSection = ref('profile');
       const showDeleteConfirm = ref(false);
-      
+      const error = ref(null);
+      const events = ref([]);
       
       // Directly bind the profile fields to authStore properties
       const profile = ref({
@@ -378,6 +381,7 @@
         
       ])
       
+      /*
       const events = ref([
         {
           game: 'Monopoly',
@@ -410,6 +414,68 @@
           contactEmail: 'tom_loves_zendaya@gmail.com'
         }
       ])
+      */
+
+      //Handles event history (WORK IN PROGRESS):
+      const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
+      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+      })
+
+      const fetchEvents = async () => {
+        try {
+          error.value = null
+
+          const userRegistrations = await registrationService.findRegistrationsByParticipant(currentUserId.value)
+          const formattedEvents = await Promise.all(userRegistrations.map(async (registration) => {
+          const event = await eventService.findEventById(registration.eventId) //waiting to be implemented!
+
+          //Initialize API failure response
+          let gameTitle = "Game Not Found"
+          let creatorName = "User Not Found"
+          let eventFormattedDate = "UnknownDate - UnknownDate"
+          let eventIsCreator = event.creatorId === userId
+
+          // Fetch game title
+          try {
+            const games = await eventGameService.findEventGamesByEvent(event.id)
+            if (games.length > 0) {
+              gameTitle = games[0].gameTitle
+            }
+          } catch (e) {
+            console.warn(`Error Fetching Games for Event: ${e}`)
+          }
+
+          // Fetch creator name
+          try {
+            const user = await userService.findUserAccount(event.creatorId)
+            creatorName = user.name
+          } catch (e) {
+            console.warn(`Error Fetching Creator for Event: ${e}`)
+          }
+
+          // Format event date
+          if (event.startDate === event.endDate) {
+            eventFormattedDate = formatDate(event.startDate)
+          } else {
+            eventFormattedDate = `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`
+          }
+
+          return {
+            ...event,
+            Name: `${gameTitle} by ${creatorName}`,
+            FormattedDate: eventFormattedDate,
+            Location: event.location,
+            ContactEmail: event.contactEmail
+          }
+        }))
+        
+          events.value = formattedEvents
+        } catch (err) {
+          error.value = 'Failed to load events. Please try again later.'
+          console.error('Error loading events:', err)
+        }
+      }
+      
 
       // Handles delete account:
       const deleteAccount = async () => {
@@ -473,6 +539,16 @@
         }
       })
       
+      onMounted(() => {
+      console.log("mounted")
+      if (!authStore.user.isAuthenticated) {
+        router.push('/')
+      } 
+      else{
+        fetchEvents()
+      }
+      })
+
       return {
         authStore,
         currentUserName,
@@ -489,9 +565,9 @@
       }
     }
   }
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   /* Base styles */
   .account-settings {
     min-height: 100vh;
@@ -1048,4 +1124,4 @@
     justify-content: flex-end;
     gap: 0.5rem;
   }
-  </style>
+</style>
