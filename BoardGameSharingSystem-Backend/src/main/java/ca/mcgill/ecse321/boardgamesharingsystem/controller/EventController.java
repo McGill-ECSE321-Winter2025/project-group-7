@@ -73,4 +73,15 @@ public class EventController {
     {
         return new EventResponseDto(eventService.deleteEvent(id));
     }
+
+    /**
+     * Returns the Event with ID eventID.
+     * @param id the ID of the event to return
+     * @return the Event including id and response timestamp
+     */
+    @GetMapping("/events/{id}")
+    public EventResponseDto findEventById(@PathVariable("id") int id)
+    {
+        return new EventResponseDto(eventService.findEventById(id));
+    }
 }
