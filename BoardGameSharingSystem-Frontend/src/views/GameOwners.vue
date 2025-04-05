@@ -1,6 +1,6 @@
 <template>
     <main>
-        <button id = "create">Create Borrow Request</button>
+        <button id = "create" @click="openCreateReview">Create Borrow Request</button>
         <h1 id = title>Select a Game Owner</h1>
     <div>
       <section id = s1>
@@ -12,20 +12,9 @@
             </tr>
             </thead>
             <tbody>
-                        <tr>
-                            <td>JohnDoe</td>
-                            <td>4/5</td>
-                           
-                        </tr>
-                        <tr>
-                            <td>JaneSmith</td>
-                            <td>5/5</td>
-                            
-                        </tr>
-                        <tr>
-                            <td>SamPlayer</td>
-                            <td>3/5</td>
-                            
+                        <tr v-for="(entry, index) in fetchedgameCopies":key = "index">
+                            <td><input type="radio" id="html" name="fav_language" value="HTML"></td>
+                            <td>{{ entry.userName }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -35,142 +24,16 @@
 <div v-if = "showPopup" class="modal-overlay">
             <div class = "modal-content">
                 <form>
-                    <<div>
-                        </div>
+                    <div id = "start">
+                    <p><label for="date1" id = date21>Select a start date for the lending:</label></p>
+                    <input type="date" v-model="selectedDate" id="date1" />
+                    </div>
 
-                        <div>
-                            <b-dropdown v-model="selectedValueYr1" id="dropdown-11" text="Dropdown Button" class="m-md-2">
-                                <b-dropdown-item value = "2025">2025</b-dropdown-item>
-                                <b-dropdown-item value = "2026">2026</b-dropdown-item>
-                                <b-dropdown-item value = "2027">2027</b-dropdown-item>
-                                <b-dropdown-divider></b-dropdown-divider>
-                            </b-dropdown>
-                            </div>
-
-                            <div>
-                                <b-dropdown v-model="selectedValueM1" id="dropdown-12" text="Dropdown Button" class="m-md-2">
-                                    <b-dropdown-item value = "01">01</b-dropdown-item>
-                                    <b-dropdown-item value = "02">02</b-dropdown-item>
-                                    <b-dropdown-item value = "03">03</b-dropdown-item>
-                                    <b-dropdown-item value = "04">04</b-dropdown-item>
-                                    <b-dropdown-item value = "05">05</b-dropdown-item>
-                                    <b-dropdown-item value = "06">06</b-dropdown-item>
-                                    <b-dropdown-item value = "07">07</b-dropdown-item>
-                                    <b-dropdown-item value = "08">08</b-dropdown-item>
-                                    <b-dropdown-item value = "09">09</b-dropdown-item>
-                                    <b-dropdown-item value = "10">10</b-dropdown-item>
-                                    <b-dropdown-item value = "11">11</b-dropdown-item>
-                                    <b-dropdown-item value = "12">12</b-dropdown-item>
-                                    <b-dropdown-divider></b-dropdown-divider>
-                                </b-dropdown>
-                            </div> 
-
-                            <div>
-                                <b-dropdown v-model="selectedValueD1" id="dropdown-13" text="Dropdown Button" class="m-md-2">
-                                    <b-dropdown-item value = "01">01</b-dropdown-item>
-                                    <b-dropdown-item value = "02">02</b-dropdown-item>
-                                    <b-dropdown-item value = "03">03</b-dropdown-item>
-                                    <b-dropdown-item value = "04">04</b-dropdown-item>
-                                    <b-dropdown-item value = "05">05</b-dropdown-item>
-                                    <b-dropdown-item value = "06">06</b-dropdown-item>
-                                    <b-dropdown-item value = "07">07</b-dropdown-item>
-                                    <b-dropdown-item value = "08">08</b-dropdown-item>
-                                    <b-dropdown-item value = "09">09</b-dropdown-item>
-                                    <b-dropdown-item value = "10">10</b-dropdown-item>
-                                    <b-dropdown-item value = "11">11</b-dropdown-item>
-                                    <b-dropdown-item value = "12">12</b-dropdown-item>
-                                    <b-dropdown-item value = "13">13</b-dropdown-item>
-                                    <b-dropdown-item value = "14">14</b-dropdown-item>
-                                    <b-dropdown-item value = "15">15</b-dropdown-item>
-                                    <b-dropdown-item value = "16">16</b-dropdown-item>
-                                    <b-dropdown-item value = "17">17</b-dropdown-item>
-                                    <b-dropdown-item value = "18">18</b-dropdown-item>
-                                    <b-dropdown-item value = "19">19</b-dropdown-item>
-                                    <b-dropdown-item value = "20">20</b-dropdown-item>
-                                    <b-dropdown-item value = "21">21</b-dropdown-item>
-                                    <b-dropdown-item value = "22">22</b-dropdown-item>
-                                    <b-dropdown-item value = "23">23</b-dropdown-item>
-                                    <b-dropdown-item value = "24">24</b-dropdown-item>
-                                    <b-dropdown-item value = "25">25</b-dropdown-item>
-                                    <b-dropdown-item value = "26">26</b-dropdown-item>
-                                    <b-dropdown-item value = "27">27</b-dropdown-item>
-                                    <b-dropdown-item value = "28">28</b-dropdown-item>
-                                    <b-dropdown-item value = "29">29</b-dropdown-item>
-                                    <b-dropdown-item value = "30">30</b-dropdown-item>
-                                    <b-dropdown-item value = "31">31</b-dropdown-item>
-
-
-                                    <b-dropdown-divider></b-dropdown-divider>
-                                </b-dropdown>
-                                </div> 
-
-                                <div>
-                            <b-dropdown v-model="selectedValueYr2" id="dropdown-21" text="Dropdown Button" class="m-md-2">
-                                <b-dropdown-item value = "2025">2025</b-dropdown-item>
-                                <b-dropdown-item value = "2026">2026</b-dropdown-item>
-                                <b-dropdown-item value = "2027">2027</b-dropdown-item>
-                                <b-dropdown-divider></b-dropdown-divider>
-                            </b-dropdown>
-                            </div>
-
-                            <div>
-                                <b-dropdown v-model="selectedValueM2" id="dropdown22" text="Dropdown Button" class="m-md-2">
-                                    <b-dropdown-item value = "01">01</b-dropdown-item>
-                                    <b-dropdown-item value = "02">02</b-dropdown-item>
-                                    <b-dropdown-item value = "03">03</b-dropdown-item>
-                                    <b-dropdown-item value = "04">04</b-dropdown-item>
-                                    <b-dropdown-item value = "05">05</b-dropdown-item>
-                                    <b-dropdown-item value = "06">06</b-dropdown-item>
-                                    <b-dropdown-item value = "07">07</b-dropdown-item>
-                                    <b-dropdown-item value = "08">08</b-dropdown-item>
-                                    <b-dropdown-item value = "09">09</b-dropdown-item>
-                                    <b-dropdown-item value = "10">10</b-dropdown-item>
-                                    <b-dropdown-item value = "11">11</b-dropdown-item>
-                                    <b-dropdown-item value = "12">12</b-dropdown-item>
-                                    <b-dropdown-divider></b-dropdown-divider>
-                                </b-dropdown>
-                            </div> 
-
-                            <div>
-                                <b-dropdown v-model="selectedValueD2" id="dropdown-23" text="Dropdown Button" class="m-md-2">
-                                    <b-dropdown-item value = "01">01</b-dropdown-item>
-                                    <b-dropdown-item value = "02">02</b-dropdown-item>
-                                    <b-dropdown-item value = "03">03</b-dropdown-item>
-                                    <b-dropdown-item value = "04">04</b-dropdown-item>
-                                    <b-dropdown-item value = "05">05</b-dropdown-item>
-                                    <b-dropdown-item value = "06">06</b-dropdown-item>
-                                    <b-dropdown-item value = "07">07</b-dropdown-item>
-                                    <b-dropdown-item value = "08">08</b-dropdown-item>
-                                    <b-dropdown-item value = "09">09</b-dropdown-item>
-                                    <b-dropdown-item value = "10">10</b-dropdown-item>
-                                    <b-dropdown-item value = "11">11</b-dropdown-item>
-                                    <b-dropdown-item value = "12">12</b-dropdown-item>
-                                    <b-dropdown-item value = "13">13</b-dropdown-item>
-                                    <b-dropdown-item value = "14">14</b-dropdown-item>
-                                    <b-dropdown-item value = "15">15</b-dropdown-item>
-                                    <b-dropdown-item value = "16">16</b-dropdown-item>
-                                    <b-dropdown-item value = "17">17</b-dropdown-item>
-                                    <b-dropdown-item value = "18">18</b-dropdown-item>
-                                    <b-dropdown-item value = "19">19</b-dropdown-item>
-                                    <b-dropdown-item value = "20">20</b-dropdown-item>
-                                    <b-dropdown-item value = "21">21</b-dropdown-item>
-                                    <b-dropdown-item value = "22">22</b-dropdown-item>
-                                    <b-dropdown-item value = "23">23</b-dropdown-item>
-                                    <b-dropdown-item value = "24">24</b-dropdown-item>
-                                    <b-dropdown-item value = "25">25</b-dropdown-item>
-                                    <b-dropdown-item value = "26">26</b-dropdown-item>
-                                    <b-dropdown-item value = "27">27</b-dropdown-item>
-                                    <b-dropdown-item value = "28">28</b-dropdown-item>
-                                    <b-dropdown-item value = "29">29</b-dropdown-item>
-                                    <b-dropdown-item value = "30">30</b-dropdown-item>
-                                    <b-dropdown-item value = "31">31</b-dropdown-item>
-
-
-                                    <b-dropdown-divider></b-dropdown-divider>
-                                </b-dropdown>
-                                </div> 
-
-                    <button id = "Submit" @click.prevent = "submitReview">Create Request</button>
+                    <div id = "end">
+                    <p><label for="date2" id = date22>Select an end date for the lending:</label></p>
+                    <p><input type="date" v-model="selectedDate" id="date2" /></p>
+                </div>
+                    <button id = "Submit" @click.prevent = "createBorrowRequest">Create Request</button>
                     <button id = "Cancel" @click.prevent = "closeCreateReview">Cancel</button>
                 </form> <br>
             </div>
@@ -180,6 +43,38 @@
   </template>
 
   <style>
+
+#date21, #date22 {
+    font-family: "Mansalva", sans-serif;
+    font-size: 150%;
+
+
+
+}
+
+#date1, #date2 {
+    font-size: 130%;
+    font-family: "Mansalva", sans-serif;
+
+
+}
+
+#start {
+    margin-top: 4em;
+    margin-bottom: 2em;
+}
+
+#end {
+    margin-bottom: 4em;
+    margin-top: 2em;
+}
+
+#Submit {
+    margin-right: 2em;
+
+}
+
+
 
 button {
     background-color: rgba(145, 84, 49, 0.9);
@@ -251,8 +146,28 @@ h1 {
     background-color: rgba(134, 73, 37, 0.9);
 }
 
-</style>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.modal-content {
+    background-color: #cf8d4e;
+    width: 50%; /* Adjust width */
+    max-width: 500px;
+    padding: 2em; /* Reduce padding to fit textarea */
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+</style>
 <script setup>
 import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
@@ -262,10 +177,12 @@ import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
+import { useGameStore } from '@/stores/gameStore';
 
     const authStore = useAuthStore();
-    const router = useRoute();
-    const gameId = ref(router.params.gameId);
+    const gameStore = useGameStore();
+    const router = useRouter();
+    const gameId = gameStore.getGameId();
     const error = ref(null);
     const showPopup = ref(false);
     let gameOwners = ref([]);
@@ -276,14 +193,24 @@ import { useAuthStore } from '@/stores/authStore';
     const selectedD2 = ref('');
     const selectedM2 = ref('');
     const formattedDate1 = ref('');
-    const formattedDate2 = red('');
-    const currentUserId = computed(() => authStore.user.id);
+    const formattedDate2 = ref('');
+    const currentUserId = authStore.user.id;
+    const fetchedGameCopies = ref([]);
     
     
+    
+
+    const openCreateReview = () => {
+        showPopup.value = true;
+    }
+
+    const closeCreateReview = () => {
+        showPopup.value = false;
+    }
+
     const fetchGameOwners = async() => {
         try {
-            let fetchedGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
-            gameOwners.value = fetchedGameCopies.data.map(gameCopy => {
+            fetchedGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
             return {
                 userId: gameCopy.userId,
                 userName: gameCopy.userName,
@@ -291,7 +218,7 @@ import { useAuthStore } from '@/stores/authStore';
             };
 
 
-        });
+        
     } catch (err) {
         error.value = 'Failed to load game owners. Please try again later.';
         console.error('Error loading game owners:', err);
@@ -328,18 +255,6 @@ import { useAuthStore } from '@/stores/authStore';
 
     }
 
-    const openCreateReview = () => {
-        showPopup.value = true;
-    }
-
-    const closeCreateReview = () => {
-        showPopup.value = false;
-    }
-
 
 
 </script>
-
-//get the dateObj to make rq
-//get the 
-

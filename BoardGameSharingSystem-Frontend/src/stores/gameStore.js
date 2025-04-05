@@ -1,20 +1,15 @@
+import { defineStore } from 'pinia';
 
 export const useGameStore = defineStore('game', {
-    state: () => ({
-        currentGameId : null
-    }),
-
-    actions: {
-        setCurrentGameId(id) {
-            this.currentGameId = id;
-
-        }
-
-        
+  state: () => ({
+    gameId: null,
+  }),
+  actions: {
+    setGameId(id) {
+      this.gameId = id;
     },
-    getters: {
-        getCurrentGameId: (state) => state.currentGameId,
-    }
-
-
-})
+    getGameId() {
+      return this.gameId;
+    },
+  },
+});
