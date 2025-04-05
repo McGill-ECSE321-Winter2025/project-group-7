@@ -1,13 +1,17 @@
 <script setup>
-import { useRoute, RouterLink, RouterView } from 'vue-router'
+import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
 const route = useRoute()
+const router = useRouter()
+function goToHomePage() {
+  router.push('/games')
+}
 </script>
 
 <template>
   <header v-if="!$route.meta.hideNavbar">
     <!--The navigation bar-->
       <nav>
-        <img class="logo" src="@/images/GameNest-logo.png">
+        <img class="logo" src="@/images/GameNest-logo.png" @click="goToHomePage">
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
           <RouterLink to="/events">Event</RouterLink>

@@ -251,6 +251,8 @@ table{
 }
 button{
     background-color: rgba(145, 84, 49, 0.9);
+    height: auto;
+    width: auto;
     mix-blend-mode:add;
     border-radius: 10em;
     border-style: solid;
