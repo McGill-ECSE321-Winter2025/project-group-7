@@ -3,67 +3,77 @@
         <div class="title-container" :style="{ backgroundImg: `url(${backgroundImg})` }">
             
             <h1>
-                <b>{{ gameTitle }}</b>
+                <b>Title{{ gameTitle }}</b>
             </h1>
         
         </div>
+        <section id="all">
         <div class="stuff">
-            <section id = playerNb> {{minPlayers}} - {{ maxPlayers }}</section>
+            <section id = playerNb> {{minPlayers}} - {{ maxPlayers }}  players</section>
             <button id="borrowButton"> Borrow Game</button>
            
             <img :src="pictureURL" alt="Game Image" id="imageGame" v-if="pictureURL" />
             <img :src = "plantImg" id="plantImg"/>
             
-            <p id = "desc">{{ description }}</p>
+            <p id = "desc">dThe advancement of technology has drastically transformed nearly every aspect of human life, bringing with it both opportunities and challenges. From the way we communicate to how we work, learn, and entertain ourselves, digital tools and platforms have revolutionized our daily routines. Social media, for example, has connected individuals across the globe, making it easier to stay in touch with loved ones and share experiences. Similarly, innovations in artificial intelligence and machine learning are reshaping industries, automating tasks, and improving decision-making processes. However, the rapid pace of technological development also raises concerns. Issues such as data privacy, cybersecurity threats, and the ethical implications of AI are becoming more prevalent. The digital divide is another critical challenge, as access to advanced technology remains limited in many regions. While some benefit from cutting-edge gadgets and high-speed internet, others are left behind, widening the gap in opportunities and resources. As technology continues to evolve, it is crucial to strike a balance between embracing innovation and addressing the potential risks it brings. Society must ensure that the benefits of technology are accessible to all, fostering inclusivity while safeguarding privacy, security, and ethical standards.{{ description }}</p>
 
         </div>
         <div>
             <h2><b>Latest Reviews</b></h2>
             <button id="createReview" @click="openCreateReview">Create Review</button>
             <section id="reviews">
-                <div id = "r1">
-                    <p>Username</p>
-                    <p>Description</p>
-                </div>
+                <table border="1">
+                    <thead id = allReviews>
+                        <tr>
+                            <th>Username</th>
+                            <th>Rating</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>JohnDoe</td>
+                            <td>4/5</td>
+                            <td>Great game, really enjoyed it!</td>
+                        </tr>
+                        <tr>
+                            <td>JaneSmith</td>
+                            <td>5/5</td>
+                            <td>Excellent experience, highly recommend.</td>
+                        </tr>
+                        <tr>
+                            <td>SamPlayer</td>
+                            <td>3/5</td>
+                            <td>It was okay, but a bit repetitive.</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </section>
 
         </div>
-
+        </section>
         <div v-if = "showPopup" class="modal-overlay">
             <div class = "modal-content">
                 <form>
-                    <div class="stars">
-                        <label for="rating"> Set Rating:</label>
+                    <label for = "rating" id = "r"> Rating:</label>
+                    <div class="number-rating">
+    <input type="radio" id="num1" name="rating" value="1"    >
+    <label for="num1">1</label>
 
-                        <label class="star-checkbox">
-                        <input type = "checkbox" id = "1star" name="1star" value = "1star">
-                        <font-awesome-icon :icon="['fas', 'star']" />
-                        </label>
+    <input type="radio" id="num2" name="rating" value="2">
+    <label for="num2">2</label>
 
-                        <label class="star-checkbox">
-                        <input type = "checkbox" id = "2star" name="2star" value = "2star">
-                        <font-awesome-icon :icon="['fas', 'star']" />
-                        </label>
+    <input type="radio" id="num3" name="rating" value="3">
+    <label for="num3">3</label>
 
-                        <label class="star-checkbox">
-                        <input type = "checkbox" id = "3star" name="3star" value = "3star">
-                        <font-awesome-icon :icon="['fas', 'star']" />
-                        </label>
+    <input type="radio" id="num4" name="rating" value="4">
+    <label for="num4">4</label>
 
-                        <label class="star-checkbox">
-                        <input type = "checkbox" id = "4star" name="4star" value = "4star">
-                        <font-awesome-icon :icon="['fas', 'star']" />
-                        </label>
-
-                        <label class="star-checkbox">
-                        <input type = "checkbox" id = "5star" name="5star" value = "5star">
-                        <font-awesome-icon :icon="['fas', 'star']" />
-                        </label>
-                    
-                    </div>
-
-                    <label for = "desc"> Description:</label><br>
+    <input type="radio" id="num5" name="rating" value="5">
+    <label for="num5">5</label>
+</div>
+                    <label for = "desc" id = "d"> Description:</label><br>
                     <textarea id="descN" v-model = createdDesc name="desc" rows="4" cols="50"> </textarea>
                     <button id = "Submit" @click.prevent = "submitReview">Submit</button>
                     <button id = "Cancel" @click.prevent = "closeCreateReview">Cancel</button>
@@ -74,107 +84,100 @@
     </main>
 </template>
 
-<script>
+<script setup>
 import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
 import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-2466520193-removebg-preview1.png';
 import { reviewService } from '@/services/reviewService';
 import {ref, onMounted} from 'vue';
-import {useRoute} from 'vue-router';
+import {useRouter} from 'vue-router';
 import axios from 'axios';
+import { gameService } from '@/services/gameService';
+
+const router = useRouter();
+const showPopup = ref(false);
+const error = ref(null);
+const gameId = ref(routeLocationKey.params.gameId);
+let gameReviews = ref([]);
+const gameMaxPlayer = ref(0);
+const gameMinPlayer = ref(0);
+const gameDesc = ref('');
+const gameURL = ref('');
+const gameTitle = ref('');
 
 
-export default {
-
-    setup() {
-        const route = useRoute();
-        const gameId = ref(route.params.gameId);
-        const gameTitle = ref('');
-        const minPlayers = ref(0);
-        const maxPlayers = ref(0);
-        const pictureURL = ref('');
-        const description = ref('');
-        const reviews = ref([]);
-        const createdDesc = ref('');
-        const createdRating = ref('');
-        const showPopup = ref(false);
-        
-        const fetchGameDetails = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8090/api/games/${gameId.value}`);
-                gameTitle.value = response.data.title;
-                minPlayers.value = response.data.minNumPlayers;
-                maxPlayers.value = response.data.maxNumPlayers;
-                pictureURL.value = response.data.pictureURL;
-                description.value = response.data.description;
-            }
-
-            catch(error) {
-                console.error('Error fetching game details:', error);
-            }
+    const findAllReviews = async () => {
+        try{
+            let fetchedReviews = await reviewService.findAllReviewsOfGame(gameId)
+            gameReviews.value = fetchedReviews;
+        }
+        catch(err) {
+            error.value = 'Failed to load reviews. Please try again later.'
+            console.error('Error loading reviews:', err)
 
         }
 
-        const fetchReviews = async() => {
-            try {
-                const response = await axios.get(`http://localhost:8090/api/reviews?gameId=${gameId.value}`);
-                reviews.value = response.data;
+    }
 
-            }
-
-            catch(error) {
-                console.error('Error fetching reviews:', error);
-            }
+    const fetchGameDetails = async () => {
+        try {
+            let fetchedGameDetails = await gameService.findGamebyId(gameId);
+            gameMaxPlayer.value = fetchedGameDetails.maxNumPlayers;
+            gameMinPlayer.value = fetchedGameDetails.minNumPlayers;
+            gameDesc.value = fetchedGameDetails.description;
+            gameURL.value = fetchedGameDetails.pictureURL;
+            gameTitle.value = fetchedGameDetails.title;
+            
+        }
+        catch(err) {
+            error.value = 'Failed to load game. Please try again later.'
+            console.error('Error loading game:', err)
 
         }
 
+    }
 
-        const submitReview = async() => {
-            try {
-                const reviewData = {comment: createdDesc, rating: createdRating}
-                const response = await axios.post(`http://localhost:8090/api/reviews?gameId=${gameId.value}&reviewerId=${reviewerId.value}`, reviewData);
-                await fetchReviews();
-            }
+    onMounted(() => {
+        findAllReviews();
+        fetchGameDetails();
+    })
 
-            catch(error) {
-                console.error('Error submitting review:', error);
-            }
+    const openCreateReview = () => {
+        showPopup.value = true;
+    }
 
+    const closeCreateReview = () => {
+        showPopup.value = false;
+    }
+
+    const submitReview = async () => {
+        try { 
+        const newDescription = document.getElementById("d").value;
+        var checked_rating = document.querySelector('input[name = "rating"]:checked');
+
+        if(checked_rating != null){
+            alert('You must select a rating for your review.');
         }
 
-        const openCreateReview = () => {
-            showPopup.value = true;
+        else {
+            await reviewService.createReview({comment: newDescription.value,
+                rating: (checked_rating.value * 20),
+                userId: localStorage.getItem('userId'),
+                gameId: gameId,
+                comment:newDescription.value
+            }, localStorage.getItem('userId'), gameId)
+
+        }}
+        catch {
+            error.value = 'Failed to create the review. Please try again later.'
+            console.error('Error creating review:', err)
+
         }
+    }
 
-        const closeCreateReview = () => {
-            showPopup.value = false;
-        }
 
-        onMounted(async () => {
-        await fetchGameDetails();
-        await fetchReviews();
-        })
 
-        return {
-            gameTitle,
-            minPlayers,
-            maxPlayers,
-            pictureURL,
-            reviews,
-            description,
-            backgroundImg,
-            placeholderImg,
-            plantImg,
-            createdDesc,
-            createdRating,
-            showPopup,
-            openCreateReview,
-            closeCreateReview,
-            submitReview,
-        }
-    },
 
-}
 
 
     
@@ -182,9 +185,17 @@ export default {
 
 <style>
 
+#allReviews {
+    font-size: 125%;
+    text-align: center;
+    align-items: center;
+    top: 100em;
+
+
+
+}
 
 .title-container {
-    position: fixed;
     top: 0em;
     left: 0em;
     width: 200em;
@@ -195,58 +206,86 @@ export default {
 }
 
 #createReview {
-    position:fixed;
-    top: 38em;
-    left: 85em;
+
+    margin-top: -100em;
+    margin-left: 85em;
 }
+
+#r {
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+}
+
+#d {
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+    margin-top: 10%;
+}
+#reviews {
+    font-family: "Mansalva", sans-serif;
+    align-items: center;
+    background-color: rgba(59, 24, 4, 0.7);
+    border-color: rgba(134, 73, 37, 0.5);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgb(230, 204, 189);
+    margin-top: 2rem;  /* Adjusted to push the reviews down, instead of using top */
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+#reviews table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#reviews th, #reviews td {
+    padding: 10px;
+    border: 1px solid rgba(134, 73, 37, 0.9);
+    text-align: center;
+}
+
+#reviews th {
+    font-weight: bold;
+    background-color: rgba(134, 73, 37, 0.9);
+}
+
 
 #plantImg {
     z-index:10;
     position:absolute;
-    top: 5.8em;
-    left: 14em;
+    margin-top: 5.8em;
+    margin-left: -94em;
 }
 
 h1 {
-    position: absolute;
-    bottom: 0em; 
-    left: 3em;
-    margin: 0em;
-    font-family: 'Kantumruy Pro', sans-serif;
+    margin-left:2em;
+    margin-top: 2em;
+    font-family: "Mansalva", sans-serif;
     color: white;
-
-}
-
-#r1 {
-    position: fixed;
-    width: 25em;
-    left: 5%;
-    top: 95%;
-    outline: 0.1em solid white; 
-    padding: 1%; 
-    border-radius: 0.6em;
+    
 
 }
 
 #updateReview {
-    position: fixed;
-    top: 38em;
-    left: 75em;
+    margin-top: 38em;
+    margin-left: 75em;
 
 
 }
 
 #deleteReview {
-    position: fixed;
-    top: 38em;
-    left: 65em;
+    margin-top: 38em;
+    margin-left: 65em;
 }
 
 
 #imageGame{
-    position:fixed;
-    top: 12em;
-    left: 5em;
+    margin-top: 12em;
+    margin-left: 5em;
     width: 25em;
     height:25em;
 
@@ -266,25 +305,31 @@ body {
 }
 
 #borrowButton {
-    position: fixed;
-    top: 6em;
-    left: 85em;
+    margin-top: 6em;
+    margin-left: 85em;
     
 
 }
 
+
+
 h2 {
-    position:fixed;
-    top: 87%;
-    font-family: 'Kantumruy Pro', sans-serif;
+
+    font-size: 200%;
+    font-family: "Mansalva", sans-serif;
     font-weight: bold;
-    left:4em;
+    margin-left:4em;
+}
+
+#stuff {
+    background-color: rgba(0,0,0,0.2);
+
 }
 
 #descN {
     text-align: justify;
     color: #14252E;
-    font-family: 'Inter', sans-serif;
+    font-family: "Mansalva", sans-serif;
     font-size: 106%;
     border-radius: 2em;
     width: 100%;
@@ -295,38 +340,83 @@ h2 {
 
 #Submit {
     position: relative;
-    top: 2em;
-    left: -1em;
+    margin-top: 2em;
+    margin-left: -1em;
 }
 
 #Cancel {
     position: relative;
-    top: 2em;
-    left: 1em;
+    margin-top: 2em;
+    margin-left: 1em;
 
 }
 
 #playerNb {
-    position:fixed;
+
     text-align: center;
     display: grid;
     padding: 0.7em;
-    top: 6em;
-    left: 5em;
+    margin-top: 0.6em;
+    margin-left:3.4em;
     width: 8.5em;
     height: 3em;
     font-size: 106%;
     border-radius: 3em;
     border: none;
-    font-family: 'Inter', sans-serif;
+    font-family: "Mansalva", sans-serif;
     outline: none; 
     box-shadow: none;
-    background-color: #14252E;
-    color: white
+
+    color: rgb(230, 204, 189);
+    font-family: "Mansalva", sans-serif;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
+    color: white;
+    font-family: "Mansalva", sans-serif;
+    background-color: rgba(145, 84, 49, 0.9);
+    mix-blend-mode:add;
+    border-radius: 10em;
+    border-style: solid;
+    border-color: grey;
+    border-width: 0.1em;
 }
 .star-checkbox input {
     opacity:0;
     
+}
+
+#num1{
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+    margin-left: -2em;
+
+
+}
+
+#num2 {
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+    margin-left: 2em
+}
+
+#num3 {
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+    margin-left: 2em
+}
+
+#num4 {
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+    margin-left: 2em
+
+}
+
+#num5 {
+    font-family: "Mansalva", sans-serif;
+    font-size: 106%;
+    margin-left: 2em;
+
 }
 
 .star-checkbox{
@@ -349,39 +439,40 @@ textarea {
     resize : none;
 }
 #desc {
-    text-align:justify;
-    position:fixed;
-    top: 22.5%;
-    left: 32em;
-    max-width: 55%;
+    text-align:center;
+    align-items: center;
+    margin-top: 1em;
+    margin-left:50em;
+    max-width: 30%;
     color: #FFFFFF;
-    font-family: 'Inter', sans-serif;
+    font-family: "Mansalva", sans-serif;
     font-size: 106%;
 
 }
 
-button {
-    width: 8.5em;
-    height: 3em;
-    font-size: 106%;
-    border-radius: 3em;
-    border: none;
-    font-family: 'Inter', sans-serif;
-    outline: none; 
-    box-shadow: none;
-    background-color: #14252E;
-    color: white
+button{
+    background-color: rgba(145, 84, 49, 0.9);
+    mix-blend-mode:add;
+    border-radius: 10em;
+    border-style: solid;
+    border-color: grey;
+    border-width: 0.1em;
+    padding: 0em 1rem;
+    color: rgb(230, 204, 189);
+    font-family: "Mansalva", sans-serif;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
 }
 
-button:hover {
-    background-color: darkseagreen;
-
+button:hover{
+    background-color: rgba(172, 117, 86, 0.9);
+    mix-blend-mode:add;
+}
+button:active{
+    background-color: rgba(77, 43, 24, 0.9);
+    mix-blend-mode:add;
 }
 
-button:focus {
-    outline: none; 
-    box-shadow: none; 
-}
 
 
 .modal-overlay {
