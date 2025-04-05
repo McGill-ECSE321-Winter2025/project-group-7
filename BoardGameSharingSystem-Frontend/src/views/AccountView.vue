@@ -240,7 +240,7 @@
                       >
                         Cancel
                       </button>
-                      <button class="btn btn--danger">
+                      <button class="btn btn--danger" @click="deleteAccount">
                         Delete Account
                       </button>
                     </div>
@@ -256,6 +256,7 @@
   
   <script>
   import { ref, computed, watch } from 'vue'
+  import { useRouter } from 'vue-router';
   import { useAuthStore } from '@/stores/authStore'
   import { userService } from '@/services/userService';
   import { gameOwningService } from '@/services/gameOwningService';
@@ -287,8 +288,9 @@
     },
 
     setup() {
+      const router = useRouter();
       const authStore = useAuthStore();
-      //const currentUserId = computed(() => authStore.user.id);
+      const currentUserId = computed(() => authStore.user.id);
       const currentUserName = computed(() => authStore.user.username);
       const currentUserEmail = computed(() => authStore.user.userEmail);
       const isGameOwner = ref(null);
@@ -408,6 +410,22 @@
           contactEmail: 'tom_loves_zendaya@gmail.com'
         }
       ])
+
+      // Handles delete account:
+      const deleteAccount = async () => {
+        console.log('User ID:', currentUserId.value);
+
+        try {
+          console.log(currentUserId.value)
+          await userService.deleteUserAccount(currentUserId.value);
+          // logout
+          authStore.logout();
+          router.push('/');
+          
+        } catch (error) {
+          console.error('Failed to delete account:', error);
+        }
+      };
       
       // Only include the games section in navigation if user is a game owner
       const navItems = computed(() => {
@@ -466,7 +484,8 @@
         events,
         navItems,
         showDeleteConfirm,
-        toggleAccountType
+        toggleAccountType,
+        deleteAccount
       }
     }
   }
