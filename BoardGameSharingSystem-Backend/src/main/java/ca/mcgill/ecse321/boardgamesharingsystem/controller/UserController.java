@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameOwnerResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.UserAccountResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.AccountService;
 
+@CrossOrigin(origins="http://localhost:8090")
 @RestController
 public class UserController {
     @Autowired
@@ -40,7 +42,7 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserAccountResponseDto findUserAccount(@PathVariable int id)
+    public UserAccountResponseDto findUserAccount(@PathVariable("id") int id)
     {
         return new UserAccountResponseDto(accountService.findUserAccountById(id));
     }
@@ -52,7 +54,7 @@ public class UserController {
      */
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserAccountResponseDto deleteUserAccount(@PathVariable int id)
+    public UserAccountResponseDto deleteUserAccount(@PathVariable("id") int id)
     {
         return new UserAccountResponseDto(accountService.deleteUserAccount(id));
     }
@@ -76,7 +78,7 @@ public class UserController {
      */
     @PutMapping("/users/{id}/toPlayer")
     @ResponseStatus(HttpStatus.OK)
-    public UserAccountResponseDto toggleUserToPlayer(@PathVariable int id) 
+    public UserAccountResponseDto toggleUserToPlayer(@PathVariable("id") int id) 
     {
         return new UserAccountResponseDto(accountService.toggleUserToPlayer(id));
     }
@@ -88,7 +90,7 @@ public class UserController {
      */
     @PutMapping("/users/{id}/toGameOwner")
     @ResponseStatus(HttpStatus.OK)
-    public GameOwnerResponseDto toggleUserToGameOwner(@PathVariable int id)
+    public GameOwnerResponseDto toggleUserToGameOwner(@PathVariable("id") int id)
     {
         return new GameOwnerResponseDto(accountService.toggleUserToGameOwner(id));
     }

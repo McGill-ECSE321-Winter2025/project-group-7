@@ -1,8 +1,10 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.BorrowRequestResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 
+@CrossOrigin(origins="http://localhost:8090")
 @RestController
 public class BorrowRequestController {
     @Autowired
@@ -34,6 +37,20 @@ public class BorrowRequestController {
     public BorrowRequestResponseDto createBorrowingRequest(@RequestParam int gameCopyId, @RequestParam int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
     {
         return new BorrowRequestResponseDto(borrowingService.createBorrowingRequest(gameCopyId, borrowerId, borrowRequest.getStartDate(), borrowRequest.getEndDate()));
+    }
+
+    //new
+    /**
+     * Returns a list of all Borrow Requests.
+     * @return a list of all Borrow Requests
+     */
+    @GetMapping("/borrowrequests/all")
+    public List<BorrowRequestResponseDto> findAllRequests()
+    {
+        List<BorrowRequest> requests = borrowingService.findAllRequests();
+        List<BorrowRequestResponseDto> responses = new ArrayList<>();
+        requests.forEach(borrowRequest -> responses.add(new BorrowRequestResponseDto(borrowRequest)));
+        return responses;
     }
     
     /**

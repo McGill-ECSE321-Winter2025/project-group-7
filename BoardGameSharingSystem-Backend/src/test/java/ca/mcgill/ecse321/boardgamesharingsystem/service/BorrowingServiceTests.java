@@ -10,6 +10,8 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.RequestAnswerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,12 @@ public class BorrowingServiceTests {
 
     @Mock
     private GameCopyRepository gameCopyRepository;
+
+    @Mock
+    private GameRepository gameRepository;
+
+    @Mock
+    private GameOwnerRepository gameOwnerRepository;
 
     @InjectMocks
     private BorrowingService borrowingService;
@@ -84,6 +92,49 @@ public class BorrowingServiceTests {
         assertEquals(gameCopy, request.getGameCopy());
         assertEquals(RequestStatus.Pending, request.getRequestStatus());
     }
+
+    @Test
+    public void testFindAllRequests() {
+        //Arrange
+        UserAccount borrower1 = new UserAccount("John", "john@test.com", "password");
+        UserAccount borrower2 = new UserAccount("Lisa", "lisa@test.com", "123456");
+    
+        UserAccount owner = new UserAccount("Owner", "owner@test.com", "ownerPass");
+        GameOwner gameOwner = new GameOwner(owner);
+    
+        Game game1 = new Game("Chess", 2, 2, "chess.com", "Classic chess game");
+        Game game2 = new Game("Catan", 3, 4, "catan.com", "Famous board game");
+    
+        GameCopy gameCopy1 = new GameCopy(game1, gameOwner);
+        GameCopy gameCopy2 = new GameCopy(game2, gameOwner);
+    
+        LocalDate startDate1 = LocalDate.of(2025, 4, 1);
+        LocalDate endDate1 = LocalDate.of(2025, 4, 10);
+    
+        LocalDate startDate2 = LocalDate.of(2025, 5, 1);
+        LocalDate endDate2 = LocalDate.of(2025, 5, 5);
+    
+        BorrowRequest request1 = new BorrowRequest(startDate1, endDate1, borrower1, gameCopy1);
+        BorrowRequest request2 = new BorrowRequest(startDate2, endDate2, borrower2, gameCopy2);
+    
+        List<BorrowRequest> mockList = List.of(request1, request2);
+    
+        when(borrowRequestRepository.findAll()).thenReturn(mockList);
+    
+        //Act
+        List<BorrowRequest> result = borrowingService.findAllRequests();
+    
+        //Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    
+        assertEquals("John", result.get(0).getBorrower().getName());
+        assertEquals("Chess", result.get(0).getGameCopy().getGame().getTitle());
+    
+        assertEquals("Lisa", result.get(1).getBorrower().getName());
+        assertEquals("Catan", result.get(1).getGameCopy().getGame().getTitle());
+    }
+    
 
     /**
      * Tests that creating a borrowing request with null dates throws an exception.

@@ -1,0 +1,260 @@
+<template>
+    <main>
+        <button id = "create" @click="openCreateReview">Create Borrow Request</button>
+        <h1 id = title>Select a Game Owner</h1>
+    <div>
+      <section id = s1>
+        <table id = t>
+            <thead>
+            <tr>
+                <th>Select</th>
+                <th>Username</th>
+            </tr>
+            </thead>
+            <tbody>
+                        <tr v-for="(entry, index) in fetchedgameCopies":key = "index">
+                            <td><input type="radio" id="html" name="fav_language" value="HTML"></td>
+                            <td>{{ entry.userName }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </section>
+</div>
+
+<div v-if = "showPopup" class="modal-overlay">
+            <div class = "modal-content">
+                <form>
+                    <div id = "start">
+                    <p><label for="date1" id = date21>Select a start date for the lending:</label></p>
+                    <input type="date" v-model="selectedDate" id="date1" />
+                    </div>
+
+                    <div id = "end">
+                    <p><label for="date2" id = date22>Select an end date for the lending:</label></p>
+                    <p><input type="date" v-model="selectedDate" id="date2" /></p>
+                </div>
+                    <button id = "Submit" @click.prevent = "createBorrowRequest">Create Request</button>
+                    <button id = "Cancel" @click.prevent = "closeCreateReview">Cancel</button>
+                </form> <br>
+            </div>
+            
+        </div>
+</main>
+  </template>
+
+  <style>
+
+#date21, #date22 {
+    font-family: "Mansalva", sans-serif;
+    font-size: 150%;
+
+
+
+}
+
+#date1, #date2 {
+    font-size: 130%;
+    font-family: "Mansalva", sans-serif;
+
+
+}
+
+#start {
+    margin-top: 4em;
+    margin-bottom: 2em;
+}
+
+#end {
+    margin-bottom: 4em;
+    margin-top: 2em;
+}
+
+#Submit {
+    margin-right: 2em;
+
+}
+
+
+
+button {
+    background-color: rgba(145, 84, 49, 0.9);
+    mix-blend-mode:add;
+    border-radius: 10em;
+    border-style: solid;
+    border-color: grey;
+    border-width: 0.1em;
+    padding: 0em 1rem;
+    color: rgb(230, 204, 189);
+    font-family: "Mansalva", sans-serif;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
+
+}
+button:hover{
+    background-color: rgba(172, 117, 86, 0.9);
+    mix-blend-mode:add;
+}
+button:active{
+    background-color: rgba(77, 43, 24, 0.9);
+    mix-blend-mode:add;
+}
+
+#create {
+    margin-top: 5em;
+    margin-left: 90em;
+
+}
+
+h1 {
+    margin-top:-2em;
+    margin-left: 5em;
+    font-family: "Mansalva", sans-serif;
+
+}
+
+#t {
+    font-family: "Mansalva", sans-serif;
+    align-items: center;
+    background-color: rgba(59, 24, 4, 0.7);
+    border-color: rgba(134, 73, 37, 0.5);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgb(230, 204, 189);
+    margin-top: 2rem;  /* Adjusted to push the reviews down, instead of using top */
+    padding: 2rem;
+    font-size: 1.1rem;
+
+}
+
+#s1 table{
+
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#s1 th, #s1 td {
+    padding: 10px;
+    border: 1px solid rgba(134, 73, 37, 0.9);
+    text-align: center;
+}
+
+#s1 th {
+    font-weight: bold;
+    background-color: rgba(134, 73, 37, 0.9);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #cf8d4e;
+    width: 50%; /* Adjust width */
+    max-width: 500px;
+    padding: 2em; /* Reduce padding to fit textarea */
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+</style>
+<script setup>
+import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
+import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
+import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-2466520193-removebg-preview1.png';
+import { reviewService } from '@/services/reviewService';
+import {ref, onMounted} from 'vue';
+import {useRouter} from 'vue-router';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/authStore';
+import { useGameStore } from '@/stores/gameStore';
+
+    const authStore = useAuthStore();
+    const gameStore = useGameStore();
+    const router = useRouter();
+    const gameId = gameStore.getGameId();
+    const error = ref(null);
+    const showPopup = ref(false);
+    let gameOwners = ref([]);
+    const selectedYR1 = ref('');
+    const selectedD1 = ref('');
+    const selectedM1 = ref('');
+    const selectedYR2 = ref('');
+    const selectedD2 = ref('');
+    const selectedM2 = ref('');
+    const formattedDate1 = ref('');
+    const formattedDate2 = ref('');
+    const currentUserId = authStore.user.id;
+    const fetchedGameCopies = ref([]);
+    
+    
+    
+
+    const openCreateReview = () => {
+        showPopup.value = true;
+    }
+
+    const closeCreateReview = () => {
+        showPopup.value = false;
+    }
+
+    const fetchGameOwners = async() => {
+        try {
+            fetchedGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
+            return {
+                userId: gameCopy.userId,
+                userName: gameCopy.userName,
+                gameCopyId: gameCopy.id
+            };
+
+
+        
+    } catch (err) {
+        error.value = 'Failed to load game owners. Please try again later.';
+        console.error('Error loading game owners:', err);
+    }
+}
+
+    const createBorrowRequest = async() => {
+        try {
+
+            if ((!selectedValue1.value || !selectedValue2.value || !selectedValue3.value)) {
+                console.log('No selection made')
+                alert('Please select a value from the dropdown.');
+
+            }
+           else {
+            const dateStr1 = `${selectedYR1.value}-${selectedM1.value}-${selectedD1.value}`;
+            const dateStr2 = `${selectedYR2.value}-${selectedM2.value}-${selectedD2.value}`;
+
+            const date1 = new Date(dateStr1);
+            const date2 = new Date(dateStr2);
+
+            formattedDate1.value = date1.toISOString().split('T')[0];
+            formattedDate2.value = date2.toISOString().split('T')[0];
+
+            requestService.createBorrowRequest()
+
+        } }catch(err) {
+            error.value = 'Failed to load game. Please try again later.'
+            console.error('Error loading game:', err)
+
+        }
+
+
+
+    }
+
+
+
+</script>

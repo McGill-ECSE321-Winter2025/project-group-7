@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.RegistrationResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Registration;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.EventService;
 
+@CrossOrigin(origins = "http://localhost:8090")
 @RestController
 public class RegistrationController {
     @Autowired
@@ -30,7 +32,7 @@ public class RegistrationController {
      */
     @PutMapping("/registrations/{eventId}/{participantId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationResponseDto registerUserToEvent(@PathVariable int eventId, @PathVariable int participantId)
+    public RegistrationResponseDto registerUserToEvent(@PathVariable("eventId") int eventId, @PathVariable("participantId") int participantId)
     {
         return new RegistrationResponseDto(eventService.registerUserToEvent(participantId, eventId));
     }
@@ -82,7 +84,7 @@ public class RegistrationController {
      * @return the Registration deleted including the timestamp of the response
      */
     @DeleteMapping("/registrations/{eventId}/{participantId}")
-    public RegistrationResponseDto deregisterParticipantFromEvent(@PathVariable int eventId, @PathVariable int participantId)
+    public RegistrationResponseDto deregisterParticipantFromEvent(@PathVariable("eventId") int eventId, @PathVariable("participantId") int participantId)
     {
         return new RegistrationResponseDto(eventService.deregisterParticipantFromEvent(participantId, eventId));
     }

@@ -63,6 +63,13 @@ public class BorrowingService
         return newRequest;
     }
 
+    //new
+    public List<BorrowRequest> findAllRequests()
+    {
+        List<BorrowRequest> requests = borrowingRequestRepository.findAll();
+        return requests;
+    }
+
     /**
      * Finds all pending borrowing requests for a game copy.
      * @param gameCopyId The id of the game copy
