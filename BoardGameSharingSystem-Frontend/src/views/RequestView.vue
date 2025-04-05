@@ -1,20 +1,30 @@
 <template>
   <main>
-    <!-- Search bar and filters -->
     <div class="search">
-      <input type="search" v-model="searchTerm" placeholder="Search Requests">
-      <button @click="performSearch">Search</button>
+      <input
+        type="search"
+        v-model="searchTerm"
+        placeholder="Search Requests"
+      />
+      <img id="searchIconImg" src="@/images/search.png" alt="Search Icon" />
     </div>
     <div class="searchFilters">
-      <label><input type="checkbox" v-model="searchByName">by Name</label>
-      <label><input type="checkbox" v-model="searchByGame">by Game</label>
-      <label><input type="checkbox" v-model="searchByDate">by Date</label>
+      <label>
+        <input type="checkbox" v-model="filterByName" />
+        by Name
+      </label>
+      <label>
+        <input type="checkbox" v-model="filterByGame" />
+        by Game
+      </label>
+      <label>
+        <input type="checkbox" v-model="filterByDate" />
+        by Date
+      </label>
     </div>
 
-    <!-- History button -->
     <button id="historyButton" @click="goToHistory">History</button>
 
-    <!-- Request table -->
     <table id="requestTable">
       <thead>
         <tr>
@@ -27,13 +37,13 @@
       </thead>
       <tbody>
         <tr v-for="request in filteredRequests" :key="request.id">
-          <td>{{ request.borrower }}</td>
-          <td>{{ request.game }}</td>
+          <td>{{ request.borrowerName }}</td>
+          <td>{{ request.gameTitle }}</td>
           <td>{{ request.startDate }}</td>
           <td>{{ request.endDate }}</td>
           <td>
-            <button @click="acceptRequest(request.id)">Accept</button>
-            <button @click="deleteRequest(request.id)">Delete</button>
+            <button v-if="request.status !== 'Accepted'" @click="acceptRequest(request.id)">Accept</button>
+            <button v-if="request.status !== 'Declined'" @click="declineRequest(request.id)">Decline</button>
           </td>
         </tr>
       </tbody>
@@ -41,48 +51,72 @@
   </main>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchTerm: '',
-      searchByName: false,
-      searchByGame: false,
-      searchByDate: false,
-      requests: [
-        { id: 1, borrower: 'Alice', game: 'Catan', startDate: '2025-04-01', endDate: '2025-04-10' },
-        { id: 2, borrower: 'Bob', game: 'Splendor', startDate: '2025-04-02', endDate: '2025-04-08' },
-        // Add more dummy requests
-      ]
-    };
-  },
-  computed: {
-    filteredRequests() {
-      return this.requests.filter(req => {
-        const term = this.searchTerm.toLowerCase();
-        return (
-          (!this.searchByName || req.borrower.toLowerCase().includes(term)) &&
-          (!this.searchByGame || req.game.toLowerCase().includes(term)) &&
-          (!this.searchByDate || req.startDate.includes(term) || req.endDate.includes(term))
-        );
-      });
-    }
-  },
-  methods: {
-    performSearch() {
-      console.log('Search triggered:', this.searchTerm);
-    },
-    acceptRequest(id) {
-      console.log('Accepted request with ID:', id);
-    },
-    deleteRequest(id) {
-      console.log('Deleted request with ID:', id);
-    },
-    goToHistory() {
-      this.$router.push('/request-historys');
-    }
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { requestService } from '@/services/requestService'
+
+const router = useRouter()
+const searchTerm = ref('')
+const filterByName = ref(false)
+const filterByGame = ref(false)
+const filterByDate = ref(false)
+const requests = ref([])
+
+const fetchRequests = async () => {
+  try {
+    requests.value = await requestService.findAllRequests()
+  } catch (error) {
+    console.error('Failed to fetch requests:', error)
   }
-};
+}
+
+const filteredRequests = computed(() => {
+  const term = searchTerm.value.toLowerCase()
+  return requests.value.filter(request => {
+    return (
+      (!filterByName.value ||
+        (request.borrowerName &&
+          request.borrowerName.toLowerCase().includes(term))) &&
+      (!filterByGame.value ||
+        (request.gameTitle &&
+          request.gameTitle.toLowerCase().includes(term))) &&
+      (!filterByDate.value ||
+        (request.startDate && request.startDate.includes(term)) ||
+        (request.endDate && request.endDate.includes(term)))
+    )
+  })
+})
+
+const performSearch = () => {
+  // 此处依赖 computed 自动过滤
+}
+
+const acceptRequest = async (id) => {
+  try {
+    await requestService.acceptRequest(id)
+    requests.value = requests.value.filter(r => r.id !== id)
+  } catch (error) {
+    console.error(`Error accepting request ${id}:`, error)
+  }
+}
+
+const declineRequest = async (id) => {
+  try {
+    await requestService.declineRequest(id)
+    requests.value = requests.value.filter(r => r.id !== id)
+  } catch (error) {
+    console.error(`Error declining request ${id}:`, error)
+  }
+}
+
+const goToHistory = () => {
+  router.push('/request-historys')
+}
+
+onMounted(() => {
+  fetchRequests()
+})
 </script>
 
 <style scoped>
@@ -92,37 +126,106 @@ main {
   align-items: center;
   width: 100%;
   color: rgb(230, 204, 189);
+  font-family: "Mansalva", sans-serif;
+  padding: 1em;
 }
-.search, .searchFilters {
+
+.search {
+  position: relative;
+  margin-top: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* 显式设置 font-family 确保字体一致 */
+.search input[type="search"] {
+  height: 4em;
+  width: 25em;
+  border-radius: 10em;
+  border: none;
+  outline: none;
+  padding-left: 2em;
+  background-color: rgba(59, 24, 4, 0.9);
+  caret-color: rgb(230, 204, 189);
+  color: rgb(230, 204, 189);
+  font-family: "Mansalva", sans-serif;
+  font-size: 1.1rem;
+}
+
+.search input[type="search"]::placeholder {
+  color: rgb(230, 204, 189);
+}
+
+#searchIconImg {
+  position: absolute;
+  left: 26.5em;
+  top: 1.5em;
+  width: 1.6em;
+  height: 1.6em;
+  pointer-events: none;
+}
+
+.searchFilters {
   margin-top: 1em;
   display: flex;
   gap: 1em;
   align-items: center;
 }
+
+.searchFilters label {
+  color: rgb(255, 235, 123);
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
+}
+
+.searchFilters label input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
 #requestTable {
   margin-top: 1em;
-  border-collapse: collapse;
-  width: 80%;
+  border-radius: 1em;
+  border-style: solid;
+  border-color: rgba(134, 73, 37, 0.9);
+  width: 60%;
+  border-spacing: 0;
   background-color: rgba(59, 24, 4, 0.9);
-  color: rgb(230, 204, 189);
   mix-blend-mode: add;
+  font-size: 1.1rem;
+  color: rgb(230, 204, 189);
 }
-#requestTable th, #requestTable td {
-  border: 1px solid grey;
+
+#requestTable th,
+#requestTable td {
+  border: 0.2em solid rgba(134, 73, 37, 0.9);
   padding: 0.5em;
   text-align: center;
 }
+
 button {
-  margin: 0 0.3em;
-  padding: 0.4em 1em;
-  border-radius: 10em;
-  border: 1px solid grey;
-  background-color: rgba(59, 24, 4, 0.9);
-  color: rgb(230, 204, 189);
-  mix-blend-mode: add;
-  cursor: pointer;
-}
-button:hover {
   background-color: rgba(145, 84, 49, 0.9);
+  border-radius: 10em;
+  border: 0.1em solid grey;
+  padding: 0em 1rem;
+  color: rgb(230, 204, 189);
+  font-family: "Mansalva", sans-serif;
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+  margin: 0 0.3em;
+}
+
+button:hover {
+  background-color: rgba(172, 117, 86, 0.9);
+}
+
+button:active {
+  background-color: rgba(77, 43, 24, 0.9);
+}
+
+.noContent {
+  margin-top: 1em;
+  color: rgb(230, 204, 189);
 }
 </style>
