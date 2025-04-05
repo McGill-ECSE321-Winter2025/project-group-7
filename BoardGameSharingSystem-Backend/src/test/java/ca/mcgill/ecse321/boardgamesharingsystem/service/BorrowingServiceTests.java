@@ -10,6 +10,8 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.RequestAnswerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,12 @@ public class BorrowingServiceTests {
 
     @Mock
     private GameCopyRepository gameCopyRepository;
+
+    @Mock
+    private GameOwnerRepository gameOwnerRepo;
+
+    @Mock
+    private GameRepository gameRepository;
 
     @InjectMocks
     private BorrowingService borrowingService;
@@ -83,6 +91,44 @@ public class BorrowingServiceTests {
         assertEquals(borrower, request.getBorrower());
         assertEquals(gameCopy, request.getGameCopy());
         assertEquals(RequestStatus.Pending, request.getRequestStatus());
+    }
+
+    //new
+    @Test
+    public void testFindAllRequests() {
+        // Arrange
+        UserAccount borrower = new UserAccount("testUser", "user@mail.com", "pass");
+        borrower = userAccountRepository.save(borrower);
+        System.out.println("Saved owner: " + borrower); 
+
+        UserAccount owner = new UserAccount("owner", "owner@mail.com", "pass");
+        owner = userAccountRepository.save(owner);
+        System.out.println("Saved owner: " + owner); 
+
+        GameOwner gameOwner = new GameOwner(owner);
+        gameOwner = gameOwnerRepo.save(gameOwner);
+        System.out.println("Saved Game Owner: " + gameOwner);
+
+        Game game = new Game("Catan", 3, 4, "url", "classic game");
+        game = gameRepository.save(game);
+
+        GameCopy gameCopy = new GameCopy(game, gameOwner);
+        gameCopy = gameCopyRepository.save(gameCopy);
+
+        LocalDate startDate = LocalDate.of(2025, 4, 1);
+        LocalDate endDate = LocalDate.of(2025, 4, 10);
+
+        BorrowRequest request = new BorrowRequest(startDate, endDate, borrower, gameCopy);
+        borrowRequestRepository.save(request);
+
+        // Act
+        List<BorrowRequest> result = borrowingService.findAllRequests();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("testUser", result.get(0).getBorrower().getName());
+        assertEquals("Catan", result.get(0).getGameCopy().getGame().getTitle());
     }
 
     /**

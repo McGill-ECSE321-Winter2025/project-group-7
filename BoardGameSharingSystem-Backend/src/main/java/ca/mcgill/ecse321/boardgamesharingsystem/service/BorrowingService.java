@@ -70,7 +70,7 @@ public class BorrowingService
      * Returns all Events in the database as a List
      * @return Events found as List<Event>
      */
-    public List<BorrowRequest> findAllEvents()
+    public List<BorrowRequest> findAllRequests()
     {
         List<BorrowRequest> requests = borrowingRequestRepository.findAll();
         return requests;
