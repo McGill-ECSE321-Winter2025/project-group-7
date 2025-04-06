@@ -80,6 +80,15 @@ Once the application is running, it is normal that it only reaches 80%. Click th
 
 
 **Steps to run the frontend**
+
+Ensure that you have node and npm installed
+```bash
+$ node -v
+v10.21.0 (or higher)
+$ npm -v
+6.14.4 (or higher)
+```
+
 ```bash
 ## . is project-group7
 $ cd BoardGameSharingSystem-Frontend
