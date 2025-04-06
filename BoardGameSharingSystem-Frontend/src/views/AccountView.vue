@@ -115,11 +115,6 @@
                   </label>
                 </div>
               </div>
-              <div class="card__footer">
-                <button class="btn btn--primary">
-                  Save Changes
-                </button>
-              </div>
             </div>
             
             <!-- Games Section (Only for Game Owners) -->
@@ -435,12 +430,14 @@
       const currentUserId = computed(() => authStore.user.id);
       const currentUserName = computed(() => authStore.user.username);
       const currentUserEmail = computed(() => authStore.user.userEmail);
-      const isGameOwner = ref(null);
+      const isGameOwner = ref(false);
       const activeSection = ref('profile');
       const showDeleteConfirm = ref(false);
       const showAddGameModal = ref(false);
       const isAddingNewGame = ref(false);
       const selectedExistingGame = ref('');
+      const checked = ref(false);
+      checked.value = isGameOwner.value;
       
       const error = ref(null);
       const toast = useToast();
@@ -462,41 +459,54 @@
       // Function to toggle account type
       const toggleAccountType = async () => {
         try {
-
-          // find the gameOwnerResponse to update isGameOwner
-
-          /* WILL ONLY WORK ONCE DIAGLOG BOX FOR ADDING GAME WHEN TOGGLING FOR THE FIRST TIME IS IMPLEMENTED
-          SO UNCOMMENT THIS BLOCK ONCE ADD GAME IS IMPLEMENTED 
-          AND REMOVE : "isGameOwner.value = ref(true);" BELOW 
-          */
+          // Refresh isGameOwner status from backend
           const response = await gameOwningService.findGameOwner(currentUserId.value);
-          isGameOwner.value = response.isGameOwner; 
-          console.log("Checkbox is now:", isGameOwner.value);
-          
-          isGameOwner.value = ref(true); 
-          if (checked) {
-            await userService.toggleUserToGameOwner(authStore.user.id);
-            console.log("Checkbox is now:", isGameOwner.value);
-          } 
-          // else if it failed because of no games
-          // Uncomment this when add game dialog exists
-          else if (error.response?.data?.message?.includes("gameOwner has no associated games")) {
-            triggerAddGameDialog(); // Replace with your actual dialog trigger + make sure it actually adds game by calling api
-          //re-try toggle
-            await userService.toggleUserToGameOwner(authStore.user.id);
-            console.log("Checkbox is now:", isGameOwner.value);
-          }
-          else {
+          isGameOwner.value = response.isGameOwner;
+
+          // Toggling to PLAYER (user is already a game owner)
+          if (isGameOwner.value) {
             await userService.toggleUserToPlayer(authStore.user.id);
-            console.log("Checkbox is now:", isGameOwner.value);
+            isGameOwner.value = false;
+          } 
+          
+          // Toggling to GAME OWNER (user is currently a player)
+          else {
+            try {
+              await userService.toggleUserToGameOwner(authStore.user.id);
+              isGameOwner.value = true;
+            } catch (err) {
+              const errors = err.response?.data?.errors || [];
+
+              if (Array.isArray(errors) && errors.some(e => e.includes("gameOwner has no associated games"))) {
+                showAddGameModal.value = true; // Trigger modal
+
+                // Wait for user action to add game before continuing
+                await new Promise(resolve => {
+                  // You should resolve the promise after the modal has closed and the game is added
+                  const modalClosed = () => {
+                    closeAddGameModal();
+                    resolve();  // Resolve when modal is closed
+                  };
+                  // Listen for modal close event
+                  watch(showAddGameModal, (newVal) => {
+                    if (!newVal) {
+                      modalClosed();
+                    }
+                  });
+                });
+
+                await userService.toggleUserToGameOwner(authStore.user.id);
+                isGameOwner.value = true;
+
+              } else {
+                throw err; // Unknown error, bubble it up
+              }
+            }
           }
 
-        // Refresh user data after toggle
-        const updatedUser = await userService.getUser(authStore.user.id);
-        authStore.user = updatedUser.data; // Update the store with new user data
         } catch (error) {
-        console.error("Error toggling account type:", error);
-    }
+          console.error("Error toggling account type:", error);
+        }
       };
 
 
@@ -561,35 +571,6 @@
       const getSelectedGameDetails = () => {
         return availableGames.value.find(game => game.id === selectedExistingGame.value) || {}
       }
-
-      //Handles adding pre-existing game to collection
-      /*const addExistingGame = async () => {
-        try {
-          const gameId = selectedExistingGame.value;
-          const gameOwnerId = currentUserId.value;
-
-          await gameCopyService.addGameCopyToGameOwner(gameOwnerId, gameId);
-
-          const selectedGame = getSelectedGameDetails();
-          ownedGames.value.push({
-          title: selectedGame.title,
-          description: selectedGame.description,
-          minNumPlayers: selectedGame.minNumPlayers,
-          maxNumPlayers: selectedGame.maxNumPlayers});
-
-          closeAddGameModal(); // Reset modal and form
-
-        } catch (error) {
-          // Handle backend errors
-          const msg = error?.response?.data?.message || "Something went wrong while adding the game.";
-          toast.add({
-            severity: 'error',
-            summary: 'Could not add game',
-            detail: msg
-          });
-          console.error('Error adding existing game copy:', error);
-        }
-      }*/
 
       const newGame = ref({
         title: '',
