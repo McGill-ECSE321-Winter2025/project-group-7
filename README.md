@@ -76,6 +76,13 @@ $ cd BoardGameSharingSystem-Backend
 $ ./gradlew bootRun
 
 ```
+**Steps to run the frontend**
+```bash
+## . is project-group7
+$ cd BoardGameSharingSystem-Frontend
+$ npm install
+$ npm run dev
+```
 
 Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
 
@@ -111,7 +118,7 @@ Table 3 : Roles of each team member Deliverable 3
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
 Artimice |  <ul><li>Full Stack Developer | <ul></ul> | 
-Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer | <ul></ul> | 
+Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer |<ul> <li>Games Page Implementation</li> <li>Initiate Vue Project</li><li>Configured Build System</li> <li>GitHub Issues</i></ul> | 20
 Doddy | <ul><li>GitHub Backlog Contributor</li><li>Full Stack Developer | <ul></ul> | 
 Jyothsna | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer</li><li> Head UI designer</li><li> Login Page Implementation | <ul></ul> | 64
 Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack Developer  | <ul></ul> | 25
