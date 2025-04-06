@@ -44,8 +44,8 @@ public class BorrowingIntegrationTests {
     @Autowired
     private BorrowRequestRepository borrowRequestRepository;
 
-    private static final LocalDate START_DATE = LocalDate.parse("2025-01-01");
-    private static final LocalDate END_DATE = LocalDate.parse("2025-01-10");
+    private static final LocalDate START_DATE = LocalDate.parse("2026-01-01");
+    private static final LocalDate END_DATE = LocalDate.parse("2026-01-10");
     private int borrowRequestId;
     private int gameCopyId;
 

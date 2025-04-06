@@ -55,8 +55,8 @@ public class BorrowingServiceTests {
     @InjectMocks
     private BorrowingService borrowingService;
 
-    private static final LocalDate START_DATE = LocalDate.parse("2025-01-01");
-    private static final LocalDate END_DATE = LocalDate.parse("2025-01-10");
+    private static final LocalDate START_DATE = LocalDate.parse("2026-01-01");
+    private static final LocalDate END_DATE = LocalDate.parse("2026-01-10");
     private static final LocalDate DROP_OFF_DATE = LocalDate.parse("2025-01-02");
     private static final Time DROP_OFF_TIME = Time.valueOf("12:00:00");
 
