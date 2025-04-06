@@ -208,7 +208,7 @@ import { useGameStore } from '@/stores/gameStore';
 
     const fetchGameOwners = async() => {
         try {
-            fetchedGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
+            fetchedGameCopies.value = await gameCopyService.findGameCopiesFromGame(gameId);
             return {
                 userId: gameCopy.userId,
                 userName: gameCopy.userName,

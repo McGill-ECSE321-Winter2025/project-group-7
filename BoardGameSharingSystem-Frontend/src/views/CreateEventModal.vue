@@ -71,6 +71,7 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue'
+import { eventService } from '@/services/eventService'
 
 const emit = defineEmits(['close'])
 
@@ -87,18 +88,26 @@ const cancel = () => {
   emit('close')
 }
 
-const create = () => {
-  console.log({
-    startDate: startDate.value,
-    endDate: endDate.value,
-    startTime: startTime.value,
-    endTime: endTime.value,
-    location: location.value,
-    participants: participants.value,
-    selectedGame: selectedGame.value,
-    description: description.value
-  })
-  emit('close')
+const create = async () => {
+  try {
+    const eventData = {
+      startDate: startDate.value,
+      endDate: endDate.value,
+      startTime: startTime.value,
+      endTime: endTime.value,
+      location: location.value,
+      maxNumParticipants: parseInt(participants.value),
+      description: description.value,
+      contactEmail: 'testuser@example.com', // you can update this later
+      creatorId: 1 // replace with the actual logged-in user id
+    }
+
+    const createdEvent = await eventService.createEvent(eventData)
+    console.log('Event created:', createdEvent)
+    emit('close')
+  } catch (err) {
+    console.error('Error creating event:', err)
+  }
 }
 </script>
 
