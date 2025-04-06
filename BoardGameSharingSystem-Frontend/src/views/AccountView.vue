@@ -473,7 +473,7 @@
           isGameOwner.value = response.isGameOwner; 
           console.log("Checkbox is now:", isGameOwner.value);
           
-          //isGameOwner.value = ref(true); 
+          isGameOwner.value = ref(true); 
           if (checked) {
             await userService.toggleUserToGameOwner(authStore.user.id);
             console.log("Checkbox is now:", isGameOwner.value);
