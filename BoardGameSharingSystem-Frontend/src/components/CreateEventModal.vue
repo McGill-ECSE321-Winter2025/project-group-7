@@ -60,6 +60,10 @@
         </div>
 
         <!-- Buttons -->
+        <p v-if="error" class="text-sm text-red-400 font-semibold">
+          {{ error }}
+        </p>
+
         <div class="flex justify-between mt-4">
           <button type="button" @click="cancel" class="modal-button cancel">Cancel</button>
           <button type="submit" @click.prevent="submit" class="modal-button create">{{ submitButtonText }}</button>
@@ -94,7 +98,7 @@ const participants = ref('')
 const selectedGame = ref('')
 const description = ref('')
 const contactEmail = ref('')
-const error = ref(null)
+const error = ref('')
 const authStore = useAuthStore()
 const currentUserId = computed(() => authStore.user.id)
 const games = ref([])
@@ -133,6 +137,39 @@ const cancel = () => {
 
 const submit = async () => {
   try {
+    // Reset warnings
+    error.value = ''
+
+    // Validate required fields
+    if (
+        !startDate.value || !endDate.value || !startTime.value || !endTime.value ||
+        !location.value || !participants.value || !contactEmail.value || !description.value
+    ) {
+      error.value = 'Please fill in all required fields.'
+      return
+    }
+
+    // Validate participant count
+    if (parseInt(participants.value) < 1) {
+      error.value = 'Number of participants must be at least 1.'
+      return
+    }
+
+    // Validate start/end datetime
+    const start = new Date(`${startDate.value}T${startTime.value}`)
+    const end = new Date(`${endDate.value}T${endTime.value}`)
+    const now = new Date()
+
+    if (start < now) {
+      error.value = 'Start date and time cannot be in the past.'
+      return
+    }
+
+    if (end <= start) {
+      error.value = 'End date and time must be after the start date and time.'
+      return
+    }
+
     const eventPayload = {
       startDate: startDate.value,
       startTime: startTime.value,
@@ -147,13 +184,24 @@ const submit = async () => {
 
     if (props.event) {
       await eventService.updateEvent(props.event.id, eventPayload)
-      const currentGames = await eventGameService.findEventGamesByEvent(props.event.id)
-      for (const game of currentGames) {
-        await eventGameService.removeGameFromEvent(props.event.id, game.id)
+
+      try {
+        const currentGames = await eventGameService.findEventGamesByEvent(props.event.id)
+        for (const game of currentGames) {
+          await eventGameService.removeGameFromEvent(props.event.id, game.id)
+        }
+      } catch (innerError) {
+        console.warn('Warning while removing games:', innerError)
       }
-      if (selectedGame.value && selectedGame.value.id) {
-        await eventGameService.addGameToEvent(props.event.id, selectedGame.value.id)
+
+      try {
+        if (selectedGame.value && selectedGame.value.id) {
+          await eventGameService.addGameToEvent(props.event.id, selectedGame.value.id)
+        }
+      } catch (innerError) {
+        console.warn('Warning while adding game to event:', innerError)
       }
+
     } else {
       const createdEvent = await eventService.createEvent(eventPayload)
       if (selectedGame.value && selectedGame.value.id) {
@@ -163,25 +211,31 @@ const submit = async () => {
     }
 
     cancel()
+
   } catch (e) {
-    console.error(e)
+    console.error('Main submit error:', e)
     error.value = 'Something went wrong. Please try again.'
   }
 }
-  const fetchGames = async () => {
-    try{
-      const allGames = await gameService.findAllGames()
-      games.value = allGames
-    } catch (e){
-      error.value = 'Failed to fetch games. Please try again later.'
-      console.error(e)
-    }
+const fetchGames = async () => {
+  try{
+    const allGames = await gameService.findAllGames()
+    games.value = allGames
+  } catch (e){
+    error.value = 'Failed to fetch games. Please try again later.'
+    console.error(e)
+  }
 }
 
 onMounted(fetchGames)
 </script>
 
 <style scoped>
+
+.text-red-400 {
+  color: #f87171;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
