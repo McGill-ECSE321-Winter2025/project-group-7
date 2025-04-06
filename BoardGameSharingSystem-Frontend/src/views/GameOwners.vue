@@ -222,6 +222,9 @@ import { useGameStore } from '@/stores/gameStore';
         console.error('Error loading game owners:', err);
     }
 }
+onMounted(() => {
+        fetchGameOwners();
+    })
 
 
 

@@ -9,14 +9,13 @@
         </div>
         <section id="all">
         <div class="stuff">
-            <section id = playerNb> {{minPlayers}} - {{ maxPlayers }}  players</section>
+            <section id = playerNb> {{ gameMinPlayer }} - {{ gameMaxPlayer }}  players</section>
             <button id="borrowButton"> Borrow Game</button>
            
-            <img :src="pictureURL" alt="Game Image" id="imageGame" v-if="pictureURL" />
+            <img :src= gameURL alt="Game Image" id="imageGame" v-if="pictureURL" />
             <img :src = "plantImg" id="plantImg"/>
             
-            <p id = "desc">dThe advancement of technology has drastically transformed nearly every aspect of human life, bringing with it both opportunities and challenges. From the way we communicate to how we work, learn, and entertain ourselves, digital tools and platforms have revolutionized our daily routines. Social media, for example, has connected individuals across the globe, making it easier to stay in touch with loved ones and share experiences. Similarly, innovations in artificial intelligence and machine learning are reshaping industries, automating tasks, and improving decision-making processes. However, the rapid pace of technological development also raises concerns. Issues such as data privacy, cybersecurity threats, and the ethical implications of AI are becoming more prevalent. The digital divide is another critical challenge, as access to advanced technology remains limited in many regions. While some benefit from cutting-edge gadgets and high-speed internet, others are left behind, widening the gap in opportunities and resources. As technology continues to evolve, it is crucial to strike a balance between embracing innovation and addressing the potential risks it brings. Society must ensure that the benefits of technology are accessible to all, fostering inclusivity while safeguarding privacy, security, and ethical standards.{{ description }}</p>
-
+            <p id = "desc">{{ gameDesc }}</p>
         </div>
         <div>
             <h2><b>Latest Reviews</b></h2>
@@ -31,21 +30,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>JohnDoe</td>
-                            <td>4/5</td>
-                            <td>Great game, really enjoyed it!</td>
-                        </tr>
-                        <tr>
-                            <td>JaneSmith</td>
-                            <td>5/5</td>
-                            <td>Excellent experience, highly recommend.</td>
-                        </tr>
-                        <tr>
-                            <td>SamPlayer</td>
-                            <td>3/5</td>
-                            <td>It was okay, but a bit repetitive.</td>
-                        </tr>
+                        <tr v-for="(entry, index) in gameReviews" :key="index">
+                        <td>{{ entry.user }}</td>
+                        <td>{{ entry.rating }}</td>
+                        <td>{{ entry.comment }}</td>
+                    </tr>
                     </tbody>
                 </table>
 
@@ -96,8 +85,8 @@ import { gameService } from '@/services/gameService';
 import { useAuthStore } from '@/stores/authStore';
 
 const router = useRouter();
-authStore = useAuthStore();
-gameStore = gameStore();
+const authStore = useAuthStore();
+const gameStore = gameStore();
 const userId = authStore.user.id;
 const gameId = gameStore.getGameId();
 const showPopup = ref(false);
@@ -164,12 +153,11 @@ const gameTitle = ref('');
         }
 
         else {
-            await reviewService.createReview({comment: newDescription.value,
+            await reviewService.createReview({
                 rating: (checked_rating.value * 20),
-                userId: localStorage.getItem('userId'),
                 gameId: gameId,
                 comment:newDescription.value
-            }, localStorage.getItem('userId'), gameId)
+            }, authStore.user.id, gameId)
 
         }}
         catch {
