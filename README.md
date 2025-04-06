@@ -135,8 +135,8 @@ Name | Role | Tasks | Number of Hours
 Artimice |  <ul><li>Full Stack Developer | <ul><li>Game Owner page implementation</li> <li>Specific Game page implementation</ul> | 
 Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer |<ul> <li>Games Page Implementation</li> <li>Initiate Vue Project</li><li>Configured Build System</li> <li>GitHub Issues</i></ul> | 20
 Doddy | <ul><li>GitHub Backlog Contributor</li><li>Full Stack Developer | <ul></ul> | 
-Jyothsna | <ul><li> Head UI designer</li><li>Assistant Task Coordinator</li><li>Full Stack Developer</li><li> Login Page Implementation | <ul></ul> | 64
+Jyothsna | <ul><li> Head UI designer</li><li>Assistant Task Coordinator</li><li>Full Stack Developer</li><li>  | <ul> <li>Login Page Implementation</li> <li>UI Design and Documentation</li>  </ul> | 64
 Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack Developer  | <ul></ul> | 25
 Shengyi | <ul><li>Full Stack Developer | <ul></ul> | 
-Snigdha | <ul><li> UI designer</li><li>Task Coordinator</li><li>Full Stack Developer</li><li> Login Page Implementation| <ul></ul> | 64
+Snigdha | <ul><li> UI designer</li><li>Task Coordinator</li><li>Full Stack Developer</li><li>| <ul>  <li>Login Page Implementation</li> <li>UI Design and Documentation</li> </ul> | 64
 
