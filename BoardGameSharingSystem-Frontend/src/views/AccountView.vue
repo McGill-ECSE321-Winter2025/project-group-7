@@ -51,7 +51,8 @@
                 <label for="name" class="form-label">Name</label>
                 <input 
                   id="name" 
-                  v-model="authStore.user.username"
+                  v-model="profile.username"
+                  :placeholder="usernamePlaceholder"
                   class="form-input"
                 />
               </div>
@@ -60,7 +61,8 @@
                 <input 
                   id="email" 
                   type="email" 
-                  v-model="authStore.user.userEmail"
+                  v-model="profile.email"
+                  :placeholder="emailPlaceholder"
                   class="form-input"
                 />
               </div>
@@ -76,7 +78,7 @@
               </div>
             </div>
             <div class="card__footer">
-              <button class="btn btn--primary">
+              <button class="btn btn--primary" @click="updateUserProfile">
                 Save Changes
               </button>
             </div>
@@ -427,8 +429,8 @@ export default {
     const router = useRouter();
     const authStore = useAuthStore();
     const currentUserId = computed(() => authStore.user.id);
-    const currentUserName = computed(() => authStore.user.username);
-    const currentUserEmail = computed(() => authStore.user.userEmail);
+    const currentUserName = computed(() => authStore.user?.username ?? '');
+    const currentUserEmail = computed(() => authStore.user?.userEmail ?? '');
     const isGameOwner = ref(false);
     const activeSection = ref('profile');
     const showDeleteConfirm = ref(false);
@@ -446,12 +448,44 @@ export default {
     const defaultGameImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YzZTllNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIGZpbGw9IiM4ZDZlNjMiPkJvYXJkIEdhbWUgSW1hZ2U8L3RleHQ+PC9zdmc+'
 
     // ----------------------------- PROFILE TAB -----------------------------------------
-    // Directly bind the profile fields to authStore properties
-    const profile = ref({
-      name: currentUserName,
-      email: currentUserEmail,
-      password: '' // Do not store passwords in plain text!
-    });
+      // Directly bind the profile fields to authStore properties
+      const profile = ref ({
+        username: authStore.user.username  || '',
+        email: authStore.user.userEmail  || '',
+        password: ''  // Do not store passwords in plain text!
+      });
+      
+      // Computed placeholders to show the current user's data
+      const usernamePlaceholder = computed(() => authStore.user.username || 'Enter your name');
+      const emailPlaceholder = computed(() => authStore.user.userEmail || 'Enter your email');
+
+      // Function for updating profile fields
+      const updateUserProfile = async () => {
+        console.log('authStore.user.username:', authStore.user.username);
+        console.log('authStore.user.userEmail:', authStore.user.userEmail);
+        console.log('profile.value.username:',profile.value.username);
+        try {
+          await userService.updateUserAccount(currentUserId.value, {
+            username: profile.value.username,
+            email: profile.value.email,
+            password: profile.value.password
+          });
+
+          // Reset password field after successful update
+          profile.value.password = ''; 
+
+          authStore.$patch((state) => {
+            state.user.username = profile.value.username;
+            state.user.userEmail = profile.value.email;
+        });
+
+          // Update placeholders to reflect changes
+          profile.value.username = authStore.user.username ?? '';
+          profile.value.email = authStore.user.userEmail ?? '';
+        } catch (err) {
+          console.error("Error updating profile:", err);
+        }
+      };
 
 
     // ----------------------------- ACCOUNT TYPE TAB -----------------------------------------
@@ -863,6 +897,9 @@ export default {
       authStore,
       currentUserName,
       currentUserEmail,
+      usernamePlaceholder,
+      emailPlaceholder,
+      updateUserProfile,
       isGameOwner,
       activeSection,
       profile,
