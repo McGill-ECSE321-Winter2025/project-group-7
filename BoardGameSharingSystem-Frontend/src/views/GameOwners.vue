@@ -254,6 +254,7 @@ onMounted(() => {
                 startDate: startDateObj,
                 endDate: endDateObj
             })
+            showPopup.value = false;
 
         } }catch(err) {
             error.value = 'Failed to load game. Please try again later.'
@@ -265,6 +266,6 @@ onMounted(() => {
 
     };
 
-    
+
 
 </script>
