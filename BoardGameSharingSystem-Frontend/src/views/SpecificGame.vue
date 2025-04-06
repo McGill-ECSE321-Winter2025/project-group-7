@@ -45,21 +45,21 @@
                 <form>
                     <label for = "rating" id = "r"> Rating:</label>
                     <div class="number-rating">
-    <input type="radio" id="num1" name="rating" value="1"    >
-    <label for="num1">1</label>
+                        <input type="radio" id="num1" name="rating" value="1"    >
+                        <label for="num1">1</label>
 
-    <input type="radio" id="num2" name="rating" value="2">
-    <label for="num2">2</label>
+                        <input type="radio" id="num2" name="rating" value="2">
+                        <label for="num2">2</label>
 
-    <input type="radio" id="num3" name="rating" value="3">
-    <label for="num3">3</label>
+                        <input type="radio" id="num3" name="rating" value="3">
+                        <label for="num3">3</label>
 
-    <input type="radio" id="num4" name="rating" value="4">
-    <label for="num4">4</label>
+                        <input type="radio" id="num4" name="rating" value="4">
+                        <label for="num4">4</label>
 
-    <input type="radio" id="num5" name="rating" value="5">
-    <label for="num5">5</label>
-</div>
+                        <input type="radio" id="num5" name="rating" value="5">
+                        <label for="num5">5</label>
+                    </div>
                     <label for = "desc" id = "d"> Description:</label><br>
                     <textarea id="descN" v-model = createdDesc name="desc" rows="4" cols="50"> </textarea>
                     <button id = "Submit" @click.prevent = "submitReview">Submit</button>
@@ -75,20 +75,23 @@
 import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
 import { reviewService } from '@/services/reviewService';
-import {ref, onMounted} from 'vue';
-import {useRouter} from 'vue-router';
+import {ref, onMounted, computed} from 'vue';
+import {useRouter, useRoute} from 'vue-router';
 import axios from 'axios';
 import { gameService } from '@/services/gameService';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameStore } from '@/stores/gameStore';
 import { userService } from '@/services/userService';
 
-const gameId = route.params.gameId;
-console.log(gameId);
+
+
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const gameStore = useGameStore();
+const gameId = route.params.gameId;
 const userId = computed(() => authStore.user.id);
+console.log(userId.value);
 const username = computed(() => authStore.user.name);
 const showPopup = ref(false);
 const error = ref(null);
@@ -163,19 +166,19 @@ const fetchGameDetails = async () => {
     var checked_rating = document.querySelector('input[name="rating"]:checked');
     var newDesc = document.getElementById("descN").value;
     console.log(newDesc);
-    console.log(checked_rating.value);
-    if (checked_rating == null) {
+    console.log(checked_rating);
+    if (!checked_rating)  {
+        console.log('5');
       alert('You must select a rating for your review.');
     } else if (newDesc.trim().length === 0) {
       alert('You must include a comment.');
     } 
     else {
       await reviewService.createReview({
-        rating: checked_rating.value * 20,
-        gameId: gameId,
+        rating: checked_rating.value,
         comment: newDesc.trim(),
-        userId:userId
-      }, userId, gameId);
+      }, userId.value, gameId);
+      findAllReviews();
     }
   } catch (err) {
     error.value = 'Failed to create the review. Please try again later.';
@@ -196,7 +199,7 @@ const fetchGameDetails = async () => {
     font-size: 125%;
     text-align: center;
     align-items: center;
-    top: 100em;
+    margin-top: 8em;
 
 
 
@@ -240,7 +243,7 @@ const fetchGameDetails = async () => {
     justify-content: center;
     font-size: 2rem;
     color: rgb(230, 204, 189);
-    margin-top: 2rem;  /* Adjusted to push the reviews down, instead of using top */
+    margin-top: 0.7rem; 
     padding: 2rem;
     font-size: 1.1rem;
 }
@@ -327,7 +330,7 @@ h2 {
     font-family: "Mansalva", sans-serif;
     font-weight: bold;
     margin-left:4em;
-    margin-top:12em;
+    margin-top:10em;
 }
 
 .stuff {
@@ -454,7 +457,7 @@ textarea {
     align-items: center;
     align-items: top;
     margin-top: -20em;
-    margin-left:50em;
+    margin-left:30em;
     max-width: 30%;
     color: #FFFFFF;
     font-family: "Mansalva", sans-serif;

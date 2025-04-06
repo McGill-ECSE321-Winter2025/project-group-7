@@ -178,7 +178,7 @@ import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-246652
 import { reviewService } from '@/services/reviewService';
 import { requestService } from '@/services/requestService';
 import { gameCopyService } from '@/services/gameCopyService';
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {useRouter, useRoute} from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
