@@ -455,6 +455,21 @@ export default {
         email: authStore.user.userEmail  || '',
         password: ''  // Do not store passwords in plain text!
       });
+
+      const checkGameOwnerStatus = async () => {
+      try {
+        const result = await gameOwningService.findGameOwner(authStore.user.id)
+        if (!result) {
+          isGameOwner.value = false
+        } else {
+          isGameOwner.value = result.userId !== -1
+          console.log('result.userId:', result.userId);
+        }
+      } catch (error) {
+        console.error('Error checking game owner status:', error)
+        isGameOwner.value = false
+      }
+    }
       
       // Computed placeholders to show the current user's data
       const usernamePlaceholder = computed(() => authStore.user.username || 'Enter your name');
@@ -625,6 +640,7 @@ export default {
     }
 
     onMounted( () =>{
+      checkGameOwnerStatus()
       findAllGames()
     })
   
