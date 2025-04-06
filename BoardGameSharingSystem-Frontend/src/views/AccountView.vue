@@ -139,14 +139,14 @@
               </div>
               <div class="card__content">
                 <div class="games-list">
-                  <div v-for="(game, index) in ownedGames" :key="index" class="game-item">
+                  <div v-for="(gameCopy, index) in ownedGames" :key="index" class="game-item">
                     <div class="game-item__wrapper">
                       <div class="game-item__info">
                         <div class="game-item__icon-wrapper">
                           <Dice class="game-item__icon" />
                         </div>
                         <div>
-                          <p class="game-item__title">{{ game.title }}</p>
+                          <p class="game-item__title">{{ gameCopy.game.title }}</p>
                           <p class="game-item__details">
                             <span 
                               :class="[
@@ -154,9 +154,9 @@
                                 'game-item__players'
                               ]"
                             >
-                            {{ game.numMinPlayers === game.numMaxPlayers ? game.numMinPlayers + ' players': game.numMinPlayers + '-' + game.numMaxPlayers + ' players' }}
+                            {{ gameCopy.game.minNumPlayers === gameCopy.game.maxNumPlayers ? gameCopy.game.minNumPlayers + ' players': gameCopy.game.minNumPlayers + '-' + gameCopy.game.maxNumPlayers + ' players' }}
                             </span>
-                            <template v-if="game.description">• {{ game.description }}</template>
+                            <template v-if="gameCopy.game.description">• {{ gameCopy.game.description }}</template>
                           </p>
                         </div>
                       </div>
@@ -298,7 +298,7 @@
               </div>
               <div class="game-preview__details">
                 <h4 class="game-preview__title">{{ getSelectedGameDetails().title }}</h4>
-                <p class="game-preview__players">{{ getSelectedGameDetails().minPlayers }}-{{ getSelectedGameDetails().maxPlayers }} Players</p>
+                <p class="game-preview__players">{{ getSelectedGameDetails().minNumPlayers }}-{{ getSelectedGameDetails().maxNumPlayers }} Players</p>
                 <p class="game-preview__description">{{ getSelectedGameDetails().description }}</p>
               </div>
             </div>
@@ -319,20 +319,20 @@
               <div class="form-group form-group--half">
                 <label for="minPlayers" class="form-label">Min Players</label>
                 <input 
-                  id="minPlayers" 
+                  id="minNumPlayers" 
                   type="number" 
-                  v-model="newGame.minPlayers" 
+                  v-model="newGame.minNumPlayers" 
                   min="1" 
                   max="99" 
                   class="form-input" 
                 />
               </div>
               <div class="form-group form-group--half">
-                <label for="maxPlayers" class="form-label">Max Players</label>
+                <label for="maxNumPlayers" class="form-label">Max Players</label>
                 <input 
-                  id="maxPlayers" 
+                  id="maxNumPlayers" 
                   type="number" 
-                  v-model="newGame.maxPlayers" 
+                  v-model="newGame.maxNumPlayers" 
                   min="1" 
                   max="99" 
                   class="form-input" 
@@ -395,9 +395,13 @@
   import { useRouter } from 'vue-router';
   import { useAuthStore } from '@/stores/authStore'
   import { userService } from '@/services/userService';
-  import { eventService } from '@/services/eventService';
+  import { eventService } from '@/services/eventService'
   import { registrationService } from '@/services/registrationService'
-  import { gameOwningService } from '@/services/gameOwningService';
+  import { gameCopyService } from '@/services/gameCopyService'
+  import { gameOwningService } from '@/services/gameOwningService'
+  import { gameService } from '@/services/gameService';
+  import { eventGameService } from '@/services/eventGameService';
+  import {Toast, useToast } from 'primevue'; 
 
   import { 
     Calendar, 
@@ -439,8 +443,13 @@
       const selectedExistingGame = ref('');
       
       const error = ref(null);
-      const events = ref([]);
-      
+      const toast = useToast();
+      const events = ref([]); //for event history
+      const availableGames = ref([]); //for all games
+      const ownedGames = ref([]); //for user game copies
+      const defaultGameImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YzZTllNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIGZpbGw9IiM4ZDZlNjMiPkJvYXJkIEdhbWUgSW1hZ2U8L3RleHQ+PC9zdmc+'
+
+      // ----------------------------- PROFILE TAB -----------------------------------------
       // Directly bind the profile fields to authStore properties
       const profile = ref({
         name: currentUserName,
@@ -448,6 +457,8 @@
         password: '' // Do not store passwords in plain text!
       });
 
+
+      // ----------------------------- ACCOUNT TYPE TAB -----------------------------------------
       // Function to toggle account type
       const toggleAccountType = async () => {
         try {
@@ -457,25 +468,24 @@
           /* WILL ONLY WORK ONCE DIAGLOG BOX FOR ADDING GAME WHEN TOGGLING FOR THE FIRST TIME IS IMPLEMENTED
           SO UNCOMMENT THIS BLOCK ONCE ADD GAME IS IMPLEMENTED 
           AND REMOVE : "isGameOwner.value = ref(true);" BELOW 
-
-          //const response = await gameOwningService.findGameOwner(currentUserId.value);
-          //isGameOwner.value = response.isGameOwner; 
-          //console.log("Checkbox is now:", isGameOwner.value);
           */
-          isGameOwner.value = ref(true);
+          const response = await gameOwningService.findGameOwner(currentUserId.value);
+          isGameOwner.value = response.isGameOwner; 
+          console.log("Checkbox is now:", isGameOwner.value);
+          
+          isGameOwner.value = ref(true); 
           if (checked) {
             await userService.toggleUserToGameOwner(authStore.user.id);
             console.log("Checkbox is now:", isGameOwner.value);
           } 
-          // // else if it failed because of no games
-          // // Uncomment this when add game dialog exists
-          // else if (error.response?.data?.message?.includes("gameOwner has no associated games")) {
-          //   triggerAddGameDialog(); // Replace with your actual dialog trigger + make sure it actually 
-                                      // adds game by calling api
-          // //re-try toggle
-          //   await userService.toggleUserToGameOwner(authStore.user.id);
-          //   console.log("Checkbox is now:", isGameOwner.value);
-          // }
+          // else if it failed because of no games
+          // Uncomment this when add game dialog exists
+          else if (error.response?.data?.message?.includes("gameOwner has no associated games")) {
+            triggerAddGameDialog(); // Replace with your actual dialog trigger + make sure it actually adds game by calling api
+          //re-try toggle
+            await userService.toggleUserToGameOwner(authStore.user.id);
+            console.log("Checkbox is now:", isGameOwner.value);
+          }
           else {
             await userService.toggleUserToPlayer(authStore.user.id);
             console.log("Checkbox is now:", isGameOwner.value);
@@ -487,128 +497,196 @@
         } catch (error) {
         console.error("Error toggling account type:", error);
     }
-  };
-      
-      const ownedGames = ref([
-        {
-          title: 'Catan',
-          numMinPlayers: 2,
-          numMaxPlayers: 4,
-          description: "Multiplayer board game designed by Klaus Teuber",
-          pictureUrl: null
-        },
-        {
-          title: 'Ticket to Ride',
-          numMinPlayers: 2,
-          numMaxPlayers: 5,
-          description: null,
-          pictureUrl: null
-        },
-        {
-          title: 'Pandemic',
-          numMinPlayers: 2,
-          numMaxPlayers: 5,
-          description: "As members of an elite disease control team, you must keep four deadly diseases at bay",
-          pictureUrl: null
-        },
-        {
-          title: 'Chess',
-          numMinPlayers: 2,
-          numMaxPlayers: 2,
-          description: "Strategy board game for two players",
-          pictureUrl: "/test-image2.jpg"
-        },
-        
-      ])
+      };
 
-      const availableGames = ref([
-        {
-          id: 1,
-          title: 'Gloomhaven',
-          minPlayers: 1,
-          maxPlayers: 4,
-          description: 'Gloomhaven is a cooperative game of tactical combat, battling monsters and advancing a player\'s own individual goals in a persistent and changing world.',
-          imageUrl: 'https://cf.geekdo-images.com/sZYp_3BTDGjh2unaZfZmuA__imagepage/img/pBaOL7vV402nn1I5dHsdSKsFHqA=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2437871.jpg'
-        },
-        {
-          id: 2,
-          title: 'Wingspan',
-          minPlayers: 1,
-          maxPlayers: 5,
-          description: 'Wingspan is a competitive, medium-weight, card-driven, engine-building board game from Stonemaier Games.',
-          imageUrl: 'https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__imagepage/img/uIjeoKgHMcRtzRSR4MoUYl3nXxs=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4458123.jpg'
-        },
-        {
-          id: 3,
-          title: 'Terraforming Mars',
-          minPlayers: 1,
-          maxPlayers: 5,
-          description: 'Compete with rival CEOs to make Mars habitable and build your corporate empire.',
-          imageUrl: 'https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__imagepage/img/FS1RE8Ue6nk1pNbPI3l-OSapQGc=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3536616.jpg'
-        },
-        {
-          id: 4,
-          title: 'Scythe',
-          minPlayers: 1,
-          maxPlayers: 5,
-          description: 'Asymmetric strategy game set in an alternate-history 1920s period where players compete for territory and resources.',
-          imageUrl: 'https://cf.geekdo-images.com/7k_nOxpO9OGIjhLq2BUZdA__imagepage/img/zoz-t_z9nqqxL7OwQenbqp9PRl8=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3163924.jpg'
-        },
-        {
-          id: 5,
-          title: 'Azul',
-          minPlayers: 2,
-          maxPlayers: 4,
-          description: 'Tile placement game where players compete to create the most beautiful mosaic.',
-          imageUrl: 'https://cf.geekdo-images.com/tz19PfklMdAdjxV9WArraA__imagepage/img/K3OydSGTbGOb6FrwPjpYT0BaUbI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3718275.jpg'
+
+      // ----------------------------- MY GAMES TAB -----------------------------------------    
+      //Handles displaying my games (game copies related to the current user)
+      const fetchUserGameCopies = async () => {
+        try{
+          error.value = null
+
+          const userGameCopies = await gameCopyService.findGameCopiesForGameOwner(currentUserId.value)
+          const games = await Promise.all(
+            userGameCopies.map(async (copy) => {
+              try {
+              const game = await gameService.findGameById(copy.gameId);
+              return {
+                ...copy,       
+                game: game     
+              };
+              } catch (gameErr) {
+                console.error(`Failed to fetch game with ID ${copy.gameId}`, gameErr);
+                return null; 
+              }
+            })
+          );
+
+          ownedGames.value = games
+        } catch (err){
+          error.value = 'Failed to load your games. Please try again later.'
+          console.error("Error loading user's game copies:", err)
+          toast.add({ severity: 'error', summary: 'Could not load your games', detail: 'Please try again later', });
         }
-      ])
+      }
+
+      onMounted( () =>{
+        fetchUserGameCopies()
+      })
+
+      //ADD GAME FEATURE
+      //Handles displaying all available games in "select a game" drop down
+      const findAllGames = async () => {
+        try{
+          let fetchedGames = await gameService.findAllGames()
+          availableGames.value = fetchedGames; 
+          
+        } catch (err){
+          error.value = 'Failed to load available games. PLease try later'
+          console.error('Error loading games', err)
+          show()
+        }
+      }
+
+      const show = () => {
+        toast.add({ severity: 'error', summary: 'Could not load available games', detail: 'Please try again later', });
+      }
+
+      onMounted( () =>{
+        findAllGames()
+      })
     
+      
+      // Get details of the selected existing game
+      const getSelectedGameDetails = () => {
+        return availableGames.value.find(game => game.id === selectedExistingGame.value) || {}
+      }
+
+      //Handles adding pre-existing game to collection
+      /*const addExistingGame = async () => {
+        try {
+          const gameId = selectedExistingGame.value;
+          const gameOwnerId = currentUserId.value;
+
+          await gameCopyService.addGameCopyToGameOwner(gameOwnerId, gameId);
+
+          const selectedGame = getSelectedGameDetails();
+          ownedGames.value.push({
+          title: selectedGame.title,
+          description: selectedGame.description,
+          minNumPlayers: selectedGame.minNumPlayers,
+          maxNumPlayers: selectedGame.maxNumPlayers});
+
+          closeAddGameModal(); // Reset modal and form
+
+        } catch (error) {
+          // Handle backend errors
+          const msg = error?.response?.data?.message || "Something went wrong while adding the game.";
+          toast.add({
+            severity: 'error',
+            summary: 'Could not add game',
+            detail: msg
+          });
+          console.error('Error adding existing game copy:', error);
+        }
+      }*/
+
       const newGame = ref({
         title: '',
-        minPlayers: 2,
-        maxPlayers: 4,
+        minNumPlayers: 2,
+        maxNumPlayers: 4,
         description: '',
         imageUrl: ''
       })
 
-      const defaultGameImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YzZTllNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIGZpbGw9IiM4ZDZlNjMiPkJvYXJkIEdhbWUgSW1hZ2U8L3RleHQ+PC9zdmc+'
-      /*
-      events = ref([
-        {
-          game: 'Monopoly',
-          startDate: 'March 20, 2025',
-          endDate: 'March 21, 2025',
-          startTime: '2PM',
-          endTime: '3PM',
-          location: 'Community Center',
-          status: 'Attended',
-          contactEmail: 'sniggy_the_piggy@gmail.com'
-        },
-        {
-          game: 'Catan',
-          startDate: 'February 15, 2025',
-          endDate: 'February 19, 2025',
-          startTime: '2PM',
-          endTime: '3PM',
-          location: 'Board Game Cafe',
-          status: 'Attended',
-          contactEmail: 'peter_parker@gmail.com'
-        },
-        {
-          game: 'UNO',
-          startDate: 'January 10, 2025',
-          endDate: 'January 10, 2025',
-          startTime: '2PM',
-          endTime: '3PM',
-          location: 'Game Store',
-          status: 'Cancelled',
-          contactEmail: 'tom_loves_zendaya@gmail.com'
+      // Computed property to check if the form is valid for adding a game
+      const canAddGame = computed(() => {
+        if (isAddingNewGame.value) {
+          return (
+            newGame.value.title.trim() !== '' && 
+            newGame.value.minNumPlayers > 0 && 
+            newGame.value.maxNumPlayers >= newGame.value.minNumPlayers
+          )
+        } else {
+          return selectedExistingGame.value !== ''
         }
-      ])
-      */
+      })
+    
+    
+      // Function to close the add game modal and reset form
+      const closeAddGameModal = () => {
+        showAddGameModal.value = false
+        isAddingNewGame.value = false
+        selectedExistingGame.value = ''
+        newGame.value = {
+          title: '',
+          minNumPlayers: 2,
+          maxNumPlayers: 4,
+          description: '',
+          imageUrl: ''
+        }
+      }
+    
+      // Handles adding game to user's collection
+      const addGameToCollection = async () => {
+        //Adding New Game Tab
+        if (isAddingNewGame.value) {
+          // Add the new game to owned games
+          ownedGames.value.push({
+            title: newGame.value.title,
+            minNumPlayers: newGame.value.minNumPlayers,
+            maxNumPlayers: newGame.value.maxNumPlayers,
+            description: newGame.value.description
+          })
+          
+          // Also add to available games for future selection
+          availableGames.value.push({
+            id: availableGames.value.length + 1,
+            title: newGame.value.title,
+            minNumPlayers: newGame.value.minNumPlayers,
+            maxNumPlayers: newGame.value.maxNumPlayers,
+            description: newGame.value.description,
+            imageUrl: newGame.value.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image'
+          })
+        } 
+        
+        //Adding Pre-existing Game (selected)
+        else {
+          // Add the selected existing game to owned games
+          try {
+            const gameId = selectedExistingGame.value;
+            const gameOwnerId = currentUserId.value;
 
+            await gameCopyService.addGameCopyToGameOwner(gameOwnerId, gameId);
+
+            const selectedGame = getSelectedGameDetails();
+            ownedGames.value.push({
+            title: selectedGame.title,
+            description: selectedGame.description,
+            minNumPlayers: selectedGame.minNumPlayers,
+            maxNumPlayers: selectedGame.maxNumPlayers});
+
+            closeAddGameModal(); // Reset modal and form
+
+          } catch (error) {
+            // Handle backend errors
+            const msg = error?.response?.data?.message || "Something went wrong while adding the game.";
+            toast.add({
+            severity: 'error',
+            summary: 'Could not add game',
+            detail: msg});
+            console.error('Error adding existing game copy:', error);
+          }
+
+          // Close the modal
+          closeAddGameModal()
+        }
+      }
+
+      // ----------------------------- EVENTS TAB -----------------------------------------
       //Handles event history (WORK IN PROGRESS):
+      //Left to test: 
+      // 1. if it displays events user is registered for (not just the ones they created)
       const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
       weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
       })
@@ -617,15 +695,14 @@
         try {
           error.value = null
 
-          const userRegistrations = await registrationService.findRegistrationsByParticipant(currentUserId.value)
+          const userRegistrations = await registrationService.findRegistrationByParticipant(currentUserId.value)
           const formattedEvents = await Promise.all(userRegistrations.map(async (registration) => {
-          const event = await eventService.findEventById(registration.eventId) //waiting to be implemented!
+          const event = await eventService.findEventById(registration.eventId) 
 
           //Initialize API failure response
           let gameTitle = "Game Not Found"
           let creatorName = "User Not Found"
           let eventFormattedDate = "UnknownDate - UnknownDate"
-          let eventIsCreator = event.creatorId === userId
 
           // Fetch game title
           try {
@@ -657,11 +734,15 @@
             Name: `${gameTitle} by ${creatorName}`,
             FormattedDate: eventFormattedDate,
             Location: event.location,
-            ContactEmail: event.contactEmail
-          }
-        }))
+            ContactEmail: event.contactEmail,
+            endDate: event.endDate
+          }}))
         
-          events.value = formattedEvents
+          //Filter only past events
+          const currentDate = new Date()
+          const pastEvents = formattedEvents.filter(event => new Date(event.endDate) < currentDate)
+          events.value = pastEvents
+
         } catch (err) {
           error.value = 'Failed to load events. Please try again later.'
           console.error('Error loading events:', err)
@@ -669,6 +750,7 @@
       }
       
 
+      // ----------------------------- DELETE ACCOUNT TAB -----------------------------------------
       // Handles delete account:
       const deleteAccount = async () => {
         console.log('User ID:', currentUserId.value);
@@ -722,72 +804,7 @@
         return items
       })
       
-      // Computed property to check if the form is valid for adding a game
-      const canAddGame = computed(() => {
-        if (isAddingNewGame.value) {
-          return (
-            newGame.value.title.trim() !== '' && 
-            newGame.value.minPlayers > 0 && 
-            newGame.value.maxPlayers >= newGame.value.minPlayers
-          )
-        } else {
-          return selectedExistingGame.value !== ''
-        }
-      })
-    
-      // Function to get details of the selected existing game
-      const getSelectedGameDetails = () => {
-        return availableGames.value.find(game => game.id === selectedExistingGame.value) || {}
-      }
-    
-      // Function to close the add game modal and reset form
-      const closeAddGameModal = () => {
-        showAddGameModal.value = false
-        isAddingNewGame.value = false
-        selectedExistingGame.value = ''
-        newGame.value = {
-          title: '',
-          minPlayers: 2,
-          maxPlayers: 4,
-          description: '',
-          imageUrl: ''
-        }
-      }
-    
-      // Function to add a game to the collection
-      const addGameToCollection = () => {
-        if (isAddingNewGame.value) {
-          // Add the new game to owned games
-          ownedGames.value.push({
-            title: newGame.value.title,
-            status: 'Available',
-            borrower: null,
-            dueDate: null
-          })
-          
-          // Also add to available games for future selection
-          availableGames.value.push({
-            id: availableGames.value.length + 1,
-            title: newGame.value.title,
-            minPlayers: newGame.value.minPlayers,
-            maxPlayers: newGame.value.maxPlayers,
-            description: newGame.value.description,
-            imageUrl: newGame.value.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image'
-          })
-        } else {
-          // Add the selected existing game to owned games
-          const selectedGame = getSelectedGameDetails()
-          ownedGames.value.push({
-            title: selectedGame.title,
-            status: 'Available',
-            borrower: null,
-            dueDate: null
-          })
-        }
-        
-        // Close the modal
-        closeAddGameModal()
-      }
+
 
       // Watch for changes in isGameOwner and update activeSection if needed
       watch(isGameOwner, (newValue, oldValue) => {
@@ -796,16 +813,6 @@
         if (!newValue && oldValue && activeSection.value === 'games') {
           activeSection.value = 'profile'
         }
-      })
-      
-      onMounted(() => {
-      console.log("mounted")
-      if (!authStore.user.isAuthenticated) {
-        router.push('/')
-      } 
-      else{
-        fetchEvents()
-      }
       })
 
       // Function to handle image loading errors
@@ -1064,6 +1071,7 @@
     border-radius: 0.375rem;
     outline: none;
     transition: box-shadow 0.2s;
+    background-color: rgba(93, 64, 55, 0.5);
   }
 
   .form-select,
@@ -1074,7 +1082,7 @@
     border-radius: 0.375rem;
     outline: none;
     transition: box-shadow 0.2s;
-    background-color: white;
+    background-color: rgba(93, 64, 55, 0.5);
   }
 
   .form-textarea {
