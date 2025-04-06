@@ -38,8 +38,10 @@
         <div v-else class="noContent">
             No events found,<br> Create one!
         </div>
+
         <!-- Popup Modal -->
         <CreateEventModal v-if="showModal" :event="selectedEvent" @close="closeModal" />
+
     </main>
 </template>
 
@@ -52,7 +54,11 @@ import { eventGameService } from '@/services/eventGameService'
 import { registrationService } from '@/services/registrationService'
 import { useAuthStore } from '@/stores/authStore';
 import CreateEventModal from '@/components/CreateEventModal.vue'
+
 const showModal = ref(false)
+const createEvent = () => { showModal.value = true }
+const closeModal = () => { showModal.value = false }
+
 const router = useRouter();
 const events = ref([])
 const error = ref(null)
@@ -61,21 +67,19 @@ const authStore = useAuthStore();
 const currentUserId = computed(() => authStore.user.id);
 const selectedEvent = ref(null);
 const filterByRegistered = ref(false)
+
 const filteredEvents = computed(() => {
     const now = new Date()
-    return events.value.filter(event =>
-    {
+    return events.value.filter(event => {
         const eventEnd = new Date(`${event.endDate}T${event.endTime}`)
         if (eventEnd <= now) return false
         if (filterByRegistered.value && !event.eventIsRegistered) return false
         if (!searchString.value) return true
         const query = searchString.value.toLowerCase()
-        return Object.values(event).some(val =>
-        String(val).toLowerCase().includes(query)
-        )
-        }
-    )
+        return Object.values(event).some(val => String(val).toLowerCase().includes(query))
+    })
 })
+
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
   weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
 })
@@ -97,41 +101,34 @@ const fetchEvents = async () => {
         let eventFormattedDateTime = "UnknownTime UnknownDate - UnknownTime UnknownDate"
         let eventIsRegistered = false
         let eventIsCreator = event.creatorId == currentUserId.value
+
         try {
           const games = await eventGameService.findEventGamesByEvent(event.id)
-          if (games.length > 0) {
-            gameTitle = games[0].gameTitle // Adjust if multiple games
-          }
-        } catch (e) {
-          error.value = `Error Fetching Games for Event: ${e}`
-          console.warn(`Error Fetching Games for Event: ${e}`)
-        }
+          if (games.length > 0) gameTitle = games[0].gameTitle
+        } catch (e) { console.warn(`Error Fetching Games: ${e}`) }
+
         try {
           const user = await userService.findUserAccount(event.creatorId)
           creatorName = user.name
-        } catch (e) {
-          error.value = `Error Fetching Creator for Event: ${e}`
-          console.warn(`Error Fetching Creator for Event: ${e}`)
-        }
+        } catch (e) { console.warn(`Error Fetching User: ${e}`) }
+
         try {
           const registrations = await registrationService.findRegistrationByEvent(event.id)
-          const registrationCount = registrations.length
-          eventCapacity = registrations.length + "/" + event.maxNumParticipants 
+          eventCapacity = `${registrations.length}/${event.maxNumParticipants}`
           eventHasCapacity = registrations.length < event.maxNumParticipants
-          registrations.forEach(registration => { if (registration.userId == currentUserId.value) eventIsRegistered = true});
-        } catch (e) {
-          error.value = `Error Fetching Registrations for Event: ${e}`
-          console.warn(`Error Fetching Registrations for Event: ${e}`)
-        }
-        eventFormattedDateTime =`${formatTime(event.startTime)} ${formatDate(event.startDate)} - ${formatTime(event.endTime)} ${formatDate(event.endDate)}`
+          registrations.forEach(r => { if (r.userId == currentUserId.value) eventIsRegistered = true })
+        } catch (e) { console.warn(`Error Fetching Registrations: ${e}`) }
+
+        eventFormattedDateTime = `${formatTime(event.startTime)} ${formatDate(event.startDate)} - ${formatTime(event.endTime)} ${formatDate(event.endDate)}`
+
         return {
           ...event,
           eventName: `${gameTitle} by ${creatorName}`,
-          eventCapacity: eventCapacity,
-          eventHasCapacity : eventHasCapacity,
-          eventFormattedDateTime: eventFormattedDateTime,
-          eventIsRegistered : eventIsRegistered,
-          eventIsCreator : eventIsCreator,
+          eventCapacity,
+          eventHasCapacity,
+          eventFormattedDateTime,
+          eventIsRegistered,
+          eventIsCreator
         }
     }))
     events.value = formattedEvents
@@ -155,40 +152,41 @@ const updateEvent = (event) => {
   selectedEvent.value = { ...event }; // Make a copy to avoid mutating the original
   showModal.value = true;
 }
+
 const registerToEvent = async (eventId) => {
     try{
         await registrationService.registerParticipantToEvent(eventId, currentUserId.value)
         fetchEvents()
     } catch (e){
-        error.value = 'Failed to register Participant. Please try again later'
-        console.error('Error register participant:', e)
+        error.value = 'Failed to register. Please try again.'
+        console.error(e)
     }
 }
+
 const deregisterFromEvent = async (eventId) => {
     try{
         await registrationService.deregisterParticipantFromEvent(eventId, currentUserId.value)
         fetchEvents()
     } catch (e){
-        error.value = 'Failed to deregister Participant. Please try again later'
-        console.error('Error deregistering participant:', e)
+        error.value = 'Failed to deregister. Please try again.'
+        console.error(e)
     }
 }
+
 const cancelEvent = async (eventId) => {
     try {
         await eventService.deleteEvent(eventId)
         fetchEvents()
     } catch (e){
-        error.value = 'Failed to Cancel Event. Please try again later'
-        console.error('Error deleting event:', e)
+      error.value = 'Failed to cancel event. Please try again.'
+      console.error(e)
     }
 }
+
 onMounted(() => {
-    
-    console.log("mounted")
     if (!authStore.user.isAuthenticated) {
         router.push('/')
-    }
-    else{
+    } else {
         fetchEvents()
     }
 })
