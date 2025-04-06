@@ -155,7 +155,7 @@
                         </p>
                       </div>
                     </div>
-                    <button class="btn btn--danger">
+                    <button class="btn btn--danger"  @click="removeGameCopy(gameCopy.id, index)">
                       Delete
                     </button>
                   </div>
@@ -185,7 +185,6 @@
                         <div class="event-item__details">
                           <Clock class="event-item__details-icon" />
                           {{ event.FormattedDate }}
-                          <!--<template v-if="event.startDate !== event.endDate"> - {{ event.endDate }}</template>-->
                           • {{ event.Location }} • {{ event.ContactEmail }}
                         </div>
                       </div>
@@ -285,7 +284,7 @@
           <div v-if="selectedExistingGame" class="game-preview">
             <div class="game-preview__image">
               <img 
-                :src="getSelectedGameDetails().imageUrl || defaultGameImage" 
+                :src="getSelectedGameDetails().pictureURL || defaultGameImage" 
                 alt="Game cover" 
                 class="game-preview__img"
                 @error="handleImageError"
@@ -350,7 +349,7 @@
             <label for="imageUrl" class="form-label">Image URL</label>
             <input 
               id="imageUrl" 
-              v-model="newGame.imageUrl" 
+              v-model="newGame.pictureURL" 
               class="form-input" 
               placeholder="https://example.com/game-image.jpg" 
             />
@@ -359,13 +358,13 @@
           <div class="image-preview">
             <div class="image-preview__container">
               <img 
-                :src="newGame.imageUrl || defaultGameImage" 
+                :src="newGame.pictureURL || defaultGameImage" 
                 alt="Game cover preview" 
                 class="image-preview__img"
                 @error="handleImageError"
               />
             </div>
-            <p v-if="!newGame.imageUrl" class="image-preview__placeholder">Enter an image URL to see a preview</p>
+            <p v-if="!newGame.pictureURL" class="image-preview__placeholder">Enter an image URL to see a preview</p>
           </div>
         </div>
       </div>
@@ -546,6 +545,32 @@ export default {
       findAllGames()
     }})
 
+    //Handles deleting your game copies (index and gameCopy r good...)
+    const removeGameCopy = async (gameCopyId, index) => {
+      try {    
+        const response = await gameCopyService.removeGameCopyFromGameOwner(`/gameCopies/${gameCopyId}`) //gets an error here for some reason (since next line never reached..)
+        console.log("Backend delete response:", response); // Log the response to verify
+        if (response) {
+          ownedGames.splice(index, 1); // remove it from the array to update UI
+        }
+        return response.data
+      } catch (error) {
+        console.error('Failed to delete game copy:', error)
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete your game. Try again.' });
+      }
+    }
+
+    //Refetch game list from backend
+    /*watch(ownedGames, async (newOwnedGames) => {
+      try {
+        // After the ownedGames list changes, let's fetch fresh data from the backend
+        await fetchUserGameCopies();
+      } catch (err) {
+        console.error("Error during watch update:", err);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load your games after update.' });
+      }
+    }, { immediate: true });*/
+
     //ADD GAME FEATURE
     //Handles displaying all available games in "select a game" drop down
     const findAllGames = async () => {
@@ -579,7 +604,7 @@ export default {
       minNumPlayers: 2,
       maxNumPlayers: 4,
       description: '',
-      imageUrl: ''
+      pictureURL: ''
     })
 
     // Computed property to check if the form is valid for adding a game
@@ -605,21 +630,24 @@ export default {
         title: '',
         minNumPlayers: 2,
         maxNumPlayers: 4,
-        description: '',
-        imageUrl: ''
+        pictureURL: '',
+        description: ''
       }
     }
+
   
     // Handles adding game to user's collection
     const addGameToCollection = async () => {
       //Adding New Game Tab
       if (isAddingNewGame.value) {
         // Add the new game to owned games
-        ownedGames.value.push({
-          title: newGame.value.title,
-          minNumPlayers: newGame.value.minNumPlayers,
-          maxNumPlayers: newGame.value.maxNumPlayers,
-          description: newGame.value.description
+        /*ownedGames.value.push({
+          game: {
+            title: newGame.value.title,
+            minNumPlayers: newGame.value.minNumPlayers,
+            maxNumPlayers: newGame.value.maxNumPlayers,
+            description: newGame.value.description
+          }
         })
         
         // Also add to available games for future selection
@@ -629,8 +657,29 @@ export default {
           minNumPlayers: newGame.value.minNumPlayers,
           maxNumPlayers: newGame.value.maxNumPlayers,
           description: newGame.value.description,
-          imageUrl: newGame.value.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image'
-        })
+          pictureURL: newGame.value.pictureURL || 'https://via.placeholder.com/200x200?text=No+Image'
+        })*/
+
+        try{
+          console.log('title:',newGame.value.title)
+          console.log('min:',newGame.value.minNumPlayers)
+          console.log('max:',newGame.value.maxNumPlayers)
+          console.log('desc:',newGame.value.description)
+          console.log('pictureURL:',newGame.value.pictureURL)
+          console.log('id:',newGame.value)
+          const newGameResponse = await gameService.createGame(newGame.value);
+          const gameOwnerId = currentUserId.value;
+          const gameId = newGameResponse.id;
+          await gameCopyService.addGameCopyToGameOwner(gameOwnerId, gameId);
+          ownedGames.value.push({
+            game: newGameResponse
+          });
+
+          closeAddGameModal();
+        } catch (error) {
+          console.error('Error adding new game:', error);
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to add new game. Please try again later.' });
+        }
       } 
       
       //Adding Pre-existing Game (selected)
@@ -644,10 +693,7 @@ export default {
 
           const selectedGame = getSelectedGameDetails();
           ownedGames.value.push({
-          title: selectedGame.title,
-          description: selectedGame.description,
-          minNumPlayers: selectedGame.minNumPlayers,
-          maxNumPlayers: selectedGame.maxNumPlayers});
+            game: selectedGame});
 
           closeAddGameModal(); // Reset modal and form
 
@@ -836,7 +882,8 @@ export default {
       closeAddGameModal,
       addGameToCollection,
       handleImageError,
-      defaultGameImage
+      defaultGameImage,
+      removeGameCopy
     }
   }
 }
