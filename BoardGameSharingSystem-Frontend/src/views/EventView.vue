@@ -19,7 +19,7 @@
                             <p class="eventCapacity">{{event.eventCapacity}}</p>
                             <button v-if="event.eventHasCapacity && !event.eventIsRegistered && !event.eventIsCreator" class="registerToEventButton" @click="registerToEvent(event.id)">Register</button>
                             <button v-if="event.eventIsRegistered && !event.eventIsCreator" class="dangerButton" @click="deregisterFromEvent(event.id)">Deregister</button>
-                            <button v-if="event.eventIsCreator" class="updateEvent">Update</button>
+                            <button v-if="event.eventIsCreator" class="updateEvent" @click="updateEvent(event)">Update</button>
                             <button v-if="event.eventIsCreator" class="dangerButton" @click="cancelEvent(event.id)">Cancel</button>
                         </div>
                     </div>
@@ -40,7 +40,8 @@
         </div>
 
         <!-- Popup Modal -->
-        <CreateEventModal v-if="showModal" @close="closeModal" />
+        <CreateEventModal v-if="showModal" :event="selectedEvent" @close="closeModal" />
+
     </main>
 </template>
 
@@ -52,7 +53,7 @@ import { userService } from '@/services/userService'
 import { eventGameService } from '@/services/eventGameService'
 import { registrationService } from '@/services/registrationService'
 import { useAuthStore } from '@/stores/authStore';
-import CreateEventModal from '@/views/CreateEventModal.vue'
+import CreateEventModal from '@/components/CreateEventModal.vue'
 
 const showModal = ref(false)
 const createEvent = () => { showModal.value = true }
@@ -64,6 +65,7 @@ const error = ref(null)
 const searchString = ref('')
 const authStore = useAuthStore();
 const currentUserId = computed(() => authStore.user.id);
+const selectedEvent = ref(null);
 const filterByRegistered = ref(false)
 
 const filteredEvents = computed(() => {
@@ -134,6 +136,21 @@ const fetchEvents = async () => {
     error.value = 'Failed to load events. Please try again later.'
     console.error('Error loading events:', err)
   }
+}
+
+const createEvent = () => {
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  selectedEvent.value = null
+  fetchEvents();
+}
+
+const updateEvent = (event) => {
+  selectedEvent.value = { ...event }; // Make a copy to avoid mutating the original
+  showModal.value = true;
 }
 
 const registerToEvent = async (eventId) => {

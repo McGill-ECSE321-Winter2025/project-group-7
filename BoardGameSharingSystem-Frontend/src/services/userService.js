@@ -35,9 +35,9 @@ export const userService = {
     },
 
     // PUT /users/{id}
-    async updateUserAccount(id) {
+    async updateUserAccount(id, userData) {
       try {
-        const response = await api.put(`/users/${id}`)
+        const response = await api.put(`/users/${id}`,userData)
         return response.data
       } catch (error) {
         console.error('Error updating account details:', error)

@@ -2,13 +2,14 @@
 <template>
   <div class="modal-overlay">
     <div class="modal-content">
-      <h2 class="modal-title">Create Event</h2>
+      <h2 class="modal-title">{{ modalTitle }}</h2>
 
       <form class="space-y-3">
         <!-- Date Range -->
         <div>
-          <label class="modal-label">Date</label>
+          <label class="modal-label">Start Date</label>
           <input type="date" v-model="startDate" class="modal-input" />
+          <label class="modal-label">End Date</label>
           <input type="date" v-model="endDate" class="modal-input mt-1" />
         </div>
 
@@ -41,10 +42,16 @@
           <label class="modal-label">Board Game</label>
           <select v-model="selectedGame" class="modal-input">
             <option value="">Select Game</option>
-            <option value="Chess">Chess</option>
-            <option value="Catan">Catan</option>
-            <option value="Uno">Uno</option>
+            <option v-for="game in games" :key="game.id" :value="game">
+              {{ game.title }}
+            </option>
           </select>
+        </div>
+
+        <!-- Contact Email -->
+        <div>
+          <label class="modal-label">Contact Email</label>
+          <input type="text" v-model="contactEmail" class="modal-input" />
         </div>
 
         <!-- Description -->
@@ -56,7 +63,7 @@
         <!-- Buttons -->
         <div class="flex justify-between mt-4">
           <button type="button" @click="cancel" class="modal-button cancel">Cancel</button>
-          <button type="submit" @click.prevent="create" class="modal-button create">Create</button>
+          <button type="submit" @click.prevent="submit" class="modal-button create">{{ submitButtonText }}</button>
         </div>
 
         <!-- Footer -->
@@ -70,8 +77,13 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
-import { eventService } from '@/services/eventService.js'
+
+import { ref, computed, defineEmits, onMounted, watchEffect } from 'vue'
+import { eventService } from '@/services/eventService'
+import { registrationService } from '@/services/registrationService'
+import { eventGameService } from '@/services/eventGameService'
+import { gameService } from '@/services/gameService'
+import { useAuthStore } from '@/stores/authStore';
 
 const emit = defineEmits(['close'])
 
@@ -83,32 +95,109 @@ const location = ref('')
 const participants = ref('')
 const selectedGame = ref('')
 const description = ref('')
+const contactEmail = ref('')
+const error = ref(null)
+const authStore = useAuthStore();
+const currentUserId = computed(() => authStore.user.id);
+const games = ref([])
+const modalTitle = computed(() => props.event ? 'Edit Event' : 'Create Event')
+const submitButtonText = computed(() => props.event ? 'Update' : 'Create')
+
+const props = defineProps({
+  event: {
+    type: Object,
+    default: null
+  }
+})
+
+watchEffect(() => {
+  const newEvent = props.event
+  if (!newEvent || games.value.length === 0) return
+
+  console.log('Populating form from event...')
+
+  startDate.value = newEvent.startDate
+  endDate.value = newEvent.endDate
+  startTime.value = newEvent.startTime
+  endTime.value = newEvent.endTime
+  location.value = newEvent.location
+  participants.value = newEvent.maxNumParticipants
+  description.value = newEvent.description
+  contactEmail.value = newEvent.contactEmail
+
+  const gameTitle = newEvent.eventName?.split(' by ')[0]
+  const gameMatch = games.value.find(g => g.title === gameTitle)
+
+  selectedGame.value = gameMatch || ''
+})
 
 const cancel = () => {
   emit('close')
 }
 
-const create = async () => {
+const submit = async () => {
   try {
-    const eventData = {
+    const eventPayload = {
       startDate: startDate.value,
-      endDate: endDate.value,
       startTime: startTime.value,
+      endDate: endDate.value,
       endTime: endTime.value,
+      maxNumParticipants: participants.value,
       location: location.value,
-      maxNumParticipants: parseInt(participants.value),
       description: description.value,
-      contactEmail: 'testuser@example.com', // you can update this later
-      creatorId: 1 // replace with the actual logged-in user id
+      contactEmail: contactEmail.value,
+      creatorId: currentUserId.value
     }
 
-    const createdEvent = await eventService.createEvent(eventData)
-    console.log('Event created:', createdEvent)
-    emit('close')
-  } catch (err) {
-    console.error('Error creating event:', err)
+    if (props.event) {
+      // Updating
+      await eventService.updateEvent(props.event.id, eventPayload)
+      const currentGames = await eventGameService.findEventGamesByEvent(props.event.id)
+
+      // Remove all current games (assuming one-to-one)
+      for (const game of currentGames) {
+        await eventGameService.removeGameFromEvent(props.event.id, game.id)
+      }
+      if (selectedGame.value && selectedGame.value.id) {
+        await eventGameService.addGameToEvent(props.event.id, selectedGame.value.id)
+      }
+    } else {
+      // Creating
+      const createdEvent = await eventService.createEvent(eventPayload)
+      if (selectedGame.value && selectedGame.value.id) {
+        await eventGameService.addGameToEvent(createdEvent.id, selectedGame.value.id)
+      }
+      await registerToEvent(createdEvent.id)
+    }
+
+    cancel()
+  } catch (e) {
+    console.log(e)
+    error.value = 'Something went wrong. Please try again.'
   }
 }
+const registerToEvent = async (eventId) => {
+    try{
+        await registrationService.registerParticipantToEvent(eventId, currentUserId.value)
+    } catch (e){
+        error.value = 'Failed to register Participant. Please try again later'
+        console.error('Error register participant:', e)
+    }
+}
+
+const fetchGames = async () => 
+{
+  try {
+    const allGames = await gameService.findAllGames();
+    games.value = allGames;
+  } catch (error) {
+    error.value = 'Failed to fetch Games. Please try again later'
+    console.error('Error fetching games:', e)
+  }
+}
+onMounted(() => {
+  fetchGames()
+})
 </script>
 
 <style scoped>
@@ -165,6 +254,7 @@ const create = async () => {
   padding: 0.5em 1.5em;
   font-weight: 600;
   border: 1px solid gray;
+  margin-top: 0.5rem;
 }
 
 .modal-button.cancel {

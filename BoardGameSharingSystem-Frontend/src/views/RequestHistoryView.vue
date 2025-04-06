@@ -14,11 +14,11 @@
       </thead>
       <tbody>
         <tr v-for="(entry, index) in lendingHistory" :key="index">
-          <td>{{ entry.borrower }}</td>
-          <td>{{ entry.game }}</td>
+          <td>{{ entry.borrowerName }}</td>
+          <td>{{ entry.gameTitle }}</td>
           <td>{{ entry.startDate }}</td>
           <td>{{ entry.endDate }}</td>
-          <td>{{ entry.status }}</td>
+          <td>{{ entry.requestStatus }}</td>
         </tr>
       </tbody>
     </table>
@@ -29,15 +29,27 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestHistoryService } from '@/services/requestHistoryService'
+import { gameCopyService } from '@/services/gameCopyService'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const lendingHistory = ref([])
 
 const fetchHistory = async () => {
   try {
-    lendingHistory.value = await requestHistoryService.findRequestHistory()
+    const gameCopies = await gameCopyService.findGameCopiesForGameOwner(authStore.user.id)
+    let allAcceptedRequests = []
+
+    for (const copy of gameCopies) {
+      const acceptedRequests = await requestHistoryService.findAcceptedBorrowingRequests(copy.id)
+      allAcceptedRequests = allAcceptedRequests.concat(acceptedRequests)
+    }
+
+    lendingHistory.value = allAcceptedRequests
   } catch (error) {
-    console.error('Error fetching lending history:', error)
+    console.error('Error fetching accepted lending history:', error)
   }
 }
 

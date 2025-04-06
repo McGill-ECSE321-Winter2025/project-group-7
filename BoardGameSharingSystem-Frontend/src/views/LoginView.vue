@@ -74,7 +74,7 @@ const handleLogin = async () => {
     router.push('/games'); // Redirect after successful login
   } catch (error) {
     console.error('Error during login:', error);
-    errorMessage.value = error.message || 'Login failed. Please try again.';
+    errorMessage.value = 'Login failed: ' + error.message || 'Login failed. Please try again.';
   }
 };
 

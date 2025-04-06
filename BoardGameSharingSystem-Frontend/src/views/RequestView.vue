@@ -1,73 +1,105 @@
 <template>
-  <main>
-    <div class="search">
-      <input
-        type="search"
-        v-model="searchTerm"
-        placeholder="Search Requests"
-      />
-      <img id="searchIconImg" src="@/images/search.png" alt="Search Icon" />
-    </div>
-    <div class="searchFilters">
-      <label>
-        <input type="checkbox" v-model="filterByName" />
-        by Name
-      </label>
-      <label>
-        <input type="checkbox" v-model="filterByGame" />
-        by Game
-      </label>
-      <label>
-        <input type="checkbox" v-model="filterByDate" />
-        by Date
-      </label>
-    </div>
+  <div v-if="isGameOwner">
+    <main>
+      <div class="search">
+        <input
+          type="search"
+          v-model="searchTerm"
+          placeholder="Search Requests"
+        />
+        <img id="searchIconImg" src="@/images/search.png" alt="Search Icon" />
+      </div>
+      <div class="searchFilters">
+        <label>
+          <input type="checkbox" v-model="filterByName" />
+          by Name
+        </label>
+        <label>
+          <input type="checkbox" v-model="filterByGame" />
+          by Game
+        </label>
+        <label>
+          <input type="checkbox" v-model="filterByDate" />
+          by Date
+        </label>
+      </div>
 
-    <button id="historyButton" @click="goToHistory">History</button>
+      <button id="historyButton" @click="goToHistory">History</button>
 
-    <table id="requestTable">
-      <thead>
-        <tr>
-          <th>Borrower</th>
-          <th>Game</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="request in filteredRequests" :key="request.id">
-          <td>{{ request.borrowerName }}</td>
-          <td>{{ request.gameTitle }}</td>
-          <td>{{ request.startDate }}</td>
-          <td>{{ request.endDate }}</td>
-          <td>
-            <button v-if="request.status !== 'Accepted'" @click="acceptRequest(request.id)">Accept</button>
-            <button v-if="request.status !== 'Declined'" @click="declineRequest(request.id)">Decline</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </main>
+      <table id="requestTable">
+        <thead>
+          <tr>
+            <th>Borrower</th>
+            <th>Game</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="request in filteredRequests" :key="request.id">
+            <td>{{ request.borrowerName }}</td>
+            <td>{{ request.gameTitle }}</td>
+            <td>{{ request.startDate }}</td>
+            <td>{{ request.endDate }}</td>
+            <td>
+              <button v-if="request.status !== 'Accepted'" @click="acceptRequest(request.id)">Accept</button>
+              <button v-if="request.status !== 'Declined'" @click="declineRequest(request.id)">Decline</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+  <div v-else>
+    <p>This page is only available for Game Owners.</p>
+  </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestService } from '@/services/requestService'
+import { useAuthStore } from '@/stores/authStore'
+import { gameOwningService } from '@/services/gameOwningService'
+import { gameCopyService } from '@/services/gameCopyService'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const searchTerm = ref('')
 const filterByName = ref(false)
 const filterByGame = ref(false)
 const filterByDate = ref(false)
 const requests = ref([])
+const isGameOwner = ref(false)
 
-const fetchRequests = async () => {
+const checkGameOwnerStatus = async () => {
   try {
-    requests.value = await requestService.findAllRequests()
+    const result = await gameOwningService.findGameOwner(authStore.user.id)
+    if (!result) {
+      isGameOwner.value = false
+    } else {
+      isGameOwner.value = result.userId !== -1
+      console.log('result.userId:', result.userId);
+    }
   } catch (error) {
-    console.error('Failed to fetch requests:', error)
+    console.error('Error checking game owner status:', error)
+    isGameOwner.value = false
+  }
+}
+
+const fetchPendingRequestsForOwnedGames = async () => {
+  try {
+    const gameCopies = await gameCopyService.findGameCopiesForGameOwner(authStore.user.id)
+    let allRequests = []
+    for (const copy of gameCopies) {
+      const pendingRequests = await requestService.findPendingRequests(copy.id)
+      allRequests = allRequests.concat(pendingRequests)
+    }
+    requests.value = allRequests
+  } catch (error) {
+    console.error('Error fetching pending requests for owned games:', error)
   }
 }
 
@@ -76,21 +108,15 @@ const filteredRequests = computed(() => {
   return requests.value.filter(request => {
     return (
       (!filterByName.value ||
-        (request.borrowerName &&
-          request.borrowerName.toLowerCase().includes(term))) &&
+        (request.borrowerName && request.borrowerName.toLowerCase().includes(term))) &&
       (!filterByGame.value ||
-        (request.gameTitle &&
-          request.gameTitle.toLowerCase().includes(term))) &&
+        (request.gameTitle && request.gameTitle.toLowerCase().includes(term))) &&
       (!filterByDate.value ||
         (request.startDate && request.startDate.includes(term)) ||
         (request.endDate && request.endDate.includes(term)))
     )
   })
 })
-
-const performSearch = () => {
-  // 此处依赖 computed 自动过滤
-}
 
 const acceptRequest = async (id) => {
   try {
@@ -114,8 +140,11 @@ const goToHistory = () => {
   router.push('/request-historys')
 }
 
-onMounted(() => {
-  fetchRequests()
+onMounted(async () => {
+  await checkGameOwnerStatus()
+  if (isGameOwner.value) {
+    await fetchPendingRequestsForOwnedGames()
+  }
 })
 </script>
 
@@ -138,7 +167,6 @@ main {
   gap: 0.5em;
 }
 
-/* 显式设置 font-family 确保字体一致 */
 .search input[type="search"] {
   height: 4em;
   width: 25em;
