@@ -107,3 +107,14 @@ Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack 
 Shengyi | <ul><li>Full Stack Developer | <ul><li>Implement and test service methods to manage GameOwning</li><li>Implement and test REST API endpoints for GameCopies and RequestAnswer</li><li>Work on class diagram</li><li>Persistence Layer and Testing</li><li>Lab report: design decisions recorded</li></ul> | 50
 Snigdha | <ul><li>Task Coordinator</li><li>Full Stack Developer| <ul><li>Implement and test service methods to manage Game Collection</li><li>Implement and test REST API endpoints for Game </li><li>Meeting minutes recorded and documented</li><li>Maintain backlog in GitHub Projects</li><li>Arrange task deadlines and assignees</li></ul> | 52
 
+Table 3 : Roles of each team member Deliverable 3
+Name | Role | Tasks | Number of Hours 
+--- | --- | --- | ---
+Artimice |  <ul><li>Full Stack Developer | <ul></ul> | 
+Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer | <ul></ul> | 
+Doddy | <ul><li>GitHub Backlog Contributor</li><li>Full Stack Developer | <ul></ul> | 
+Jyothsna | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer | <ul></ul> | 
+Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack Developer  | <ul></ul> | 25
+Shengyi | <ul><li>Full Stack Developer | <ul></ul> | 
+Snigdha | <ul><li>Task Coordinator</li><li>Full Stack Developer| <ul></ul> | 
+
