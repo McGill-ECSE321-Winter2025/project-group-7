@@ -27,7 +27,6 @@ import org.springframework.http.HttpStatus;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.AuthRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;

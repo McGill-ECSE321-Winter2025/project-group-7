@@ -34,6 +34,17 @@ export const userService = {
       }
     },
 
+    // PUT /users/{id}
+    async updateUserAccount(id) {
+      try {
+        const response = await api.put(`/users/${id}`)
+        return response.data
+      } catch (error) {
+        console.error('Error updating account details:', error)
+        throw error
+      }
+    },
+
     // POST /users/login
     async login(userData) {
       try {
