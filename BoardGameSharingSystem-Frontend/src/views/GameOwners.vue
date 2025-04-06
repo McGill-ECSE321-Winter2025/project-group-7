@@ -1,5 +1,6 @@
 <template>
-    <main>
+
+<main>
         <button id = "create" @click="openCreateReview">Create Borrow Request</button>
         <h1 id = title>Select a Game Owner</h1>
     <div>
@@ -12,8 +13,8 @@
             </tr>
             </thead>
             <tbody>
-                        <tr v-for="(entry, index) in fetchedgameCopies":key = "index">
-                            <td><input type="radio" :value="entry.userId" v-model="selecterUserId" name = "selectedUser"></td>
+                        <tr v-for="(entry, index) in gameOwners":key = "index">
+                            <td><input type="radio" :value="entry.id" v-model="selectedUserId" name = "selectedUser"></td>
                             <td>{{ entry.userName }}</td>
                         </tr>
                     </tbody>
@@ -26,12 +27,12 @@
                 <form>
                     <div id = "start">
                     <p><label for="date1" id = date21>Select a start date for the lending:</label></p>
-                    <input type="date" v-model="selectedDate" id="date1" />
+                    <input type="date" v-model="selectedDate1" id="date1" />
                     </div>
 
                     <div id = "end">
                     <p><label for="date2" id = date22>Select an end date for the lending:</label></p>
-                    <p><input type="date" v-model="selectedDate" id="date2" /></p>
+                    <p><input type="date" v-model="selectedDate2" id="date2" /></p>
                 </div>
                     <button id = "Submit" @click.prevent = "createBorrowRequest">Create Request</button>
                     <button id = "Cancel" @click.prevent = "closeCreateReview">Cancel</button>
@@ -123,7 +124,7 @@ h1 {
     justify-content: center;
     font-size: 2rem;
     color: rgb(230, 204, 189);
-    margin-top: 2rem;  /* Adjusted to push the reviews down, instead of using top */
+    margin-top: 2rem;
     padding: 2rem;
     font-size: 1.1rem;
 
@@ -154,7 +155,7 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,7 +165,7 @@ h1 {
     background-color: #cf8d4e;
     width: 50%; /* Adjust width */
     max-width: 500px;
-    padding: 2em; /* Reduce padding to fit textarea */
+    padding: 2em;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
@@ -175,8 +176,10 @@ import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jp
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
 import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-2466520193-removebg-preview1.png';
 import { reviewService } from '@/services/reviewService';
+import { requestService } from '@/services/requestService';
+import { gameCopyService } from '@/services/gameCopyService';
 import {ref, onMounted} from 'vue';
-import {useRouter} from 'vue-router';
+import {useRouter, useRoute} from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameStore } from '@/stores/gameStore';
@@ -184,22 +187,29 @@ import { useGameStore } from '@/stores/gameStore';
     const authStore = useAuthStore();
     const gameStore = useGameStore();
     const router = useRouter();
-    const gameId = gameStore.getGameId();
+    const route = useRoute();
+    const gameId = route.params.gameId;
+    console.log(gameId);
     const error = ref(null);
     const showPopup = ref(false);
-    let gameOwners = ref([]);
+    const gameOwners = ref([]);
     const formattedDate1 = ref('');
     const formattedDate2 = ref('');
     const selectedUserId = ref('');
-    const currentUserId = authStore.user.id;
-    const fetchedGameCopies = ref([]);
-    
-    
-    
-    
+    const currentUserId = computed(() => authStore.user.id);
+    const selectedDate1 = ref('');
+    const selectedDate2 = ref('');
 
+    
     const openCreateReview = () => {
-        showPopup.value = true;
+        console.log(selectedUserId.value)
+        if ((selectedUserId.value.length == 0)) {
+                console.log('No selection made')
+                alert('Please select a value from the menu.');
+
+            }
+        else {
+        showPopup.value = true;}
     }
 
     const closeCreateReview = () => {
@@ -208,14 +218,8 @@ import { useGameStore } from '@/stores/gameStore';
 
     const fetchGameOwners = async() => {
         try {
-            fetchedGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
-            return {
-                userId: gameCopy.userId,
-                userName: gameCopy.userName,
-                gameCopyId: gameCopy.id
-            };
-
-
+            let fetchedGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
+            gameOwners.value = fetchedGameCopies;
         
     } catch (err) {
         error.value = 'Failed to load game owners. Please try again later.';
@@ -231,18 +235,20 @@ onMounted(() => {
     const createBorrowRequest = async() => {
         try {
 
-            if ((!selectedValue1.value || !selectedValue2.value || !selectedValue3.value)) {
+            if ((!selectedUserId)) {
                 console.log('No selection made')
                 alert('Please select a value from the menu.');
 
             }
            else {
-            let startDateObj = new Date(this.startDate);
-            let endDateObj = new Date(this.endDate);
+            let startDateObj = new Date(selectedDate1.value);
+            let endDateObj = new Date(selectedDate2.value);
 
-            requestService.createRequest(gameId, currentUserId, {
+            requestService.createRequest(selectedUserId.value, currentUserId, {
                 startDate: startDateObj,
                 endDate: endDateObj,
+                gameCopyId: selectedUserId.value,
+                borrowerId: currentUserId.value
             })
 
         } }catch(err) {
