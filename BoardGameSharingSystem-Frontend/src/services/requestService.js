@@ -1,13 +1,13 @@
 import api from './api'
 
 export const requestService = {
-  // GET /borrowrequests/all
-  async findAllRequests() {
+  // GET /borrowrequests/{gameCopyId}/pending
+  async findPendingRequests(gameCopyId) {
     try {
-      const response = await api.get('/borrowrequests/all')
+      const response = await api.get(`/borrowrequests/${gameCopyId}/pending`)
       return response.data
     } catch (error) {
-      console.error('Error fetching borrow requests:', error)
+      console.error(`Error fetching pending borrow requests for gameCopyId ${gameCopyId}:`, error)
       throw error
     }
   },
@@ -32,24 +32,7 @@ export const requestService = {
       console.error(`Error declining request ${id}:`, error)
       throw error
     }
-
   },
-
-    // POST /borrowrequests
-    async createRequest(gameCopyId, borrowerId, borrowRequest) {
-        try {
-          const response = await api.post('/borrowrequests', borrowRequest, {
-            params: {
-              gameCopyId: gameCopyId,
-              borrowerId: borrowerId
-            }
-          })
-          return response.data
-        } catch (error) {
-          console.error('Error creating borrowing request:', error)
-          throw error
-        }
-    }
 }
 
 
