@@ -113,8 +113,8 @@ Name | Role | Tasks | Number of Hours
 Artimice |  <ul><li>Full Stack Developer | <ul></ul> | 
 Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer | <ul></ul> | 
 Doddy | <ul><li>GitHub Backlog Contributor</li><li>Full Stack Developer | <ul></ul> | 
-Jyothsna | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer | <ul></ul> | 
+Jyothsna | <ul><li>Assistant Task Coordinator</li><li>Full Stack Developer</li><li> Head UI designer</li><li> Login Page Implementation | <ul></ul> | 64
 Mary | <ul><li>Project Coordinator</li><li>Meeting Organizer</li><li>Full Stack Developer  | <ul></ul> | 25
 Shengyi | <ul><li>Full Stack Developer | <ul></ul> | 
-Snigdha | <ul><li>Task Coordinator</li><li>Full Stack Developer| <ul></ul> | 
+Snigdha | <ul><li>Task Coordinator</li><li>Full Stack Developer</li><li> UI designer</li><li> Login Page Implementation| <ul></ul> | 64
 
