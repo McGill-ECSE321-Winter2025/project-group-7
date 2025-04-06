@@ -4,11 +4,7 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { gameOwningService } from '@/services/gameOwningService';
 import { userService } from '@/services/userService';
-import axios from 'axios'
-
-const axiosClient = axios.create({
-  baseURL: "http://localhost:8080",
-});
+import api from '@/services/api'
 
 
 const loginBg = new URL('@/images/GameNest-login-bg.png', import.meta.url).href;
@@ -43,7 +39,7 @@ const activateLogin = () => {
 // Method for handling sign-up 
 const handleSignUp = async () => {
   try {
-    const response = await axiosClient.post('/users', {
+    const response = await api.post('/users', {
       username: username.value,
       email: email.value,
       password: password.value,
