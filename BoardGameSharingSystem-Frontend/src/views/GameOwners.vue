@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                         <tr v-for="(entry, index) in fetchedgameCopies":key = "index">
-                            <td><input type="radio" id="html" name="fav_language" value="HTML"></td>
+                            <td><input type="radio" :value="entry.userId" v-model="selecterUserId" name = "selectedUser"></td>
                             <td>{{ entry.userName }}</td>
                         </tr>
                     </tbody>
@@ -129,6 +129,8 @@ h1 {
 
 }
 
+
+
 #s1 table{
 
     width: 100%;
@@ -186,16 +188,12 @@ import { useGameStore } from '@/stores/gameStore';
     const error = ref(null);
     const showPopup = ref(false);
     let gameOwners = ref([]);
-    const selectedYR1 = ref('');
-    const selectedD1 = ref('');
-    const selectedM1 = ref('');
-    const selectedYR2 = ref('');
-    const selectedD2 = ref('');
-    const selectedM2 = ref('');
     const formattedDate1 = ref('');
     const formattedDate2 = ref('');
+    const selectedUserId = ref('');
     const currentUserId = authStore.user.id;
     const fetchedGameCopies = ref([]);
+    
     
     
     
@@ -225,25 +223,24 @@ import { useGameStore } from '@/stores/gameStore';
     }
 }
 
+
+
     const createBorrowRequest = async() => {
         try {
 
             if ((!selectedValue1.value || !selectedValue2.value || !selectedValue3.value)) {
                 console.log('No selection made')
-                alert('Please select a value from the dropdown.');
+                alert('Please select a value from the menu.');
 
             }
            else {
-            const dateStr1 = `${selectedYR1.value}-${selectedM1.value}-${selectedD1.value}`;
-            const dateStr2 = `${selectedYR2.value}-${selectedM2.value}-${selectedD2.value}`;
+            let startDateObj = new Date(this.startDate);
+            let endDateObj = new Date(this.endDate);
 
-            const date1 = new Date(dateStr1);
-            const date2 = new Date(dateStr2);
-
-            formattedDate1.value = date1.toISOString().split('T')[0];
-            formattedDate2.value = date2.toISOString().split('T')[0];
-
-            requestService.createBorrowRequest()
+            requestService.createRequest(gameId, currentUserId, {
+                startDate: startDateObj,
+                endDate: endDateObj,
+            })
 
         } }catch(err) {
             error.value = 'Failed to load game. Please try again later.'

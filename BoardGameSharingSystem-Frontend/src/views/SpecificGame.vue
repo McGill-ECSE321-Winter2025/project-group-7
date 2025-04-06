@@ -93,11 +93,15 @@ import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
 import { gameService } from '@/services/gameService';
+import { useAuthStore } from '@/stores/authStore';
 
 const router = useRouter();
+authStore = useAuthStore();
+gameStore = gameStore();
+const userId = authStore.user.id;
+const gameId = gameStore.getGameId();
 const showPopup = ref(false);
 const error = ref(null);
-const gameId = ref(routeLocationKey.params.gameId);
 let gameReviews = ref([]);
 const gameMaxPlayer = ref(0);
 const gameMinPlayer = ref(0);
