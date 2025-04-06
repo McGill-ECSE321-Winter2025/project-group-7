@@ -4,6 +4,7 @@ import Card from 'primevue/card';
 import { Button, Toast, useToast } from 'primevue';
 import { onMounted, ref } from 'vue';
 import { gameService } from '@/services/gameService';
+import { useGameStore } from '@/stores/gameStore';
 
 let games = ref([]);
 const error = ref(null);
@@ -28,6 +29,10 @@ const show = () => {
     toast.add({ severity: 'error', summary: 'Could not load available games', detail: 'Please try again later', });
 };
 
+const gameStore = useGameStore();
+
+const setGameId= gameStore.setGameId
+
 </script>
 
 <template class="top">
@@ -48,16 +53,16 @@ const show = () => {
       <Card style="width: 20rem; overflow: hidden" class="game-card game-card-back">
         <template #title class="game-card-title">{{ game.title }}</template>
         <template #content>
-          <p class="card-text">Min # Players:</p>
-          <p class="card-text-center">{{ game.minNumPlayers }}</p>
-          <p class="card-text">Max # Players:</p>
-          <p class="card-text-center">{{ game.maxNumPlayers }}</p>
+          <p class="card-text">Min # Players: &nbsp &nbsp {{ game.minNumPlayers }}</p>
+          <!-- <p class="card-text-center">{{ game.minNumPlayers }}</p> -->
+          <p class="card-text">Max # Players:&nbsp &nbsp {{ game.maxNumPlayers }}</p>
+          <!-- <p class="card-text-center">{{ game.maxNumPlayers }}</p> -->
             <p class="description">
               {{ game.description }} 
             </p>
             <div class="button-link-wrapper">
             <Button class="details-button">
-              <RouterLink class="link" :to="{name:'game',params:{gameId:game.id}}">
+              <RouterLink @click="setGameId(game.id)" class="link" :to="{name:'game',params:{gameId:game.id}}">
                 View details
               </RouterLink>
             </Button>
@@ -152,10 +157,12 @@ const show = () => {
 
 .card-text{
   text-align: left;
+  margin-bottom: 2rem;
+
 }
 
 .details-button{
-  margin-top: 10vh;
+  margin-top: 2rem;
   background-color:transparent ;
   border-color: white;
   cursor: pointer;
