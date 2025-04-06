@@ -240,28 +240,30 @@ onMounted(() => {
                 alert('Please select a value from the menu.');
 
             }
-            else if (!selectedDate1.value || !selectedDate2.valuel) {
+            else if (!selectedDate1.value || !selectedDate2.value) {
                 alert('Please select dates to borrow the game');
 
             }
            else {
             let startDateObj = new Date(selectedDate1.value);
             let endDateObj = new Date(selectedDate2.value);
-
+            console.log(currentUserId.value)
+            console.log(selectedUserId.value)
+        
             requestService.createRequest(selectedUserId.value, currentUserId.value, {
                 startDate: startDateObj,
-                endDate: endDateObj,
+                endDate: endDateObj
             })
 
         } }catch(err) {
             error.value = 'Failed to load game. Please try again later.'
-            console.error('Error loading game:', err)
+            console.error('Error creating the borrow request:', err)
 
         }
 
 
 
-    }
+    };
 
 
 
