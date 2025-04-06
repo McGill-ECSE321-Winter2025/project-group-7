@@ -96,6 +96,33 @@ public class AccountService {
 
     
     /** 
+     * Searches the database for a UserAccount, updates it with given attributes, and returns it
+     * @param userAccountId the ID of the UserAccount to update
+     * @param request a request with the attributes to update to
+     * @return the updated UserAccount
+     */
+    @Transactional
+    public UserAccount updateUserAccount (int userAccountId, AuthRequest request){
+        UserAccount userToUpdate = findUserAccountById(userAccountId);
+        validateUserAccountParameters(
+            request.getUsername(),
+            request.getEmail(),
+            request.getPassword()
+        );
+        
+        UserAccount existingUser = userRepo.findUserAccountByName(request.getUsername());
+        if (existingUser != null && existingUser.getId() != userAccountId) {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
+                "Username %s is already taken", request.getUsername()));
+        }
+        userToUpdate.setName(request.getUsername());
+        userToUpdate.setEmail(request.getEmail());
+        userToUpdate.setPassword(request.getPassword());
+        return userRepo.save(userToUpdate);
+    }
+
+    
+    /** 
      * Verifies the details entered during login 
      * @param request the AuthRequest for login
      * @return the UserAccount if valid

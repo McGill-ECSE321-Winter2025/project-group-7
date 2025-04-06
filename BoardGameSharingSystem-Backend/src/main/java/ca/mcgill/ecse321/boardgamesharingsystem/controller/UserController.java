@@ -58,6 +58,20 @@ public class UserController {
     {
         return new UserAccountResponseDto(accountService.deleteUserAccount(id));
     }
+    
+    
+    /** 
+     * Updates a UserAccount with ID id using the information in the request
+     * @param id the ID of the UserAccount to be updated
+     * @param userRequest ontains the username, email and password of the UserAccount to be updated
+     * @return the updated UserAccountResponseDto
+     */
+    @PutMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserAccountResponseDto updateUserAccount(@PathVariable("id") int id, @RequestBody AuthRequest userRequest)
+    {
+        return new UserAccountResponseDto(accountService.updateUserAccount(id, userRequest));
+    }
 
     /** 
      * Verifies an existing UserAccount

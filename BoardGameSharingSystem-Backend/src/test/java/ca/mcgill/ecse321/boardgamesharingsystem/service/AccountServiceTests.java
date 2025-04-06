@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.AuthRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
@@ -134,6 +135,34 @@ public class AccountServiceTests {
         assertEquals("No userAccount found with id 42", exception.getMessage());
     }
 
+    @Test
+    public void testUpdateValidUserAccount()
+    {
+        //Arrange
+        UserAccount userToUpdate = new UserAccount(NAME, EMAIL, PASSWORD);
+        when(userAccountRepository.findUserAccountById(42)).thenReturn(userToUpdate);
+        String newName = "Mitski";
+        String newEmail = "mitski@mail.com";
+        String newPassword = "TsukiNoHime";
+
+        AuthRequest request = new AuthRequest();
+        request.setUsername(newName);
+        request.setEmail(newEmail);
+        request.setPassword(newPassword);
+        
+        when(userAccountRepository.findUserAccountByName("Mitski")).thenReturn(null);
+        when(userAccountRepository.save(userToUpdate)).thenReturn(userToUpdate);
+        
+        //Act
+        UserAccount updatedUserAccount = accountService.updateUserAccount(42, request);
+
+        //Assert
+        assertNotNull(updatedUserAccount);
+        assertEquals(newName, updatedUserAccount.getName());
+        assertEquals(newEmail, updatedUserAccount.getEmail());
+        assertEquals(newPassword, updatedUserAccount.getPassword());
+    }
+    
     @Test
     public void testValidLogin() {
         //Arrange 
