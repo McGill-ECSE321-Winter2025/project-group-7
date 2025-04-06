@@ -44,4 +44,15 @@ export const eventService = {
       throw error
     }
   },
+
+  // GET /events/{id}
+  async findEventById(id) {
+    try {
+      const response = await api.get(`/events/${id}`)
+      return response.data
+    } catch (error) {
+      console.error('Error fetching event:', error)
+      throw error
+    }
+  },
 }

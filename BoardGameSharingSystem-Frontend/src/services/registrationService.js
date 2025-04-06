@@ -34,5 +34,16 @@ export const registrationService = {
       console.error('Error deregistering participant:', error)
       throw error
     }
-  }
+  },
+
+    // GET /registrations/fromParticipant
+    async findRegistrationByParticipant(participantId) {
+      try {
+        const response = await api.get('/registrations/fromParticipant', {params: { participantId }})
+        return response.data
+      } catch (error) {
+        console.error('Error fetching registrations by participant:', error)
+        throw error
+      }
+    }
 }

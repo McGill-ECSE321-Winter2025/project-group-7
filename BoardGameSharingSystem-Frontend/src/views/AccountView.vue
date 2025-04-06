@@ -130,9 +130,12 @@
                   <h2 class="card__title">My Games</h2>
                   <p class="card__subtitle">Manage your board game collection</p>
                 </div>
-                <button class="btn btn--add btn--with-icon">
+                <!-- <button class="btn btn--add btn--with-icon">
                   <Package class="btn__icon" /> Add New Game
-                </button>
+                </button> -->
+                  <button class="btn btn--primary btn--with-icon" @click="showAddGameModal = true">
+                    <Package class="btn__icon" /> Add New Game
+                  </button>
               </div>
               <div class="card__content">
                 <div class="games-list">
@@ -165,11 +168,6 @@
                   </div>
                 </div>
               </div>
-              <!--<div class="card__footer">
-                <button class="btn btn--primary btn--with-icon">
-                  <Package class="btn__icon" /> Add New Game
-                </button>
-              </div>-->
             </div>
             
             <!-- Events Section -->
@@ -188,12 +186,12 @@
                           <Calendar class="event-item__icon" />
                         </div>
                         <div>
-                          <p class="event-item__title">{{ event.game }}</p>
+                          <p class="event-item__title">{{ event.Name }}</p>
                           <div class="event-item__details">
                             <Clock class="event-item__details-icon" />
-                            {{ event.startDate }}
-                            <template v-if="event.startDate !== event.endDate"> - {{ event.endDate }}</template>
-                            • {{ event.location }} • {{ event.contactEmail }}
+                            {{ event.FormattedDate }}
+                            <!--<template v-if="event.startDate !== event.endDate"> - {{ event.endDate }}</template>-->
+                            • {{ event.Location }} • {{ event.ContactEmail }}
                           </div>
                         </div>
                       </div>
@@ -240,7 +238,7 @@
                       >
                         Cancel
                       </button>
-                      <button class="btn btn--danger">
+                      <button class="btn btn--danger" @click="deleteAccount">
                         Delete Account
                       </button>
                     </div>
@@ -251,13 +249,154 @@
           </div>
         </div>
       </div>
+      
+      <!-- Add Game Modal -->
+    <div v-if="showAddGameModal" class="modal">
+      <div class="modal__overlay" @click="closeAddGameModal"></div>
+      <div class="modal__content modal__content--large">
+        <div class="modal__header">
+          <h3 class="modal__title">Add Game to Your Collection</h3>
+          <button class="modal__close" @click="closeAddGameModal">×</button>
+        </div>
+        
+        <div class="modal__body">
+          <div class="tabs">
+            <button 
+              :class="['tabs__tab', { 'tabs__tab--active': !isAddingNewGame }]" 
+              @click="isAddingNewGame = false"
+            >
+              Select Existing Game
+            </button>
+            <button 
+              :class="['tabs__tab', { 'tabs__tab--active': isAddingNewGame }]" 
+              @click="isAddingNewGame = true"
+            >
+              Add New Game
+            </button>
+          </div>
+          
+          <!-- Select Existing Game -->
+          <div v-if="!isAddingNewGame" class="form-section">
+            <div class="form-group">
+              <label for="existingGame" class="form-label">Select a Game</label>
+              <select id="existingGame" v-model="selectedExistingGame" class="form-select">
+                <option value="" disabled>-- Select a game --</option>
+                <option v-for="game in availableGames" :key="game.id" :value="game.id">
+                  {{ game.title }}
+                </option>
+              </select>
+            </div>
+            
+            <div v-if="selectedExistingGame" class="game-preview">
+              <div class="game-preview__image">
+                <img 
+                  :src="getSelectedGameDetails().imageUrl || defaultGameImage" 
+                  alt="Game cover" 
+                  class="game-preview__img"
+                  @error="handleImageError"
+                />
+              </div>
+              <div class="game-preview__details">
+                <h4 class="game-preview__title">{{ getSelectedGameDetails().title }}</h4>
+                <p class="game-preview__players">{{ getSelectedGameDetails().minPlayers }}-{{ getSelectedGameDetails().maxPlayers }} Players</p>
+                <p class="game-preview__description">{{ getSelectedGameDetails().description }}</p>
+              </div>
+            </div>
+            
+            <div class="form-message">
+              <p>Didn't find the game you were looking for? <button class="link-button" @click="isAddingNewGame = true">Add one!</button></p>
+            </div>
+          </div>
+          
+          <!-- Add New Game -->
+          <div v-else class="form-section">
+            <div class="form-group">
+              <label for="newGameTitle" class="form-label">Game Title</label>
+              <input id="newGameTitle" v-model="newGame.title" class="form-input" placeholder="Enter game title" />
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group form-group--half">
+                <label for="minPlayers" class="form-label">Min Players</label>
+                <input 
+                  id="minPlayers" 
+                  type="number" 
+                  v-model="newGame.minPlayers" 
+                  min="1" 
+                  max="99" 
+                  class="form-input" 
+                />
+              </div>
+              <div class="form-group form-group--half">
+                <label for="maxPlayers" class="form-label">Max Players</label>
+                <input 
+                  id="maxPlayers" 
+                  type="number" 
+                  v-model="newGame.maxPlayers" 
+                  min="1" 
+                  max="99" 
+                  class="form-input" 
+                />
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                id="description" 
+                v-model="newGame.description" 
+                class="form-textarea" 
+                rows="3" 
+                placeholder="Enter game description"
+              ></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="imageUrl" class="form-label">Image URL</label>
+              <input 
+                id="imageUrl" 
+                v-model="newGame.imageUrl" 
+                class="form-input" 
+                placeholder="https://example.com/game-image.jpg" 
+              />
+            </div>
+            
+            <div class="image-preview">
+              <div class="image-preview__container">
+                <img 
+                  :src="newGame.imageUrl || defaultGameImage" 
+                  alt="Game cover preview" 
+                  class="image-preview__img"
+                  @error="handleImageError"
+                />
+              </div>
+              <p v-if="!newGame.imageUrl" class="image-preview__placeholder">Enter an image URL to see a preview</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal__footer">
+          <button class="btn btn--outline" @click="closeAddGameModal">Cancel</button>
+          <button 
+            class="btn btn--primary" 
+            @click="addGameToCollection"
+            :disabled="!canAddGame"
+          >
+            Add to Collection
+          </button>
+        </div>
+      </div>
     </div>
-  </template>
+    </div>
+</template>
   
-  <script>
-  import { ref, computed, watch } from 'vue'
+<script>
+  import { ref, computed, watch, onMounted } from 'vue'
+  import { useRouter } from 'vue-router';
   import { useAuthStore } from '@/stores/authStore'
   import { userService } from '@/services/userService';
+  import { eventService } from '@/services/eventService';
+  import { registrationService } from '@/services/registrationService'
   import { gameOwningService } from '@/services/gameOwningService';
 
   import { 
@@ -287,14 +426,20 @@
     },
 
     setup() {
+      const router = useRouter();
       const authStore = useAuthStore();
-      //const currentUserId = computed(() => authStore.user.id);
+      const currentUserId = computed(() => authStore.user.id);
       const currentUserName = computed(() => authStore.user.username);
       const currentUserEmail = computed(() => authStore.user.userEmail);
       const isGameOwner = ref(null);
       const activeSection = ref('profile');
       const showDeleteConfirm = ref(false);
+      const showAddGameModal = ref(false);
+      const isAddingNewGame = ref(false);
+      const selectedExistingGame = ref('');
       
+      const error = ref(null);
+      const events = ref([]);
       
       // Directly bind the profile fields to authStore properties
       const profile = ref({
@@ -375,8 +520,61 @@
         },
         
       ])
-      
-      const events = ref([
+
+      const availableGames = ref([
+        {
+          id: 1,
+          title: 'Gloomhaven',
+          minPlayers: 1,
+          maxPlayers: 4,
+          description: 'Gloomhaven is a cooperative game of tactical combat, battling monsters and advancing a player\'s own individual goals in a persistent and changing world.',
+          imageUrl: 'https://cf.geekdo-images.com/sZYp_3BTDGjh2unaZfZmuA__imagepage/img/pBaOL7vV402nn1I5dHsdSKsFHqA=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2437871.jpg'
+        },
+        {
+          id: 2,
+          title: 'Wingspan',
+          minPlayers: 1,
+          maxPlayers: 5,
+          description: 'Wingspan is a competitive, medium-weight, card-driven, engine-building board game from Stonemaier Games.',
+          imageUrl: 'https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__imagepage/img/uIjeoKgHMcRtzRSR4MoUYl3nXxs=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4458123.jpg'
+        },
+        {
+          id: 3,
+          title: 'Terraforming Mars',
+          minPlayers: 1,
+          maxPlayers: 5,
+          description: 'Compete with rival CEOs to make Mars habitable and build your corporate empire.',
+          imageUrl: 'https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__imagepage/img/FS1RE8Ue6nk1pNbPI3l-OSapQGc=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3536616.jpg'
+        },
+        {
+          id: 4,
+          title: 'Scythe',
+          minPlayers: 1,
+          maxPlayers: 5,
+          description: 'Asymmetric strategy game set in an alternate-history 1920s period where players compete for territory and resources.',
+          imageUrl: 'https://cf.geekdo-images.com/7k_nOxpO9OGIjhLq2BUZdA__imagepage/img/zoz-t_z9nqqxL7OwQenbqp9PRl8=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3163924.jpg'
+        },
+        {
+          id: 5,
+          title: 'Azul',
+          minPlayers: 2,
+          maxPlayers: 4,
+          description: 'Tile placement game where players compete to create the most beautiful mosaic.',
+          imageUrl: 'https://cf.geekdo-images.com/tz19PfklMdAdjxV9WArraA__imagepage/img/K3OydSGTbGOb6FrwPjpYT0BaUbI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3718275.jpg'
+        }
+      ])
+    
+      const newGame = ref({
+        title: '',
+        minPlayers: 2,
+        maxPlayers: 4,
+        description: '',
+        imageUrl: ''
+      })
+
+      const defaultGameImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YzZTllNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIGZpbGw9IiM4ZDZlNjMiPkJvYXJkIEdhbWUgSW1hZ2U8L3RleHQ+PC9zdmc+'
+      /*
+      events = ref([
         {
           game: 'Monopoly',
           startDate: 'March 20, 2025',
@@ -408,6 +606,84 @@
           contactEmail: 'tom_loves_zendaya@gmail.com'
         }
       ])
+      */
+
+      //Handles event history (WORK IN PROGRESS):
+      const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString(undefined, {
+      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+      })
+
+      const fetchEvents = async () => {
+        try {
+          error.value = null
+
+          const userRegistrations = await registrationService.findRegistrationsByParticipant(currentUserId.value)
+          const formattedEvents = await Promise.all(userRegistrations.map(async (registration) => {
+          const event = await eventService.findEventById(registration.eventId) //waiting to be implemented!
+
+          //Initialize API failure response
+          let gameTitle = "Game Not Found"
+          let creatorName = "User Not Found"
+          let eventFormattedDate = "UnknownDate - UnknownDate"
+          let eventIsCreator = event.creatorId === userId
+
+          // Fetch game title
+          try {
+            const games = await eventGameService.findEventGamesByEvent(event.id)
+            if (games.length > 0) {
+              gameTitle = games[0].gameTitle
+            }
+          } catch (e) {
+            console.warn(`Error Fetching Games for Event: ${e}`)
+          }
+
+          // Fetch creator name
+          try {
+            const user = await userService.findUserAccount(event.creatorId)
+            creatorName = user.name
+          } catch (e) {
+            console.warn(`Error Fetching Creator for Event: ${e}`)
+          }
+
+          // Format event date
+          if (event.startDate === event.endDate) {
+            eventFormattedDate = formatDate(event.startDate)
+          } else {
+            eventFormattedDate = `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`
+          }
+
+          return {
+            ...event,
+            Name: `${gameTitle} by ${creatorName}`,
+            FormattedDate: eventFormattedDate,
+            Location: event.location,
+            ContactEmail: event.contactEmail
+          }
+        }))
+        
+          events.value = formattedEvents
+        } catch (err) {
+          error.value = 'Failed to load events. Please try again later.'
+          console.error('Error loading events:', err)
+        }
+      }
+      
+
+      // Handles delete account:
+      const deleteAccount = async () => {
+        console.log('User ID:', currentUserId.value);
+
+        try {
+          console.log(currentUserId.value)
+          await userService.deleteUserAccount(currentUserId.value);
+          // logout
+          authStore.logout();
+          router.push('/');
+          
+        } catch (error) {
+          console.error('Failed to delete account:', error);
+        }
+      };
       
       // Only include the games section in navigation if user is a game owner
       const navItems = computed(() => {
@@ -446,6 +722,73 @@
         return items
       })
       
+      // Computed property to check if the form is valid for adding a game
+      const canAddGame = computed(() => {
+        if (isAddingNewGame.value) {
+          return (
+            newGame.value.title.trim() !== '' && 
+            newGame.value.minPlayers > 0 && 
+            newGame.value.maxPlayers >= newGame.value.minPlayers
+          )
+        } else {
+          return selectedExistingGame.value !== ''
+        }
+      })
+    
+      // Function to get details of the selected existing game
+      const getSelectedGameDetails = () => {
+        return availableGames.value.find(game => game.id === selectedExistingGame.value) || {}
+      }
+    
+      // Function to close the add game modal and reset form
+      const closeAddGameModal = () => {
+        showAddGameModal.value = false
+        isAddingNewGame.value = false
+        selectedExistingGame.value = ''
+        newGame.value = {
+          title: '',
+          minPlayers: 2,
+          maxPlayers: 4,
+          description: '',
+          imageUrl: ''
+        }
+      }
+    
+      // Function to add a game to the collection
+      const addGameToCollection = () => {
+        if (isAddingNewGame.value) {
+          // Add the new game to owned games
+          ownedGames.value.push({
+            title: newGame.value.title,
+            status: 'Available',
+            borrower: null,
+            dueDate: null
+          })
+          
+          // Also add to available games for future selection
+          availableGames.value.push({
+            id: availableGames.value.length + 1,
+            title: newGame.value.title,
+            minPlayers: newGame.value.minPlayers,
+            maxPlayers: newGame.value.maxPlayers,
+            description: newGame.value.description,
+            imageUrl: newGame.value.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image'
+          })
+        } else {
+          // Add the selected existing game to owned games
+          const selectedGame = getSelectedGameDetails()
+          ownedGames.value.push({
+            title: selectedGame.title,
+            status: 'Available',
+            borrower: null,
+            dueDate: null
+          })
+        }
+        
+        // Close the modal
+        closeAddGameModal()
+      }
+
       // Watch for changes in isGameOwner and update activeSection if needed
       watch(isGameOwner, (newValue, oldValue) => {
         // If user switches from game owner to player and was on the games section,
@@ -455,6 +798,31 @@
         }
       })
       
+      onMounted(() => {
+      console.log("mounted")
+      if (!authStore.user.isAuthenticated) {
+        router.push('/')
+      } 
+      else{
+        fetchEvents()
+      }
+      })
+
+      // Function to handle image loading errors
+      const handleImageError = (event) => {
+        event.target.src = defaultGameImage;
+      }
+      
+      onMounted(() => {
+      console.log("mounted")
+      if (!authStore.user.isAuthenticated) {
+        router.push('/')
+      } 
+      else{
+        fetchEvents()
+      }
+      })
+
       return {
         authStore,
         currentUserName,
@@ -466,13 +834,25 @@
         events,
         navItems,
         showDeleteConfirm,
-        toggleAccountType
+        toggleAccountType,
+        deleteAccount,
+        showAddGameModal,
+        isAddingNewGame,
+        selectedExistingGame,
+        availableGames,
+        newGame,
+        canAddGame,
+        getSelectedGameDetails,
+        closeAddGameModal,
+        addGameToCollection,
+        handleImageError,
+        defaultGameImage
       }
     }
   }
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   /* Base styles */
   .account-settings {
     min-height: 100vh;
@@ -660,6 +1040,16 @@
     margin-bottom: 1rem;
   }
   
+  .form-group--half {
+  width: calc(50% - 0.5rem);
+  }
+
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .form-label {
     display: block;
     color: rgba(59, 24, 4, 1);
@@ -675,11 +1065,47 @@
     outline: none;
     transition: box-shadow 0.2s;
   }
+
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #8d6e63;
+    border-radius: 0.375rem;
+    outline: none;
+    transition: box-shadow 0.2s;
+    background-color: white;
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 5rem;
+  }
   
   .form-input:focus {
     box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.5);
   }
   
+  .form-select:focus,
+  .form-textarea:focus {
+    box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.5);
+  }
+
+  .form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235d4037' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+  }
+
+  .form-message {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #5d4037;
+  }
+
   /* Account toggle */
   .account-toggle {
     display: flex;
@@ -923,24 +1349,29 @@
     transition: background-color 0.2s, color 0.2s;
     border: none;
   }
+
+  .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  }
   
   .btn--primary {
     background-color: #5d4037;
     color: white;
   }
   
-  .btn--primary:hover {
+  .btn--primary:hover:not(:disabled) {
     background-color: #3e2723;
   }
 
-  .btn--add {
+  /* .btn--add {
     background-color: rgb(160, 198, 34);
     color: white;
   }
 
   .btn--add:hover{
     background-color: rgb(135, 168, 29);
-  }
+  } */
   
   .btn--outline {
     background-color: transparent;
@@ -948,7 +1379,7 @@
     color: rgba(59, 24, 4, 1);
   }
   
-  .btn--outline:hover {
+  .btn--outline:hover:not(:disabled) {
     background-color: #8d6e63;
     color: white;
   }
@@ -958,7 +1389,7 @@
     color: white;
   }
   
-  .btn--danger:hover {
+  .btn--danger:hover:not(:disabled) {
     background-color: #dc2626;
   }
   
@@ -1010,6 +1441,21 @@
     border-radius: 0.5rem;
     max-width: 28rem;
     width: 100%;
+    overflow: hidden;
+  }
+
+  .modal__content--large {
+  max-width: 40rem;
+  }
+
+  .modal__header {
+    background-color: #8d6e63;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #5d4037;
   }
   
   .modal__title {
@@ -1018,15 +1464,165 @@
     color: rgba(59, 24, 4, 1);
     margin-bottom: 0.5rem;
   }
-  
+
+  .modal__close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  }
+
+  .modal__body {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
   .modal__text {
     color: rgba(93, 64, 55, 0.8);
     margin-bottom: 1.5rem;
   }
-  
+  .modal__footer {
+  background-color: #d7ccc8;
+  border-top: 1px solid rgba(141, 110, 99, 0.2);
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  }
   .modal__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+  }
+  /* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(141, 110, 99, 0.2);
+  margin-bottom: 1.5rem;
+  }
+
+  .tabs__tab {
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #5d4037;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .tabs__tab--active {
+    border-bottom-color: #5d4037;
+  }
+
+  .tabs__tab:hover:not(.tabs__tab--active) {
+    border-bottom-color: rgba(93, 64, 55, 0.3);
+  }
+
+  /* Form section */
+  .form-section {
+    padding-bottom: 1rem;
+  }
+
+  /* Image preview */
+  .image-preview {
+    margin-top: 1rem;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    max-width: 200px;
+    border: 1px solid rgba(141, 110, 99, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  .image-preview__container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+  }
+
+  .image-preview__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .image-preview__placeholder {
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #5d4037;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Game preview */
+  .game-preview {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(141, 110, 99, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .game-preview__image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(141, 110, 99, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  .game-preview__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .game-preview__details {
+    flex: 1;
+  }
+
+  .game-preview__title {
+    font-weight: 600;
+    color: #5d4037;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .game-preview__players {
+    font-size: 0.875rem;
+    color: #5d4037;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .game-preview__description {
+    font-size: 0.875rem;
+    color: rgba(93, 64, 55, 0.8);
+    margin: 0;
+  }
+
+  /* Link button */
+  .link-button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #5d4037;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .link-button:hover {
+    color: #3e2723;
   }
   </style>
