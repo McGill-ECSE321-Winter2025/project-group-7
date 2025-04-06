@@ -76,6 +76,9 @@ $ cd BoardGameSharingSystem-Backend
 $ ./gradlew bootRun
 
 ```
+Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
+
+
 **Steps to run the frontend**
 ```bash
 ## . is project-group7
@@ -83,9 +86,12 @@ $ cd BoardGameSharingSystem-Frontend
 $ npm install
 $ npm run dev
 ```
+*The frontend uses port 8090. Please ensure that the port is not taken by another process*
 
-Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
-
+On windows
+```
+netstat -ano |find /i "8090"
+```
 
 ## Team Management
 **Please refer to the [wiki page](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki) to see project report and meeting minutes for each deliverable.**
