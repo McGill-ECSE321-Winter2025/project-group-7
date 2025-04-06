@@ -7,8 +7,9 @@
       <form class="space-y-3">
         <!-- Date Range -->
         <div>
-          <label class="modal-label">Date</label>
+          <label class="modal-label">Start Date</label>
           <input type="date" v-model="startDate" class="modal-input" />
+          <label class="modal-label">End Date</label>
           <input type="date" v-model="endDate" class="modal-input mt-1" />
         </div>
 
@@ -41,10 +42,16 @@
           <label class="modal-label">Board Game</label>
           <select v-model="selectedGame" class="modal-input">
             <option value="">Select Game</option>
-            <option value="Chess">Chess</option>
-            <option value="Catan">Catan</option>
-            <option value="Uno">Uno</option>
+            <option v-for="game in games" :key="game.id" :value="game">
+              {{ game.name }}
+            </option>
           </select>
+        </div>
+
+        <!-- Contact Email -->
+        <div>
+          <label class="modal-label">Contact Email</label>
+          <input type="text" v-model="contactEmail" class="modal-input" />
         </div>
 
         <!-- Description -->
@@ -70,8 +77,12 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
-
+import { ref, computed, defineEmits, onMounted } from 'vue'
+import { eventService } from '@/services/eventService'
+import { registrationService } from '@/services/registrationService'
+import { eventGameService } from '@/services/eventGameService'
+import { gameService } from '@/services/gameService'
+import { useAuthStore } from '@/stores/authStore';
 const emit = defineEmits(['close'])
 
 const startDate = ref('')
@@ -82,24 +93,62 @@ const location = ref('')
 const participants = ref('')
 const selectedGame = ref('')
 const description = ref('')
+const contactEmail = ref('')
+const error = ref(null)
+const authStore = useAuthStore();
+const currentUserId = computed(() => authStore.user.id);
+const games = ref([])
 
 const cancel = () => {
   emit('close')
 }
 
-const create = () => {
-  console.log({
-    startDate: startDate.value,
-    endDate: endDate.value,
-    startTime: startTime.value,
-    endTime: endTime.value,
-    location: location.value,
-    participants: participants.value,
-    selectedGame: selectedGame.value,
-    description: description.value
-  })
-  emit('close')
+const create = async () => {
+    try {
+        const testEvent = {
+        startDate: startDate.value,
+        startTime: startTime.value,
+        endDate: endDate.value,
+        endTime: endTime.value,
+        maxNumParticipants: participants.value,
+        location: location.value,
+        description: description.value,
+        contactEmail: contactEmail.value,
+        creatorId: currentUserId.value
+        };
+        let createdEvent = await eventService.createEvent(testEvent);
+        await eventGameService.addGameToEvent(createdEvent.id, selectedGame.value.id);
+        await registerToEvent(createdEvent.id)
+        cancel();
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
 }
+const registerToEvent = async (eventId) => {
+    try{
+        await registrationService.registerParticipantToEvent(eventId, currentUserId.value)
+    } catch (e){
+        error.value = 'Failed to register Participant. Please try again later'
+        console.error('Error register participant:', e)
+    }
+}
+
+const fetchGames = async () => 
+{
+  try {
+    const allGames = await gameService.findAllGames();
+    games.value = allGames;
+  } catch (error) {
+    error.value = 'Failed to fetch Games. Please try again later'
+    console.error('Error fetching games:', e)
+  }
+
+}
+onMounted(() => {
+  fetchGames()
+})
 </script>
 
 <style scoped>
@@ -156,6 +205,7 @@ const create = () => {
   padding: 0.5em 1.5em;
   font-weight: 600;
   border: 1px solid gray;
+  margin-top: 0.5rem;
 }
 
 .modal-button.cancel {

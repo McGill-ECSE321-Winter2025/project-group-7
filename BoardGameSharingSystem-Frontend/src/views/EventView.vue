@@ -38,6 +38,8 @@
         <div v-else class="noContent">
             No events found,<br> Create one!
         </div>
+        <!-- Popup Modal -->
+        <CreateEventModal v-if="showModal" @close="closeModal" />
     </main>
 </template>
 
@@ -49,6 +51,8 @@ import { userService } from '@/services/userService'
 import { eventGameService } from '@/services/eventGameService'
 import { registrationService } from '@/services/registrationService'
 import { useAuthStore } from '@/stores/authStore';
+import CreateEventModal from '@/components/CreateEventModal.vue'
+const showModal = ref(false)
 const router = useRouter();
 const events = ref([])
 const error = ref(null)
@@ -136,27 +140,13 @@ const fetchEvents = async () => {
   }
 }
 
-const createEvent = async () => {
-    try {
-        const testEvent = {
-        startDate: new Date().toISOString().split('T')[0], // today
-        startTime: '14:00', // 2 PM
-        endDate: new Date().toISOString().split('T')[0], // today
-        endTime: '19:38', // 4 PM
-        maxNumParticipants: 10,
-        location: '123 Game Street, Montreal',
-        description: 'Test event for board games',
-        contactEmail: 'testuser@example.com',
-        creatorId: currentUserId.value
-        };
-        let createdEvent = await eventService.createEvent(testEvent);
-        await registerToEvent(createdEvent.id)
-        fetchEvents()
-    }
-    catch (e)
-    {
-        console.log(e);
-    }
+const createEvent = () => {
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  fetchEvents();
 }
 const registerToEvent = async (eventId) => {
     try{
