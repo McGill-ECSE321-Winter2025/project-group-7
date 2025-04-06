@@ -71,7 +71,7 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue'
-import { eventService } from '@/services/eventService'
+import { eventService } from '@/services/eventService.js'
 
 const emit = defineEmits(['close'])
 
