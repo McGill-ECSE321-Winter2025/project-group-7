@@ -75,17 +75,17 @@
 import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
 import { reviewService } from '@/services/reviewService';
-import {ref, onMounted} from 'vue';
-import {useRouter} from 'vue-router';
+import {ref, onMounted,computed} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
 import axios from 'axios';
 import { gameService } from '@/services/gameService';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameStore } from '@/stores/gameStore';
 import { userService } from '@/services/userService';
 
-const gameId = route.params.gameId;
-console.log(gameId);
 const router = useRouter();
+const gameId = useRoute().params.gameId;
+// console.log(gameId);
 const authStore = useAuthStore();
 const gameStore = useGameStore();
 const userId = computed(() => authStore.user.id);
@@ -99,6 +99,7 @@ const gameMinPlayer = ref(0);
 const gameDesc = ref('');
 const gameURL = ref('');
 const gameTitle = ref('');
+// const gameId = gameStore.getGameId();
 
 
 
