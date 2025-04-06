@@ -1,44 +1,41 @@
 <template>
     <main>
-        <div class="title-container" :style="{ backgroundImg: `url(${backgroundImg})` }">
-            
-            <h1>
+        <div class="title-container" :style="{ backgroundImg: `url(${backgroundImg})` }">   
+            <h1 class="game-title">
                 <b>{{ gameTitle }}</b>
             </h1>
-        
         </div>
         <section id="all">
             <section id = playerNb> {{ gameMinPlayer }} - {{ gameMaxPlayer }}  players</section>
-        <div class="stuff">
-            
-            <button id="borrowButton" @click="goToGameOwners"> Borrow Game</button>
-            <img :src="gameURL || placeholderImg" alt="Game Image" id="imageGame" v-if="placeholderImg" />
-            <p id = "desc">{{ gameDesc }}</p>
-        </div>
-        <div>
-            <h2><b>Latest Reviews</b></h2>
-            <button id="createReview" @click="openCreateReview">Create Review</button>
-            <section id="reviews">
-                <table border="1">
-                    <thead id = allReviews>
-                        <tr>
-                            <th>Username</th>
-                            <th>Rating</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(entry, index) in gameReviews" :key="index">
-                        <td>{{ entry.username }}</td>
-                        <td>{{ entry.rating }}</td>
-                        <td>{{ entry.comment }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-
+            <div class="stuff"> 
+                <Button id="borrowButton" class = "details-button" @click="goToGameOwners"> 
+                    Borrow Game
+                </button>
+                <img :src="gameURL || placeholderImg" alt="Game Image" id="imageGame" v-if="placeholderImg" />
+                <p id = "desc">{{ gameDesc }}</p>
+            </div>
+            <div>
+                <h2 class="yellow-h2"><b>Latest Reviews</b></h2>
+                <button id="createReview" @click="openCreateReview">Create Review</button>
+                <section id="reviews">
+                    <table border="1">
+                        <thead id = allReviews>
+                            <tr>
+                                <th>Username</th>
+                                <th>Rating</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(entry, index) in gameReviews" :key="index">
+                                <td>{{ entry.username }}</td>
+                                <td>{{ entry.rating }}</td>
+                                <td>{{ entry.comment }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
             </section>
-
-        </div>
+            </div>
         </section>
         <div v-if = "showPopup" class="modal-overlay">
             <div class = "modal-content">
@@ -205,6 +202,15 @@ const fetchGameDetails = async () => {
 
 }
 
+.game-title {
+    margin-left: 1.5em;
+    margin-top: 0.2em;
+    font-family: "Mansalva", sans-serif;
+    color: rgb(255, 235, 123);
+    font-size: 300%;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
+}
+
 
 .title-container {
     top: 0em;
@@ -277,8 +283,6 @@ h1 {
     margin-top: -1em;
     font-family: "Mansalva", sans-serif;
     color: white;
-    
-
 }
 
 #updateReview {
@@ -342,7 +346,7 @@ h2 {
 
 #descN {
     text-align: justify;
-    color: #14252E;
+    color: rgb(230, 204, 189);
     font-family: "Mansalva", sans-serif;
     font-size: 106%;
     border-radius: 2em;
@@ -350,6 +354,7 @@ h2 {
     height: 6em;
     max-width: none;
     outline: none;
+    background-color: #8d6e63;
 }
 
 #Submit {
@@ -463,6 +468,15 @@ textarea {
     font-family: "Mansalva", sans-serif;
     font-size: 106%;
 
+    padding: 1.5em; /* add padding to make it look like a text box */
+    background-color: rgba(59, 24, 4, 0.9); /* warm background, similar to your theme */
+    border-style: solid;
+    border-color: rgba(134, 73, 37, 0.9);
+    width: 60%;
+    border-spacing: 0;
+    mix-blend-mode:add;
+    border-radius: 1em; /* rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* optional shadow for depth */
 }
 
 button{
@@ -512,5 +526,17 @@ button:active{
     text-align: center;
 }
 
+.yellow-h2 {
+    color: rgb(255, 235, 123);
+    font-size: 200%;
+    text-shadow: 1px 1px 0.2rem rgba(0, 0, 0, 0.9);
+}
+
+.description-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* aligns both playerNb and desc to the left */
+    margin: 1em 0;
+}
 
 </style>
