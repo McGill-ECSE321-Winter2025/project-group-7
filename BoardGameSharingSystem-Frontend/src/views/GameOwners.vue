@@ -244,11 +244,9 @@ onMounted(() => {
             let startDateObj = new Date(selectedDate1.value);
             let endDateObj = new Date(selectedDate2.value);
 
-            requestService.createRequest(selectedUserId.value, currentUserId, {
+            requestService.createRequest(selectedUserId.value, currentUserId.value, {
                 startDate: startDateObj,
                 endDate: endDateObj,
-                gameCopyId: selectedUserId.value,
-                borrowerId: currentUserId.value
             })
 
         } }catch(err) {
