@@ -3,18 +3,16 @@
         <div class="title-container" :style="{ backgroundImg: `url(${backgroundImg})` }">
             
             <h1>
-                <b>Title{{ gameTitle }}</b>
+                <b>{{ gameTitle }}</b>
             </h1>
         
         </div>
         <section id="all">
-        <div class="stuff">
             <section id = playerNb> {{ gameMinPlayer }} - {{ gameMaxPlayer }}  players</section>
-            <button id="borrowButton"> Borrow Game</button>
-           
-            <img :src= gameURL alt="Game Image" id="imageGame" v-if="pictureURL" />
-            <img :src = "plantImg" id="plantImg"/>
+        <div class="stuff">
             
+            <button id="borrowButton" @click="goToGameOwners"> Borrow Game</button>
+            <img :src="gameURL || placeholderImg" alt="Game Image" id="imageGame" v-if="placeholderImg" />
             <p id = "desc">{{ gameDesc }}</p>
         </div>
         <div>
@@ -76,7 +74,6 @@
 <script setup>
 import backgroundImg from '@/assets/jessica-woulfe-harvest-witch-interior-jw2.jpg';
 import placeholderImg from '@/assets/istockphoto-1147544807-612x612.jpg';
-import plantImg from '@/assets/pixelated-green-greenery-sprout-leaf-260nw-2466520193-removebg-preview1.png';
 import { reviewService } from '@/services/reviewService';
 import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
@@ -89,7 +86,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const gameStore = useGameStore();
 const userId = authStore.user.id;
-const gameId = 1;
+const gameId = 4001;
 const showPopup = ref(false);
 const error = ref(null);
 let gameReviews = ref([]);
@@ -99,6 +96,10 @@ const gameDesc = ref('');
 const gameURL = ref('');
 const gameTitle = ref('');
 
+
+const goToGameOwners = () => {
+  router.push({ name: 'GameOwner', params: { gameId } });
+};
 
     const findAllReviews = async () => {
         try{
@@ -149,8 +150,12 @@ const gameTitle = ref('');
         const newDescription = document.getElementById("d").value;
         var checked_rating = document.querySelector('input[name = "rating"]:checked');
 
-        if(checked_rating != null){
+        if(checked_rating == null){
             alert('You must select a rating for your review.');
+        }
+        
+        else if (newDescription == null) {
+            alert('You must include a comment.');
         }
 
         else {
@@ -158,7 +163,7 @@ const gameTitle = ref('');
                 rating: (checked_rating.value * 20),
                 gameId: gameId,
                 comment:newDescription.value
-            }, authStore.user.id, gameId)
+            }, userId, gameId)
 
         }}
         catch {
@@ -187,6 +192,7 @@ const gameTitle = ref('');
 
 
 }
+
 
 .title-container {
     top: 0em;
@@ -256,7 +262,7 @@ const gameTitle = ref('');
 
 h1 {
     margin-left:2em;
-    margin-top: 2em;
+    margin-top: -1em;
     font-family: "Mansalva", sans-serif;
     color: white;
     
@@ -277,7 +283,7 @@ h1 {
 
 
 #imageGame{
-    margin-top: 12em;
+    margin-top: 1em;
     margin-left: 5em;
     width: 25em;
     height:25em;
@@ -298,7 +304,7 @@ body {
 }
 
 #borrowButton {
-    margin-top: 6em;
+    margin-top: -1em;
     margin-left: 85em;
     
 
@@ -312,10 +318,13 @@ h2 {
     font-family: "Mansalva", sans-serif;
     font-weight: bold;
     margin-left:4em;
+    margin-top:12em;
 }
 
-#stuff {
-    background-color: rgba(0,0,0,0.2);
+.stuff {
+    
+    margin-bottom: 1em;
+
 
 }
 
@@ -434,7 +443,8 @@ textarea {
 #desc {
     text-align:center;
     align-items: center;
-    margin-top: 1em;
+    align-items: top;
+    margin-top: -20em;
     margin-left:50em;
     max-width: 30%;
     color: #FFFFFF;

@@ -106,8 +106,8 @@ button:active{
 }
 
 h1 {
-    margin-top:-2em;
-    margin-left: 5em;
+    margin-top:-4em;
+    margin-left: 2em;
     font-family: "Mansalva", sans-serif;
 
 }
