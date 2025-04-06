@@ -2,7 +2,7 @@
 <template>
   <div class="modal-overlay">
     <div class="modal-content">
-      <h2 class="modal-title">Create Event</h2>
+      <h2 class="modal-title">{{ modalTitle }}</h2>
 
       <form class="space-y-3">
         <!-- Date Range -->
@@ -43,7 +43,7 @@
           <select v-model="selectedGame" class="modal-input">
             <option value="">Select Game</option>
             <option v-for="game in games" :key="game.id" :value="game">
-              {{ game.name }}
+              {{ game.title }}
             </option>
           </select>
         </div>
@@ -63,7 +63,7 @@
         <!-- Buttons -->
         <div class="flex justify-between mt-4">
           <button type="button" @click="cancel" class="modal-button cancel">Cancel</button>
-          <button type="submit" @click.prevent="create" class="modal-button create">Create</button>
+          <button type="submit" @click.prevent="submit" class="modal-button create">{{ submitButtonText }}</button>
         </div>
 
         <!-- Footer -->
@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits, onMounted } from 'vue'
+import { ref, computed, defineEmits, onMounted, watchEffect } from 'vue'
 import { eventService } from '@/services/eventService'
 import { registrationService } from '@/services/registrationService'
 import { eventGameService } from '@/services/eventGameService'
@@ -98,33 +98,81 @@ const error = ref(null)
 const authStore = useAuthStore();
 const currentUserId = computed(() => authStore.user.id);
 const games = ref([])
+const modalTitle = computed(() => props.event ? 'Edit Event' : 'Create Event')
+const submitButtonText = computed(() => props.event ? 'Update' : 'Create')
+
+const props = defineProps({
+  event: {
+    type: Object,
+    default: null
+  }
+})
+
+watchEffect(() => {
+  const newEvent = props.event
+  if (!newEvent || games.value.length === 0) return
+
+  console.log('Populating form from event...')
+
+  startDate.value = newEvent.startDate
+  endDate.value = newEvent.endDate
+  startTime.value = newEvent.startTime
+  endTime.value = newEvent.endTime
+  location.value = newEvent.location
+  participants.value = newEvent.maxNumParticipants
+  description.value = newEvent.description
+  contactEmail.value = newEvent.contactEmail
+
+  const gameTitle = newEvent.eventName?.split(' by ')[0]
+  const gameMatch = games.value.find(g => g.title === gameTitle)
+
+  selectedGame.value = gameMatch || ''
+})
 
 const cancel = () => {
   emit('close')
 }
 
-const create = async () => {
-    try {
-        const testEvent = {
-        startDate: startDate.value,
-        startTime: startTime.value,
-        endDate: endDate.value,
-        endTime: endTime.value,
-        maxNumParticipants: participants.value,
-        location: location.value,
-        description: description.value,
-        contactEmail: contactEmail.value,
-        creatorId: currentUserId.value
-        };
-        let createdEvent = await eventService.createEvent(testEvent);
-        await eventGameService.addGameToEvent(createdEvent.id, selectedGame.value.id);
-        await registerToEvent(createdEvent.id)
-        cancel();
+const submit = async () => {
+  try {
+    const eventPayload = {
+      startDate: startDate.value,
+      startTime: startTime.value,
+      endDate: endDate.value,
+      endTime: endTime.value,
+      maxNumParticipants: participants.value,
+      location: location.value,
+      description: description.value,
+      contactEmail: contactEmail.value,
+      creatorId: currentUserId.value
     }
-    catch (e)
-    {
-        console.log(e);
+
+    if (props.event) {
+      // Updating
+      await eventService.updateEvent(props.event.id, eventPayload)
+      const currentGames = await eventGameService.findEventGamesByEvent(props.event.id)
+
+      // Remove all current games (assuming one-to-one)
+      for (const game of currentGames) {
+        await eventGameService.removeGameFromEvent(props.event.id, game.id)
+      }
+      if (selectedGame.value && selectedGame.value.id) {
+        await eventGameService.addGameToEvent(props.event.id, selectedGame.value.id)
+      }
+    } else {
+      // Creating
+      const createdEvent = await eventService.createEvent(eventPayload)
+      if (selectedGame.value && selectedGame.value.id) {
+        await eventGameService.addGameToEvent(createdEvent.id, selectedGame.value.id)
+      }
+      await registerToEvent(createdEvent.id)
     }
+
+    cancel()
+  } catch (e) {
+    console.log(e)
+    error.value = 'Something went wrong. Please try again.'
+  }
 }
 const registerToEvent = async (eventId) => {
     try{
