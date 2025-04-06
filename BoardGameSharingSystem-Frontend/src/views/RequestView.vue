@@ -76,7 +76,12 @@ const isGameOwner = ref(false)
 const checkGameOwnerStatus = async () => {
   try {
     const result = await gameOwningService.findGameOwner(authStore.user.id)
-    isGameOwner.value = !!result
+    if (!result) {
+      isGameOwner.value = false
+    } else {
+      isGameOwner.value = result.userId !== -1
+      console.log('result.userId:', result.userId);
+    }
   } catch (error) {
     console.error('Error checking game owner status:', error)
     isGameOwner.value = false
