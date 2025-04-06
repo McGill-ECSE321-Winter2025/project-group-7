@@ -45,7 +45,7 @@ public class GameController {
      */
     @PutMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
-    public GameResponseDto updateGame(@PathVariable int gameId, @RequestBody GameRequestDto gameToUpdate) 
+    public GameResponseDto updateGame(@PathVariable("gameId") int gameId, @RequestBody GameRequestDto gameToUpdate) 
     {
         return new GameResponseDto(gameCollectionService.updateGame(gameId, gameToUpdate));
     }

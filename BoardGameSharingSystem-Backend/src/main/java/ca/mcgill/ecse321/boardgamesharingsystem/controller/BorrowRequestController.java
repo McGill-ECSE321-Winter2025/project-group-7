@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -60,7 +61,7 @@ public class BorrowRequestController {
      */
     @GetMapping("/borrowrequests/{gameCopyId}/pending")
     @ResponseStatus(HttpStatus.OK)
-    public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable int gameCopyId) {
+    public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable("gameCopyId") int gameCopyId) {
         List<BorrowRequest> pendingRequests = borrowingService.findPendingBorrowingRequests(gameCopyId);
     
         return pendingRequests.stream()
@@ -75,7 +76,7 @@ public class BorrowRequestController {
      */
     @GetMapping("/borrowrequests/{gameCopyId}/accepted")
     @ResponseStatus(HttpStatus.OK)
-    public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable int gameCopyId) {
+    public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable("gameCopyId") int gameCopyId) {
         List<BorrowRequest> acceptedRequests = borrowingService.findAcceptedBorrowingRequests(gameCopyId);
 
         return acceptedRequests.stream()
@@ -91,7 +92,7 @@ public class BorrowRequestController {
     
     @DeleteMapping("/borrowrequests/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BorrowRequestResponseDto declinePendingBorrowingRequest(@PathVariable int id) 
+    public BorrowRequestResponseDto declinePendingBorrowingRequest(@PathVariable("id") int id) 
     {
         return new BorrowRequestResponseDto(borrowingService.declinePendingBorrowingRequest(id));
     }
@@ -102,7 +103,7 @@ public class BorrowRequestController {
      */
     @PutMapping("/borrowrequests/{id}/accept")
     @ResponseStatus(HttpStatus.OK)
-    public BorrowRequestResponseDto acceptPendingBorrowingRequest(@PathVariable int id)
+    public BorrowRequestResponseDto acceptPendingBorrowingRequest(@PathVariable("id") int id)
     {
         return new BorrowRequestResponseDto(borrowingService.acceptPendingBorrowingRequest(id));
     }
