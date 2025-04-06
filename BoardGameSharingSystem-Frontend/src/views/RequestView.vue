@@ -62,6 +62,7 @@ import { useRouter } from 'vue-router'
 import { requestService } from '@/services/requestService'
 import { useAuthStore } from '@/stores/authStore'
 import { gameOwningService } from '@/services/gameOwningService'
+import { gameCopyService } from '@/services/gameCopyService'
 
 const router = useRouter()
 const authStore = useAuthStore()

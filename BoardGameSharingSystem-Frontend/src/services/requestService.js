@@ -33,6 +33,22 @@ export const requestService = {
       throw error
     }
   },
+
+  // POST /borrowrequests
+  async createRequest(gameCopyId, borrowerId, borrowRequest) {
+    try {
+      const response = await api.post('/borrowrequests', borrowRequest, {
+        params: {
+          gameCopyId: gameCopyId,
+          borrowerId: borrowerId
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error creating borrowing request:', error)
+      throw error
+    }
+    },
 }
 
 
