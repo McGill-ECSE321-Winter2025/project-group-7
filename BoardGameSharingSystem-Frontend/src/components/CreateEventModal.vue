@@ -77,12 +77,14 @@
 </template>
 
 <script setup>
+
 import { ref, computed, defineEmits, onMounted, watchEffect } from 'vue'
 import { eventService } from '@/services/eventService'
 import { registrationService } from '@/services/registrationService'
 import { eventGameService } from '@/services/eventGameService'
 import { gameService } from '@/services/gameService'
 import { useAuthStore } from '@/stores/authStore';
+
 const emit = defineEmits(['close'])
 
 const startDate = ref('')
@@ -192,7 +194,6 @@ const fetchGames = async () =>
     error.value = 'Failed to fetch Games. Please try again later'
     console.error('Error fetching games:', e)
   }
-
 }
 onMounted(() => {
   fetchGames()
