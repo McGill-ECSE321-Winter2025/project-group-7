@@ -1,4 +1,3 @@
-<!-- components/CreateEventModal.vue -->
 <template>
   <div class="modal-overlay">
     <div class="modal-content">
@@ -77,13 +76,12 @@
 </template>
 
 <script setup>
-
 import { ref, computed, defineEmits, onMounted, watchEffect } from 'vue'
 import { eventService } from '@/services/eventService'
 import { registrationService } from '@/services/registrationService'
 import { eventGameService } from '@/services/eventGameService'
 import { gameService } from '@/services/gameService'
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/stores/authStore'
 
 const emit = defineEmits(['close'])
 
@@ -97,11 +95,9 @@ const selectedGame = ref('')
 const description = ref('')
 const contactEmail = ref('')
 const error = ref(null)
-const authStore = useAuthStore();
-const currentUserId = computed(() => authStore.user.id);
+const authStore = useAuthStore()
+const currentUserId = computed(() => authStore.user.id)
 const games = ref([])
-const modalTitle = computed(() => props.event ? 'Edit Event' : 'Create Event')
-const submitButtonText = computed(() => props.event ? 'Update' : 'Create')
 
 const props = defineProps({
   event: {
@@ -110,11 +106,12 @@ const props = defineProps({
   }
 })
 
+const modalTitle = computed(() => props.event ? 'Edit Event' : 'Create Event')
+const submitButtonText = computed(() => props.event ? 'Update' : 'Create')
+
 watchEffect(() => {
   const newEvent = props.event
   if (!newEvent || games.value.length === 0) return
-
-  console.log('Populating form from event...')
 
   startDate.value = newEvent.startDate
   endDate.value = newEvent.endDate
@@ -127,7 +124,6 @@ watchEffect(() => {
 
   const gameTitle = newEvent.eventName?.split(' by ')[0]
   const gameMatch = games.value.find(g => g.title === gameTitle)
-
   selectedGame.value = gameMatch || ''
 })
 
@@ -150,11 +146,8 @@ const submit = async () => {
     }
 
     if (props.event) {
-      // Updating
       await eventService.updateEvent(props.event.id, eventPayload)
       const currentGames = await eventGameService.findEventGamesByEvent(props.event.id)
-
-      // Remove all current games (assuming one-to-one)
       for (const game of currentGames) {
         await eventGameService.removeGameFromEvent(props.event.id, game.id)
       }
@@ -162,42 +155,30 @@ const submit = async () => {
         await eventGameService.addGameToEvent(props.event.id, selectedGame.value.id)
       }
     } else {
-      // Creating
       const createdEvent = await eventService.createEvent(eventPayload)
       if (selectedGame.value && selectedGame.value.id) {
         await eventGameService.addGameToEvent(createdEvent.id, selectedGame.value.id)
       }
-      await registerToEvent(createdEvent.id)
+      await registrationService.registerParticipantToEvent(createdEvent.id, currentUserId.value)
     }
 
     cancel()
   } catch (e) {
-    console.log(e)
+    console.error(e)
     error.value = 'Something went wrong. Please try again.'
   }
 }
-const registerToEvent = async (eventId) => {
+  const fetchGames = async () => {
     try{
-        await registrationService.registerParticipantToEvent(eventId, currentUserId.value)
+      const allGames = await gameService.findAllGames()
+      games.value = allGames
     } catch (e){
-        error.value = 'Failed to register Participant. Please try again later'
-        console.error('Error register participant:', e)
+      error.value = 'Failed to fetch games. Please try again later.'
+      console.error(e)
     }
 }
 
-const fetchGames = async () => 
-{
-  try {
-    const allGames = await gameService.findAllGames();
-    games.value = allGames;
-  } catch (error) {
-    error.value = 'Failed to fetch Games. Please try again later'
-    console.error('Error fetching games:', e)
-  }
-}
-onMounted(() => {
-  fetchGames()
-})
+onMounted(fetchGames)
 </script>
 
 <style scoped>
@@ -208,18 +189,25 @@ onMounted(() => {
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
-  align-items: center;
   z-index: 50;
 }
 
 .modal-content {
-  background-color: rgba(59, 24, 4, 0.9); /* matching event table */
-  color: rgb(230, 204, 189); /* matching cream text */
+  position: relative;
+  top: 15vh; /* 20% from top of the viewport */
+  transform: translateY(0);
+  background-color: rgba(59, 24, 4, 0.9);
+  color: rgb(230, 204, 189);
   padding: 2rem;
   border-radius: 1.5rem;
   width: 420px;
   box-shadow: 0 0 15px rgba(0,0,0,0.5);
   mix-blend-mode: add;
+}
+
+.modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .modal-title {
