@@ -421,6 +421,7 @@ export default {
     Gamepad2,
     Package,
     Settings,
+    Toast,
     User,
     Users,
   },
@@ -463,7 +464,7 @@ export default {
       const updateUserProfile = async () => {
         console.log('authStore.user.username:', authStore.user.username);
         console.log('authStore.user.userEmail:', authStore.user.userEmail);
-        console.log('profile.value.username:',profile.value.username);
+        console.log('profile.value.username:', profile.value.username);
         try {
           await userService.updateUserAccount(currentUserId.value, {
             username: profile.value.username,
@@ -560,6 +561,7 @@ export default {
             };
             } catch (gameErr) {
               console.error(`Failed to fetch game with ID ${copy.gameId}`, gameErr);
+              toast.add({ severity: 'error', summary: 'Could not load your games', detail: 'Please try again later', });
               return null; 
             }
           })
@@ -582,10 +584,9 @@ export default {
     //Handles deleting your game copies (index and gameCopy r good...)
     const removeGameCopy = async (gameCopyId, index) => {
       try {    
-        const response = await gameCopyService.removeGameCopyFromGameOwner(`/gameCopies/${gameCopyId}`) //gets an error here for some reason (since next line never reached..)
-        console.log("Backend delete response:", response); // Log the response to verify
+        const response = await gameCopyService.removeGameCopyFromGameOwner(gameCopyId) //gets an error here for some reason (since next line never reached..)
         if (response) {
-          ownedGames.splice(index, 1); // remove it from the array to update UI
+          ownedGames.value.splice(index, 1); // remove it from the array to update UI
         }
         return response.data
       } catch (error) {
@@ -920,7 +921,8 @@ export default {
       addGameToCollection,
       handleImageError,
       defaultGameImage,
-      removeGameCopy
+      removeGameCopy,
+      show
     }
   }
 }
