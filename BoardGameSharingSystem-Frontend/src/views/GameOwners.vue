@@ -235,9 +235,13 @@ onMounted(() => {
     const createBorrowRequest = async() => {
         try {
 
-            if ((!selectedUserId)) {
+            if ((!selectedUserId.value)) {
                 console.log('No selection made')
                 alert('Please select a value from the menu.');
+
+            }
+            else if (!selectedDate1.value || !selectedDate2.valuel) {
+                alert('Please select dates to borrow the game');
 
             }
            else {
