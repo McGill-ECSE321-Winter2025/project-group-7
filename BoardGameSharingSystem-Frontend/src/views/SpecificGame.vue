@@ -29,7 +29,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(entry, index) in gameReviews" :key="index">
-                        <td>{{ entry.user }}</td>
+                        <td>{{ entry.username }}</td>
                         <td>{{ entry.rating }}</td>
                         <td>{{ entry.comment }}</td>
                     </tr>
@@ -81,15 +81,19 @@ import axios from 'axios';
 import { gameService } from '@/services/gameService';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameStore } from '@/stores/gameStore';
+import { userService } from '@/services/userService';
 
+const gameId = route.params.gameId;
+console.log(gameId);
 const router = useRouter();
 const authStore = useAuthStore();
 const gameStore = useGameStore();
-const userId = authStore.user.id;
-const gameId = gameStore.getGameId();
+const userId = computed(() => authStore.user.id);
+const username = computed(() => authStore.user.name);
 const showPopup = ref(false);
 const error = ref(null);
 let gameReviews = ref([]);
+let users = ref([]);
 const gameMaxPlayer = ref(0);
 const gameMinPlayer = ref(0);
 const gameDesc = ref('');
@@ -97,24 +101,28 @@ const gameURL = ref('');
 const gameTitle = ref('');
 
 
+
 const goToGameOwners = () => {
   router.push({ name: 'GameOwner', params: { gameId } });
 };
 
-    const findAllReviews = async () => {
-        try{
-            let fetchedReviews = await reviewService.findAllReviewsOfGame(gameId)
-            gameReviews.value = fetchedReviews;
-        }
-        catch(err) {
-            error.value = 'Failed to load reviews. Please try again later.'
-            console.error('Error loading reviews:', err)
-
-        }
-
+const findAllReviews = async () => {
+  try {
+    let fetchedReviews = await reviewService.findAllReviewsOfGame(gameId);
+    gameReviews.value = [];
+    for (let review of fetchedReviews) {
+      const user = await userService.findUserAccount(review.userId); 
+      review.username = user ? user.name : 'Unknown User';
+      gameReviews.value.push(review);
     }
 
-    const fetchGameDetails = async () => {
+  } catch (err) {
+    error.value = 'Failed to load reviews. Please try again later.';
+    console.error('Error loading reviews:', err);
+  }
+}
+
+const fetchGameDetails = async () => {
         try {
             let fetchedGameDetails = await gameService.findGamebyId(gameId);
             gameMaxPlayer.value = fetchedGameDetails.maxNumPlayers;
@@ -133,8 +141,13 @@ const goToGameOwners = () => {
     }
 
     onMounted(() => {
+        console.log("mounted")
+        if (!authStore.user.isAuthenticated) {
+            router.push('/')
+        }
+        else {
         findAllReviews();
-        fetchGameDetails();
+        fetchGameDetails();}
     })
 
     const openCreateReview = () => {
@@ -146,33 +159,29 @@ const goToGameOwners = () => {
     }
 
     const submitReview = async () => {
-        try { 
-        const newDescription = document.getElementById("d").value;
-        var checked_rating = document.querySelector('input[name = "rating"]:checked');
-
-        if(checked_rating == null){
-            alert('You must select a rating for your review.');
-        }
-        
-        else if (newDescription == null) {
-            alert('You must include a comment.');
-        }
-
-        else {
-            await reviewService.createReview({
-                rating: (checked_rating.value * 20),
-                gameId: gameId,
-                comment:newDescription.value
-            }, userId, gameId)
-
-        }}
-        catch {
-            error.value = 'Failed to create the review. Please try again later.'
-            console.error('Error creating review:', err)
-
-        }
+  try {
+    var checked_rating = document.querySelector('input[name="rating"]:checked');
+    var newDesc = document.getElementById("descN").value;
+    console.log(newDesc);
+    console.log(checked_rating.value);
+    if (checked_rating == null) {
+      alert('You must select a rating for your review.');
+    } else if (newDesc.trim().length === 0) {
+      alert('You must include a comment.');
+    } 
+    else {
+      await reviewService.createReview({
+        rating: checked_rating.value * 20,
+        gameId: gameId,
+        comment: newDesc.trim(),
+        userId:userId
+      }, userId, gameId);
     }
-
+  } catch (err) {
+    error.value = 'Failed to create the review. Please try again later.';
+    console.error('Error creating review:', err);
+  }
+};
 
 
 
@@ -207,7 +216,7 @@ const goToGameOwners = () => {
 #createReview {
 
     margin-top: -100em;
-    margin-left: 85em;
+    margin-left: 70em;
 }
 
 #r {
@@ -305,7 +314,7 @@ body {
 
 #borrowButton {
     margin-top: -1em;
-    margin-left: 85em;
+    margin-left: 70em;
     
 
 }

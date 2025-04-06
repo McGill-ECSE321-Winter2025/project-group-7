@@ -1,11 +1,13 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.AuthRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
@@ -15,10 +17,6 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
-
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This service class implements functionalities related to the UserAccount,
@@ -104,11 +102,20 @@ public class AccountService {
     @Transactional
     public UserAccount updateUserAccount (int userAccountId, AuthRequest request){
         UserAccount userToUpdate = findUserAccountById(userAccountId);
-        validateUserAccountParameters(
-            request.getUsername(),
-            request.getEmail(),
-            request.getPassword()
-        );
+        //Ignore missing password in update, and keep old password if updated password is empty
+        try{
+            validateUserAccountParameters(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword()
+            );
+        } catch(BoardGameSharingSystemException e)
+        {
+            if (!e.getMessage().equals("Password cannot be empty"))
+            {
+                throw e;
+            }
+        }
         
         UserAccount existingUser = userRepo.findUserAccountByName(request.getUsername());
         if (existingUser != null && existingUser.getId() != userAccountId) {
@@ -117,7 +124,8 @@ public class AccountService {
         }
         userToUpdate.setName(request.getUsername());
         userToUpdate.setEmail(request.getEmail());
-        userToUpdate.setPassword(request.getPassword());
+        if(request.getPassword().isEmpty() || request.getPassword() == null || StringUtils.trimToNull(request.getPassword()) == null) userToUpdate.setPassword(userToUpdate.getPassword());
+        else userToUpdate.setPassword(request.getPassword());
         return userRepo.save(userToUpdate);
     }
 
@@ -139,6 +147,10 @@ public class AccountService {
         if (user == null) {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "No userAccount found with username %s", request.getUsername()));
+        }
+
+        if (!user.getEmail().equals(request.getEmail())) {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("No userAccount found with email %s", request.getEmail()));
         }
 
         if (!user.getPassword().equals(request.getPassword())) {

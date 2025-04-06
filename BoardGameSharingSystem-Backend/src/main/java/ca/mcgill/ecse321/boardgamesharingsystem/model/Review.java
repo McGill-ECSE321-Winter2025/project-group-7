@@ -3,13 +3,14 @@ package ca.mcgill.ecse321.boardgamesharingsystem.model;
 import java.sql.Date;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Review {
     @Id 
-    @GeneratedValue 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Date reviewDate;
     private int rating;
