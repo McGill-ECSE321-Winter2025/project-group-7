@@ -58,6 +58,10 @@ public class BorrowingService
 
         if (!endDate.isAfter(startDate)) throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "End date must be after start date.");
 
+        LocalDate today = LocalDate.now();
+        if (startDate.isBefore(today) || endDate.isBefore(today))
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Dates cannot be in the past.");
+
         BorrowRequest newRequest = new BorrowRequest(startDate, endDate, foundBorrower, foundGameCopy);
         borrowingRequestRepository.save(newRequest);
         return newRequest;
