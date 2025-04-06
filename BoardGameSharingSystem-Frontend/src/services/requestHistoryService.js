@@ -1,16 +1,13 @@
 import api from './api'
 
 export const requestHistoryService = {
-  // GET /borrowrequests/all
-  async findRequestHistory() {
+  // GET /borrowrequests/{gameCopyId}/accepted
+  async findAcceptedBorrowingRequests(gameCopyId) {
     try {
-      const response = await api.get('/borrowrequests/all')
-      const history = response.data.filter(request => 
-        request.requestStatus === "Accepted" || request.requestStatus === "Declined"
-      )
-      return history
+      const response = await api.get(`/borrowrequests/${gameCopyId}/accepted`)
+      return response.data
     } catch (error) {
-      console.error("Error fetching request history:", error)
+      console.error(`Error fetching accepted borrowing requests for gameCopyId ${gameCopyId}:`, error)
       throw error
     }
   }
