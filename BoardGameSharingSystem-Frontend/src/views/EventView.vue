@@ -56,8 +56,6 @@ import { useAuthStore } from '@/stores/authStore';
 import CreateEventModal from '@/components/CreateEventModal.vue'
 
 const showModal = ref(false)
-const createEvent = () => { showModal.value = true }
-const closeModal = () => { showModal.value = false }
 
 const router = useRouter();
 const events = ref([])
