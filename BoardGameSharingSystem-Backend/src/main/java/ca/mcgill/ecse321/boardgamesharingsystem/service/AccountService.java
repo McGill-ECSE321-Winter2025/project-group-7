@@ -141,6 +141,10 @@ public class AccountService {
                 "No userAccount found with username %s", request.getUsername()));
         }
 
+        if (!user.getEmail().equals(request.getEmail())) {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("No userAccount found with email %s", request.getEmail()));
+        }
+
         if (!user.getPassword().equals(request.getPassword())) {
             throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("Incorrect Password"));
         }

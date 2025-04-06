@@ -35,8 +35,9 @@ export const useAuthStore = defineStore('auth', () => {
             user.value.isAuthenticated = true;
 
         } catch (error) {
-            console.error('Login failed:', error.response?.data?.message || error.message);
-            throw new Error('Invalid credentials');
+            console.error('Login failed:', error.response?.data?.errors || error.message);
+            const errorMsg = error.response?.data?.errors?.[0] || error.message || 'Invalid credentials';
+            throw new Error(errorMsg);
         }
     }
 
