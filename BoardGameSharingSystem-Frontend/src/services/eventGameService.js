@@ -21,5 +21,16 @@ export const eventGameService = {
       console.error('Error adding game to event:', error)
       throw error
     }
+  },
+
+  // DELETE /eventGames/{eventId}/{gameId}
+  async removeGameFromEvent(eventId, gameId) {
+    try {
+      const response = await api.delete(`/eventGames/${eventId}/${gameId}`)
+      return response.data
+    } catch (error) {
+      console.error('Error adding game to event:', error)
+      throw error
+    }
   }
 }
