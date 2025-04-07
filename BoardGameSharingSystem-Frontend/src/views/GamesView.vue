@@ -4,10 +4,14 @@ import Card from 'primevue/card';
 import { Button, Toast, useToast } from 'primevue';
 import { onMounted, ref } from 'vue';
 import { gameService } from '@/services/gameService';
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'vue-router';
 
 let games = ref([]);
 const error = ref(null);
 const toast = useToast();
+const authStore = useAuthStore();
+const router = useRouter();
 
 const findAllGames = async () => {
   try{
@@ -21,7 +25,11 @@ const findAllGames = async () => {
 }
 
 onMounted( () =>{
-  findAllGames()
+  if (!authStore.user.isAuthenticated) {
+        router.push('/')
+    } else {
+      findAllGames()
+    }
 })
 
 const show = () => {
