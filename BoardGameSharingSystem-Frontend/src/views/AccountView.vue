@@ -157,7 +157,7 @@
                         </p>
                       </div>
                     </div>
-                    <button class="btn btn--danger"  @click="removeGameCopy(gameCopy.id, index)">
+                    <button class="btn btn--danger"  @click="removeGameCopy(gameCopy.game.id, index)">
                       Delete
                     </button>
                   </div>
@@ -597,9 +597,14 @@ export default {
     }})
 
     //Handles deleting your game copies (index and gameCopy r good...)
-    const removeGameCopy = async (gameCopyId, index) => {
+    const removeGameCopy = async (gameId, index) => {
       try {    
-        const response = await gameCopyService.removeGameCopyFromGameOwner(gameCopyId) //gets an error here for some reason (since next line never reached..)
+        const allGameCopies = await gameCopyService.findGameCopiesFromGame(gameId);
+
+        // Find the one belonging to the current user
+        const gameCopyToDelete = allGameCopies.find(copy => copy.ownerId === currentUserId.value);
+        
+        const response = await gameCopyService.removeGameCopyFromGameOwner(gameCopyToDelete.id) //gets an error here for some reason (since next line never reached..)
         if (response) {
           ownedGames.value.splice(index, 1); // remove it from the array to update UI
         }

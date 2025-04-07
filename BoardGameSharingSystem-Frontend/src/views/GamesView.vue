@@ -4,15 +4,31 @@ import Card from 'primevue/card';
 import { Button, Toast, useToast } from 'primevue';
 import { onMounted, ref } from 'vue';
 import { gameService } from '@/services/gameService';
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'vue-router';
+import { gameCopyService } from '@/services/gameCopyService';
 
 let games = ref([]);
 const error = ref(null);
 const toast = useToast();
+const authStore = useAuthStore();
+const router = useRouter();
 
 const findAllGames = async () => {
   try{
     let fetchedGames = await gameService.findAllGames()
-    games.value = fetchedGames;
+    const gamesWithCopies = [];
+    for (const game of fetchedGames) {
+      try {
+        const copies = await gameCopyService.findGameCopiesFromGame(game.id);
+        if (copies.length > 0) {
+          gamesWithCopies.push(game);
+        }
+      } catch (copyErr) {
+        console.warn(`Error checking copies for game ID ${game.id}`, copyErr);
+      }
+    }
+    games.value = gamesWithCopies;
   }catch (err){
     error.value = 'Failed to load available games. PLease try later'
     console.error('Error loading games', err)
@@ -21,7 +37,11 @@ const findAllGames = async () => {
 }
 
 onMounted( () =>{
-  findAllGames()
+  if (!authStore.user.isAuthenticated) {
+        router.push('/')
+    } else {
+      findAllGames()
+    }
 })
 
 const show = () => {
@@ -155,7 +175,7 @@ const show = () => {
 }
 
 .details-button{
-  margin-top: 10vh;
+  margin-top: 9vh;
   background-color:transparent ;
   border-color: white;
   cursor: pointer;

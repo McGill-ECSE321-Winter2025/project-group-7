@@ -4,12 +4,7 @@ export const reviewService = {
     //
     async createReview(reviewData, userId, gameId) {
         try {
-            const response = await api.post('/reviews', reviewData, {
-                params: {
-                    reviewerId: userId,
-                    gameId: gameId
-                }
-            });
+            const response = await api.post(`/reviews/${userId}/${gameId}`, reviewData,);
             return response.data;
         } catch (error) {
             console.error('Error creating review:', error);
@@ -19,9 +14,7 @@ export const reviewService = {
 
     async findAllReviewsOfGame(gameId) {
         try {
-            const response = await api.get('/reviews', {
-                params: { gameId: gameId }
-            });
+            const response = await api.get(`/reviews/${gameId}`)
             return response.data;
         }
         catch(error) {

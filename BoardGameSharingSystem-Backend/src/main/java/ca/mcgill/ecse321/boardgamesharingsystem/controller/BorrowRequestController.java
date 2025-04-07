@@ -35,7 +35,7 @@ public class BorrowRequestController {
      */
     @PostMapping("/borrowrequests")
     @ResponseStatus(HttpStatus.CREATED)
-    public BorrowRequestResponseDto createBorrowingRequest(@RequestParam int gameCopyId, @RequestParam int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
+    public BorrowRequestResponseDto createBorrowingRequest(@RequestParam("gameCopyId") int gameCopyId, @RequestParam("borrowerId") int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
     {
         return new BorrowRequestResponseDto(borrowingService.createBorrowingRequest(gameCopyId, borrowerId, borrowRequest.getStartDate(), borrowRequest.getEndDate()));
     }
