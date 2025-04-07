@@ -132,7 +132,7 @@ Snigdha | <ul><li>Task Coordinator</li><li>Full Stack Developer| <ul><li>Impleme
 Table 3 : Roles of each team member Deliverable 3
 Name | Role | Tasks | Number of Hours 
 --- | --- | --- | ---
-Artimice |  <ul><li>Full Stack Developer | <ul><li>Game Owner page implementation</li> <li>Specific Game page implementation</li><li>Build System documented in Wiki</li></ul> | 
+Artimice |  <ul><li>Full Stack Developer | <ul><li>Game Owner page implementation</li> <li>Specific Game page implementation</li><li>Build System documented in Wiki</li></ul> | 24
 Brian |  <ul><li>Technical Lead</li><li>GitHub Repository Manager</li><li>Full Stack Developer |<ul> <li>Games Page Implementation</li> <li>Initiate Vue Project</li><li>Configured Build System</li> <li>GitHub Issues</i></ul> | 20
 Doddy | <ul><li>GitHub Backlog Contributor</li><li>Full Stack Developer | <ul></ul> | 
 Jyothsna | <ul><li> Head UI designer</li><li>Assistant Task Coordinator</li><li>Full Stack Developer</li><li>  | <ul> <li>Login Page Implementation</li> <li>UI Design and Documentation</li>  </ul> | 64
