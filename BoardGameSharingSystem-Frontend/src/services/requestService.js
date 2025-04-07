@@ -49,6 +49,16 @@ export const requestService = {
       throw error
     }
     },
+
+    async findRequestsByBorrower(borrowerId) {
+      try {
+        const response = await api.get(`/borrowrequests/borrower/${borrowerId}`)
+        return response.data
+      } catch (error) {
+        console.error(`Error fetching requests for borrower ${borrowerId}:`, error)
+        throw error
+      }
+    },
 }
 
 

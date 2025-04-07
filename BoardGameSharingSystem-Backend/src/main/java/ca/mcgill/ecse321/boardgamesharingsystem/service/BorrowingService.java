@@ -37,6 +37,8 @@ public class BorrowingService
     private UserAccountRepository userAccountRepository;
     @Autowired
     private GameCopyRepository gameCopyRepository;
+    
+
 
     /**
      * Creates a borrowing request.
@@ -72,6 +74,15 @@ public class BorrowingService
     {
         List<BorrowRequest> requests = borrowingRequestRepository.findAll();
         return requests;
+    }
+
+    /**
+     * Finds all borrowing requests made by a given borrower.
+     * @param borrowerId the ID of the borrower
+     * @return list of BorrowRequest entities
+     */
+    public List<BorrowRequest> findRequestsByBorrower(int borrowerId) {
+        return borrowingRequestRepository.findByBorrowerId(borrowerId);
     }
 
     /**

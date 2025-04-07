@@ -26,6 +26,8 @@ public class BorrowRequestController {
     @Autowired
     private BorrowingService borrowingService;
 
+
+
     /**
      * Creates a new borrowing request.
      * @param gameCopyId the id of the game copy 
@@ -53,6 +55,22 @@ public class BorrowRequestController {
         requests.forEach(borrowRequest -> responses.add(new BorrowRequestResponseDto(borrowRequest)));
         return responses;
     }
+
+    /**
+     * Finds all borrowing requests made by a given borrower.
+     * @param borrowerId the ID of the borrower
+     * @return list of BorrowRequestResponseDto
+     */
+    @GetMapping("/borrowrequests/borrower/{borrowerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BorrowRequestResponseDto> findRequestsByBorrower(
+            @PathVariable("borrowerId") int borrowerId) {
+        List<BorrowRequest> requests = borrowingService.findRequestsByBorrower(borrowerId);
+        return requests.stream()
+                       .map(BorrowRequestResponseDto::new)
+                       .toList();
+    }
+    
     
     /**
      * Finds all pending borrowing requests for a game copy.

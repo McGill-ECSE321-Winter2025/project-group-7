@@ -197,6 +197,38 @@
               </div>
             </div>
           </div>
+
+          <!-- Borrow Requests Section -->
+          <div v-if="activeSection === 'borrow-requests'" class="card">
+            <div class="card__texture"></div>
+            <div class="card__header">
+              <h2 class="card__title">My Borrow Requests</h2>
+              <p class="card__subtitle">Requests you have made</p>
+            </div>
+            <div class="card__content">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Owner</th>
+                    <th>Game</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="req in myRequests" :key="req.id">
+                    <td>{{ req.ownerName }}</td>
+                    <td>{{ req.gameTitle }}</td>
+                    <td>{{ req.startDate }}</td>
+                    <td>{{ req.endDate }}</td>
+                    <td>{{ req.requestStatus }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
           
           <!-- Delete Account Section -->
           <div v-if="activeSection === 'delete'" class="card">
@@ -397,6 +429,7 @@ import { gameCopyService } from '@/services/gameCopyService'
 import { gameOwningService } from '@/services/gameOwningService'
 import { gameService } from '@/services/gameService';
 import { eventGameService } from '@/services/eventGameService';
+import { requestService } from '@/services/requestService';
 import {Toast, useToast } from 'primevue'; 
 
 import { 
@@ -440,6 +473,9 @@ export default {
     const selectedExistingGame = ref('');
     const checked = ref(false);
     checked.value = isGameOwner.value;
+    const myRequests = ref([])
+
+    
     
     const error = ref(null);
     const toast = useToast();
@@ -834,7 +870,19 @@ export default {
         console.error('Error loading events:', err)
       }
     }
-    
+
+    // ----------------------------- REQUESTS TAB -----------------------------------------
+    const fetchMyRequests = async () => {
+      try {
+        myRequests.value = await requestService.findRequestsByBorrower(authStore.user.id)
+      } catch (err) {
+        console.error('Error loading my borrow requests:', err)
+      }
+    }
+
+    onMounted( () =>{
+      fetchMyRequests()
+    })
 
     // ----------------------------- DELETE ACCOUNT TAB -----------------------------------------
     // Handles delete account:
@@ -871,6 +919,7 @@ export default {
           label: 'Events',
           icon: Calendar
         },
+        { id: 'borrow-requests', label: 'Borrow Requests', icon: Users },
         {
           id: 'delete',
           label: 'Delete Account',
@@ -1723,5 +1772,20 @@ margin-bottom: 1.5rem;
 
 .link-button:hover {
   color: #3e2723;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.history-table th,
+.history-table td {
+  border: 1px solid rgba(134,73,37,0.9);
+  padding: 0.5rem;
+  text-align: center;
+  color: rgb(230,204,189);
+}
+.history-table th {
+  background-color: rgba(97,42,7,0.9);
 }
 </style>

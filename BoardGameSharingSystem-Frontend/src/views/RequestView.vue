@@ -84,14 +84,19 @@ const fetchPendingRequestsForOwnedGames = async () => {
     const gameCopies = await gameCopyService.findGameCopiesForGameOwner(currentUserId.value)
     let allRequests = []
     for (const copy of gameCopies) {
-      const pendingRequests = await requestService.findPendingRequests(copy.id)
-      allRequests = allRequests.concat(pendingRequests)
+      try {
+        const pendingRequests = await requestService.findPendingRequests(copy.id)
+        allRequests = allRequests.concat(pendingRequests)
+      } catch (err) {
+        console.warn(`No pending requests for gameCopy ${copy.id}:`, err)
+      }
     }
     requests.value = allRequests
   } catch (error) {
-    console.error('Error fetching pending requests for owned games:', error)
+    console.error('Error fetching game copies or pending requests:', error)
   }
 }
+
 
 const filteredRequests = computed(() => {
   const term = searchTerm.value.toLowerCase()
