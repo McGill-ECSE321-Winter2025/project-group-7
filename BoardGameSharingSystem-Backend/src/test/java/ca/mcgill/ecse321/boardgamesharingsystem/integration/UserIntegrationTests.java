@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class UserIntegrationTests {
     private static final String VALID_PASSWORD = "bunnies123"; 
     private int userId;
 
-    private UserAccount user;
+    private UserAccount userToUpdate;
     
     @BeforeEach
     public void setup() {
@@ -101,8 +102,8 @@ public class UserIntegrationTests {
     public void testCreateDuplicateUsername() 
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user); 
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate); 
 
         AuthRequest userRequest = new AuthRequest();
         userRequest.setUsername(VALID_NAME);
@@ -121,7 +122,7 @@ public class UserIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getErrors());
-        assertTrue((response.getBody().getErrors().contains(String.format("Username %s is already taken", user.getName()))));
+        assertTrue((response.getBody().getErrors().contains(String.format("Username %s is already taken", userToUpdate.getName()))));
     }
 
 
@@ -130,9 +131,9 @@ public class UserIntegrationTests {
     public void testGetUserAccountByValidId()
     {
         //Arrange 
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user); 
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate); 
+        userId = userToUpdate.getId();
         String url = String.format("/users/%d", this.userId);
 
         //Act
@@ -177,9 +178,9 @@ public class UserIntegrationTests {
     public void testDeleteValidUserAccount() 
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
         String url = String.format("/users/%d", this.userId);
 
         //Act
@@ -224,12 +225,111 @@ public class UserIntegrationTests {
 
     @Test
     @Order(6)
+    public void testUpdateValidUserAccount()
+    {
+        //Arrange
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
+        String url = String.format("/users/%d", this.userId);
+        AuthRequest userRequest = new AuthRequest();
+        userRequest.setUsername("Mitski");
+        userRequest.setEmail("mitski@mail.com");
+        userRequest.setPassword("TsukiNoHime");
+
+        //Act
+        ResponseEntity<UserAccountResponseDto> response = client.exchange(
+            url, 
+            HttpMethod.PUT,
+            new HttpEntity<>(userRequest),
+            UserAccountResponseDto.class
+            );
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        UserAccountResponseDto updatedUserDto = response.getBody();
+        assertEquals(this.userId, updatedUserDto.getId());
+        assertEquals("Mitski", updatedUserDto.getName());
+        assertEquals("mitski@mail.com", updatedUserDto.getEmail());
+    }
+
+    @Test
+    @Order(7)
+    public void testUpdateWithDuplicateUsername() 
+    {
+        //Arrange
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        UserAccount user1 = new UserAccount("Mitski", "another@mail.com", "OtherPassword");
+        userAccountRepository.save(user1);  
+
+        userId = userToUpdate.getId();
+        String url = String.format("/users/%d", userToUpdate.getId());
+
+        AuthRequest userRequest = new AuthRequest();
+        userRequest.setUsername("Mitski");
+        userRequest.setEmail("mitski@mail.com");
+        userRequest.setPassword("TsukiNoHime");
+
+        //Act
+        ResponseEntity<ErrorDto> response = client.exchange(
+            url,
+            HttpMethod.PUT,
+            new HttpEntity<>(userRequest),
+            ErrorDto.class
+        );
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getErrors());
+        System.out.println("Errors returned: " + response.getBody().getErrors());
+        assertTrue((response.getBody().getErrors().contains(String.format("Username %s is already taken", userRequest.getUsername()))));
+    }
+
+    @Test
+    @Order(7)
+    public void testUpdateWithSameUsername() 
+    {
+        //Arrange
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
+        String url = String.format("/users/%d", this.userId);
+        AuthRequest userRequest = new AuthRequest();
+        userRequest.setUsername(VALID_NAME);
+        userRequest.setEmail("mitski@mail.com");
+        userRequest.setPassword("TsukiNoHime");
+
+        //Act
+        ResponseEntity<UserAccountResponseDto> response = client.exchange(
+            url, 
+            HttpMethod.PUT,
+            new HttpEntity<>(userRequest),
+            UserAccountResponseDto.class
+            );
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        UserAccountResponseDto updatedUserDto = response.getBody();
+        assertEquals(this.userId, updatedUserDto.getId());
+        assertEquals(VALID_NAME, updatedUserDto.getName());
+        assertEquals("mitski@mail.com", updatedUserDto.getEmail());
+    }
+
+    @Test
+    @Order(8)
     public void testValidLogin()
     {
         //Arrange 
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
         AuthRequest loginRequest = new AuthRequest();
         loginRequest.setUsername(VALID_NAME);
@@ -248,19 +348,19 @@ public class UserIntegrationTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         UserAccountResponseDto loggedInUserDto = response.getBody();
-        assertEquals(user.getId(), loggedInUserDto.getId());
+        assertEquals(userToUpdate.getId(), loggedInUserDto.getId());
         assertEquals(VALID_NAME, loggedInUserDto.getName());
         assertEquals(VALID_EMAIL, loggedInUserDto.getEmail());
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     public void testLoginWithIncorrectPassword()
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
         AuthRequest loginRequest = new AuthRequest();
         loginRequest.setUsername(VALID_NAME);
@@ -284,15 +384,15 @@ public class UserIntegrationTests {
     }
 
     @Test
-    @Order(8)
+    @Order(10)
     public void testValidToggleToPlayer() 
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
-        GameOwner gameOwner = new GameOwner(user);
+        GameOwner gameOwner = new GameOwner(userToUpdate);
         gameOwnerRepository.save(gameOwner);
 
         String url = String.format("/users/%d/toPlayer", this.userId);
@@ -318,15 +418,15 @@ public class UserIntegrationTests {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     public void testToggleAlreadyPlayerToPlayer()
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
-        GameOwner gameOwner = new GameOwner(user);
+        GameOwner gameOwner = new GameOwner(userToUpdate);
 
         gameOwner.setUser(null);
         gameOwnerRepository.save(gameOwner);
@@ -349,15 +449,15 @@ public class UserIntegrationTests {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     public void testValidToggleToGameOwner() 
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
-        GameOwner gameOwner = new GameOwner(user);
+        GameOwner gameOwner = new GameOwner(userToUpdate);
 
         gameOwner.setUser(null);
         gameOwnerRepository.save(gameOwner);
@@ -389,15 +489,15 @@ public class UserIntegrationTests {
     }
 
     @Test
-    @Order(12)
+    @Order(13)
     public void testToggleToGameOwnerWithNoAssociatedGames()
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
-        GameOwner gameOwner = new GameOwner(user);
+        GameOwner gameOwner = new GameOwner(userToUpdate);
 
         gameOwner.setUser(null);
         gameOwnerRepository.save(gameOwner);
@@ -421,17 +521,17 @@ public class UserIntegrationTests {
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     public void testToggleAlreadyGameOwnerToGameOwner() 
     {
         //Arrange
-        user = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
-        userAccountRepository.save(user);
-        userId = user.getId();
+        userToUpdate = new UserAccount(VALID_NAME, VALID_EMAIL, VALID_PASSWORD);
+        userAccountRepository.save(userToUpdate);
+        userId = userToUpdate.getId();
 
-        GameOwner gameOwner = new GameOwner(user);
+        GameOwner gameOwner = new GameOwner(userToUpdate);
 
-        gameOwner.setUser(user);
+        gameOwner.setUser(userToUpdate);
         gameOwnerRepository.save(gameOwner);
 
         Game chess = new Game("chess",2,2,"Example/url","its chess");

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.EventGameResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.EventGame;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.EventService;
 
+@CrossOrigin(origins="http://localhost:8090")
 @RestController
 public class EventGameController {
     @Autowired
@@ -31,7 +33,7 @@ public class EventGameController {
      */
     @PutMapping("/eventGames/{eventId}/{gameId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventGameResponseDto addGameToEvent(@PathVariable int eventId, @PathVariable int gameId)
+    public EventGameResponseDto addGameToEvent(@PathVariable("eventId") int eventId, @PathVariable("gameId") int gameId)
     {
         return new EventGameResponseDto(eventService.addGameToEvent(new EventGameDto(eventId, gameId)));
     }
@@ -43,7 +45,7 @@ public class EventGameController {
      * @return the EventGame deleted, including a timestamp of the response
      */
     @DeleteMapping("/eventGames/{eventId}/{gameId}")
-    public EventGameResponseDto removeGameFromEvent(@PathVariable int eventId, @PathVariable int gameId)
+    public EventGameResponseDto removeGameFromEvent(@PathVariable("eventId") int eventId, @PathVariable("gameId") int gameId)
     {
         return new EventGameResponseDto(eventService.removeGameFromEvent(new EventGameDto(eventId, gameId)));
     }

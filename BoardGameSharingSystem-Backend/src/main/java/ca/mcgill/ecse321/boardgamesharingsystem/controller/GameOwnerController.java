@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +13,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameOwnerResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.GameOwningService;
 
+@CrossOrigin(origins="http://localhost:8090")
 @RestController
 public class GameOwnerController {
     @Autowired
@@ -24,7 +26,7 @@ public class GameOwnerController {
      */
     @PutMapping("/gameowners/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public GameOwnerResponseDto createGameOwner(@PathVariable int id ){
+    public GameOwnerResponseDto createGameOwner(@PathVariable("id") int id ){
         GameOwner gameOwner = gameOwningService.createGameOwner(id);
         return new GameOwnerResponseDto(gameOwner);
     }
@@ -36,8 +38,9 @@ public class GameOwnerController {
      */
     @GetMapping("/gameowners/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public GameOwnerResponseDto findGameOwner(@PathVariable int id){
+    public GameOwnerResponseDto findGameOwner(@PathVariable("id") int id){
         GameOwner gameOwner = gameOwningService.findGameOwner(id);
         return new GameOwnerResponseDto(gameOwner);
     }
+    
 }

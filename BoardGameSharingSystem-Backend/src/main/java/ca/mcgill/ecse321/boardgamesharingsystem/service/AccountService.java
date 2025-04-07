@@ -1,24 +1,23 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.AuthRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
-
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This service class implements functionalities related to the UserAccount,
@@ -34,6 +33,8 @@ public class AccountService {
     private GameOwnerRepository gameOwnerRepo;
     @Autowired
     private GameCopyRepository gameCopyRepo;
+    @Autowired
+    private BorrowRequestRepository borrowRequestRepository;
     
     /** 
      * Searches the database for a UserAccount given an ID and returns it if found
@@ -89,9 +90,49 @@ public class AccountService {
             .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "No userAccount found with id %d", userAccountId)));
-
+        gameCopyRepo.deleteByOwnerId(userAccountId);
+        GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(userAccountId);
+        borrowRequestRepository.deleteByBorrowerId(userAccountId);
+        if(gameOwner != null) gameOwnerRepo.delete(gameOwner);
         userRepo.delete(user);
         return user;
+    }
+
+    
+    /** 
+     * Searches the database for a UserAccount, updates it with given attributes, and returns it
+     * @param userAccountId the ID of the UserAccount to update
+     * @param request a request with the attributes to update to
+     * @return the updated UserAccount
+     */
+    @Transactional
+    public UserAccount updateUserAccount (int userAccountId, AuthRequest request){
+        UserAccount userToUpdate = findUserAccountById(userAccountId);
+        //Ignore missing password in update, and keep old password if updated password is empty
+        try{
+            validateUserAccountParameters(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword()
+            );
+        } catch(BoardGameSharingSystemException e)
+        {
+            if (!e.getMessage().equals("Password cannot be empty"))
+            {
+                throw e;
+            }
+        }
+        
+        UserAccount existingUser = userRepo.findUserAccountByName(request.getUsername());
+        if (existingUser != null && existingUser.getId() != userAccountId) {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format(
+                "Username %s is already taken", request.getUsername()));
+        }
+        userToUpdate.setName(request.getUsername());
+        userToUpdate.setEmail(request.getEmail());
+        if(request.getPassword().isEmpty() || request.getPassword() == null || StringUtils.trimToNull(request.getPassword()) == null) userToUpdate.setPassword(userToUpdate.getPassword());
+        else userToUpdate.setPassword(request.getPassword());
+        return userRepo.save(userToUpdate);
     }
 
     
@@ -112,6 +153,10 @@ public class AccountService {
         if (user == null) {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "No userAccount found with username %s", request.getUsername()));
+        }
+
+        if (!user.getEmail().equals(request.getEmail())) {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("No userAccount found with email %s", request.getEmail()));
         }
 
         if (!user.getPassword().equals(request.getPassword())) {
@@ -168,6 +213,36 @@ public class AccountService {
             throw new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "gameOwner has no associated games"));
         }
+
+        if (gameOwner.getUser() == null) {
+            gameOwner.setUser(user);
+            gameOwner = gameOwnerRepo.save(gameOwner);
+            return gameOwner;
+        }
+        else {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("GameOwner already associated with userAccount with id %d",
+            user.getId()));
+        }
+        
+    }
+
+    /** 
+     * Forcefully Toggles a User from Player to GameOwner by skipping hasGames check
+     * @param userAccountId the ID of the UserAccount to toggle
+     * @return the GameOwner if toggled
+     */
+    public GameOwner forceToggleUserToGameOwner (int userAccountId) {
+        UserAccount user = userRepo
+            .findById(userAccountId)
+            .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
+                "No userAccount found with id %d", userAccountId)));
+        
+        GameOwner gameOwner = gameOwnerRepo
+            .findById(userAccountId)
+            .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
+                "No gameOwner found with id %d", userAccountId)));
+        
+        List<GameCopy> games = gameCopyRepo.findByOwnerId(userAccountId);
 
         if (gameOwner.getUser() == null) {
             gameOwner.setUser(user);

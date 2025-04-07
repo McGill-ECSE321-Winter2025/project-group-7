@@ -37,6 +37,8 @@ public class BorrowingService
     private UserAccountRepository userAccountRepository;
     @Autowired
     private GameCopyRepository gameCopyRepository;
+    
+
 
     /**
      * Creates a borrowing request.
@@ -58,9 +60,29 @@ public class BorrowingService
 
         if (!endDate.isAfter(startDate)) throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "End date must be after start date.");
 
+        LocalDate today = LocalDate.now();
+        if (startDate.isBefore(today) || endDate.isBefore(today))
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, "Dates cannot be in the past.");
+
         BorrowRequest newRequest = new BorrowRequest(startDate, endDate, foundBorrower, foundGameCopy);
         borrowingRequestRepository.save(newRequest);
         return newRequest;
+    }
+
+    //new
+    public List<BorrowRequest> findAllRequests()
+    {
+        List<BorrowRequest> requests = borrowingRequestRepository.findAll();
+        return requests;
+    }
+
+    /**
+     * Finds all borrowing requests made by a given borrower.
+     * @param borrowerId the ID of the borrower
+     * @return list of BorrowRequest entities
+     */
+    public List<BorrowRequest> findRequestsByBorrower(int borrowerId) {
+        return borrowingRequestRepository.findByBorrowerId(borrowerId);
     }
 
     /**

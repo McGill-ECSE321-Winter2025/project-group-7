@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.EventResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Event;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.EventService;
 
+@CrossOrigin(origins = "http://localhost:8090")
 @RestController
 public class EventController {
     @Autowired
@@ -56,7 +58,7 @@ public class EventController {
      * @return the updated Event including id and response timestamp
      */
     @PutMapping("/events/{id}")
-    public EventResponseDto updateEvent(@PathVariable int id, @RequestBody EventDto event)
+    public EventResponseDto updateEvent(@PathVariable("id") int id, @RequestBody EventDto event)
     {
         return new EventResponseDto(eventService.updateEvent(id, event));
     }
@@ -67,8 +69,19 @@ public class EventController {
      * @return the deleted Event including id and response timestamp
      */
     @DeleteMapping("/events/{id}")
-    public EventResponseDto deleteEvent(@PathVariable int id)
+    public EventResponseDto deleteEvent(@PathVariable("id") int id)
     {
         return new EventResponseDto(eventService.deleteEvent(id));
+    }
+
+    /**
+     * Returns the Event with ID eventID.
+     * @param id the ID of the event to return
+     * @return the Event including id and response timestamp
+     */
+    @GetMapping("/events/{id}")
+    public EventResponseDto findEventById(@PathVariable("id") int id)
+    {
+        return new EventResponseDto(eventService.findEventById(id));
     }
 }

@@ -145,6 +145,7 @@ public class EventService {
     {
         Event eventToDelete = findEventById(eventID);
         registrationRepository.deleteByKey_Event(eventToDelete);
+        eventGameRepository.deleteByKey_Event(eventToDelete);
         eventRepository.delete(eventToDelete);
         return eventToDelete;
     }

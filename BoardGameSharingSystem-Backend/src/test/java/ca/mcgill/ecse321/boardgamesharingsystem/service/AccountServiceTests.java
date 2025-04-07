@@ -1,24 +1,23 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -31,6 +30,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
@@ -44,6 +44,8 @@ public class AccountServiceTests {
     private GameOwnerRepository gameOwnerRepository;
     @Mock
     private GameCopyRepository gameCopyRepository;
+    @Mock
+    private BorrowRequestRepository borrowRequestRepository;
     @InjectMocks
     private AccountService accountService;
     
@@ -134,6 +136,34 @@ public class AccountServiceTests {
         assertEquals("No userAccount found with id 42", exception.getMessage());
     }
 
+    @Test
+    public void testUpdateValidUserAccount()
+    {
+        //Arrange
+        UserAccount userToUpdate = new UserAccount(NAME, EMAIL, PASSWORD);
+        when(userAccountRepository.findUserAccountById(42)).thenReturn(userToUpdate);
+        String newName = "Mitski";
+        String newEmail = "mitski@mail.com";
+        String newPassword = "TsukiNoHime";
+
+        AuthRequest request = new AuthRequest();
+        request.setUsername(newName);
+        request.setEmail(newEmail);
+        request.setPassword(newPassword);
+        
+        when(userAccountRepository.findUserAccountByName("Mitski")).thenReturn(null);
+        when(userAccountRepository.save(userToUpdate)).thenReturn(userToUpdate);
+        
+        //Act
+        UserAccount updatedUserAccount = accountService.updateUserAccount(42, request);
+
+        //Assert
+        assertNotNull(updatedUserAccount);
+        assertEquals(newName, updatedUserAccount.getName());
+        assertEquals(newEmail, updatedUserAccount.getEmail());
+        assertEquals(newPassword, updatedUserAccount.getPassword());
+    }
+    
     @Test
     public void testValidLogin() {
         //Arrange 

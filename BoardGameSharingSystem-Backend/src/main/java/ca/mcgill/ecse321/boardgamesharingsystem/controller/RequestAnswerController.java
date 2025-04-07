@@ -1,15 +1,27 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.RequestAnswerDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.RequestAnswerResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.RequestAnswer;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/requestAnswer")
+@CrossOrigin(origins="http://localhost:8090")
 public class RequestAnswerController {
     @Autowired
     private BorrowingService borrowingService;
@@ -23,7 +35,7 @@ public class RequestAnswerController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public RequestAnswerResponseDto createRequestAnswer(
-            @RequestParam int borrowingRequestId,
+            @RequestParam("borrowingRequestId") int borrowingRequestId,
             @RequestBody RequestAnswerDto requestAnswerDto
     ) {
         return new RequestAnswerResponseDto(
@@ -47,7 +59,7 @@ public class RequestAnswerController {
     @PutMapping("/{requestAnswerId}")
     @ResponseStatus(HttpStatus.OK)
     public RequestAnswerResponseDto updateRequestAnswer(
-            @PathVariable int requestAnswerId,
+            @PathVariable("requestAnswerId") int requestAnswerId,
             @RequestBody RequestAnswerDto requestAnswerDto
     ) {
         return new RequestAnswerResponseDto(
@@ -67,7 +79,7 @@ public class RequestAnswerController {
      */
     @DeleteMapping("/{requestAnswerId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteRequestAnswer(@PathVariable int requestAnswerId) {
+    public void deleteRequestAnswer(@PathVariable("requestAnswerId") int requestAnswerId) {
         borrowingService.deleteRequestAnswer(requestAnswerId);
     }
 

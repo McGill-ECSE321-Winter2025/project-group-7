@@ -1,20 +1,22 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+
 import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
-import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
-
-import java.util.List;
 
 @Service
 public class GameOwningService {
@@ -30,6 +32,9 @@ public class GameOwningService {
 
     @Autowired
     private GameCopyRepository gameCopyRepo;
+
+    @Autowired
+    private BorrowRequestRepository borrowRequestRepository;
 
     /**
      * Create a GameOwner from an existing UserAccount.
@@ -144,6 +149,7 @@ public class GameOwningService {
             gameCopyId, 
             gameOwner.getId()));
         }         
+        borrowRequestRepository.deleteByGameCopyId(gameCopyId);
         gameCopyRepo.delete(gameCopy);
         return gameCopy;
     }

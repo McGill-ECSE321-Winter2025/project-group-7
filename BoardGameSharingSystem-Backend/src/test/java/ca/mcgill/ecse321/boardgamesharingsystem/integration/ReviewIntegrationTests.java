@@ -1,20 +1,19 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.sql.Date;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -94,7 +93,7 @@ public class ReviewIntegrationTests {
         //Arrange
         gameId = testGame.getId();
         userId = testUser.getId();
-        url = String.format("/reviews?reviewerId=" + userId + "&gameId=" + gameId);
+        url = String.format("/reviews/" + userId + "/" + gameId);
         ReviewDto request = new ReviewDto(testReview.getReviewDate(), VALID_RATING, VALID_COMMENT, userId, gameId, reviewId);
 
         //Act
@@ -146,7 +145,7 @@ public class ReviewIntegrationTests {
         gameId = testGame.getId();
         userId = testUser.getId();
         reviewId = testReview.getId();
-        url = String.format("/reviews?gameId=" + gameId);
+        url = String.format("/reviews/" + gameId);
 
         //Act
         ResponseEntity<ReviewResponseDto[]> response = restTemplate.getForEntity(url, ReviewResponseDto[].class);
@@ -188,7 +187,7 @@ public class ReviewIntegrationTests {
         if (userId == testUser.getId()){
             userId = 40;
         }
-        url = String.format("/reviews?reviewerId=" + userId + "&gameId=" + gameId);
+        url = String.format("/reviews/" + userId + "/" + gameId);
         ReviewDto request = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, userId, gameId, VALID_MAX_NUM_PLAYERS);
 
         //Act
@@ -212,7 +211,7 @@ public class ReviewIntegrationTests {
        if (gameId == testGame.getId()){
             gameId = 40;
         }
-        url = String.format("/reviews?reviewerId=" + userId + "&gameId=" + gameId);
+        url = String.format("/reviews/" + userId + "/" + gameId);
         ReviewDto request = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, VALID_COMMENT, userId, gameId, VALID_MAX_NUM_PLAYERS);
 
         //Act
@@ -232,7 +231,7 @@ public class ReviewIntegrationTests {
         gameId = testGame.getId();
         userId = testUser.getId();
         reviewId = testReview.getId();
-        url = String.format("/reviews?reviewerId=" + userId + "&gameId=" + gameId);
+        url = String.format("/reviews/" + userId + "/" + gameId);
         ReviewDto request = new ReviewDto(Date.valueOf(LocalDate.now()), 101, VALID_COMMENT, userId, gameId, VALID_MAX_NUM_PLAYERS);
 
         //Act
@@ -252,7 +251,7 @@ public class ReviewIntegrationTests {
         gameId = testGame.getId();
         userId = testUser.getId();
         reviewId = testReview.getId();
-        url = String.format("/reviews?reviewerId=" + userId + "&gameId=" + gameId);
+        url = String.format("/reviews/" + userId + "/" + gameId);
         ReviewDto request = new ReviewDto(Date.valueOf(LocalDate.now()), -1, VALID_COMMENT, userId, gameId, VALID_MAX_NUM_PLAYERS);
 
         //Act
@@ -272,7 +271,7 @@ public class ReviewIntegrationTests {
         gameId = testGame.getId();
         userId = testUser.getId();
         reviewId = testReview.getId();
-        url = String.format("/reviews?reviewerId=" + userId + "&gameId=" + gameId);
+        url = String.format("/reviews/" + userId + "/" + gameId);
         ReviewDto request = new ReviewDto(Date.valueOf(LocalDate.now()), VALID_RATING, null, userId, gameId, VALID_MAX_NUM_PLAYERS);
 
         //Act
@@ -400,7 +399,7 @@ public class ReviewIntegrationTests {
         }
         userId = testUser.getId();
         reviewId = testReview.getId();
-        url = String.format("/reviews?gameId=" + gameId);
+        url = String.format("/reviews/" + gameId);
 
         //Act
         ResponseEntity<ErrorDto> response = restTemplate.getForEntity(url, ErrorDto.class);

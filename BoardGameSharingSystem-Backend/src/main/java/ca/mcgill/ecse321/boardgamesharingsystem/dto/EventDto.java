@@ -24,6 +24,9 @@ public class EventDto {
     private String contactEmail;
     private int creatorId;
 
+    @SuppressWarnings("unused")
+    private EventDto(){}
+
     public EventDto(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, int maxNumParticipants, String location, String description, String contactEmail, int creatorId)
     {
         this.startDate = startDate;

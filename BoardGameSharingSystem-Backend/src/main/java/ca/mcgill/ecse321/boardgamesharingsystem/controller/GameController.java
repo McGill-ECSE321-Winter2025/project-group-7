@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.GameCollectionService;
 
+@CrossOrigin(origins="http://localhost:8090")
 @RestController
 public class GameController {
     @Autowired
@@ -43,7 +45,7 @@ public class GameController {
      */
     @PutMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
-    public GameResponseDto updateGame(@PathVariable int gameId, @RequestBody GameRequestDto gameToUpdate) 
+    public GameResponseDto updateGame(@PathVariable("gameId") int gameId, @RequestBody GameRequestDto gameToUpdate) 
     {
         return new GameResponseDto(gameCollectionService.updateGame(gameId, gameToUpdate));
     }
@@ -70,7 +72,7 @@ public class GameController {
      */
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
-    public GameResponseDto findGameById(@PathVariable int gameId) 
+    public GameResponseDto findGameById(@PathVariable("gameId") int gameId) 
     {
         return new GameResponseDto(gameCollectionService.findGameById(gameId));
     }

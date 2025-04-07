@@ -1,8 +1,11 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +20,13 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.BorrowRequestResponseDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.BorrowRequest;
 import ca.mcgill.ecse321.boardgamesharingsystem.service.BorrowingService;
 
+@CrossOrigin(origins="http://localhost:8090")
 @RestController
 public class BorrowRequestController {
     @Autowired
     private BorrowingService borrowingService;
+
+
 
     /**
      * Creates a new borrowing request.
@@ -31,10 +37,40 @@ public class BorrowRequestController {
      */
     @PostMapping("/borrowrequests")
     @ResponseStatus(HttpStatus.CREATED)
-    public BorrowRequestResponseDto createBorrowingRequest(@RequestParam int gameCopyId, @RequestParam int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
+    public BorrowRequestResponseDto createBorrowingRequest(@RequestParam("gameCopyId") int gameCopyId, @RequestParam("borrowerId") int borrowerId, @RequestBody BorrowRequestResponseDto borrowRequest) 
     {
         return new BorrowRequestResponseDto(borrowingService.createBorrowingRequest(gameCopyId, borrowerId, borrowRequest.getStartDate(), borrowRequest.getEndDate()));
     }
+
+    //new
+    /**
+     * Returns a list of all Borrow Requests.
+     * @return a list of all Borrow Requests
+     */
+    @GetMapping("/borrowrequests/all")
+    public List<BorrowRequestResponseDto> findAllRequests()
+    {
+        List<BorrowRequest> requests = borrowingService.findAllRequests();
+        List<BorrowRequestResponseDto> responses = new ArrayList<>();
+        requests.forEach(borrowRequest -> responses.add(new BorrowRequestResponseDto(borrowRequest)));
+        return responses;
+    }
+
+    /**
+     * Finds all borrowing requests made by a given borrower.
+     * @param borrowerId the ID of the borrower
+     * @return list of BorrowRequestResponseDto
+     */
+    @GetMapping("/borrowrequests/borrower/{borrowerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BorrowRequestResponseDto> findRequestsByBorrower(
+            @PathVariable("borrowerId") int borrowerId) {
+        List<BorrowRequest> requests = borrowingService.findRequestsByBorrower(borrowerId);
+        return requests.stream()
+                       .map(BorrowRequestResponseDto::new)
+                       .toList();
+    }
+    
     
     /**
      * Finds all pending borrowing requests for a game copy.
@@ -43,7 +79,7 @@ public class BorrowRequestController {
      */
     @GetMapping("/borrowrequests/{gameCopyId}/pending")
     @ResponseStatus(HttpStatus.OK)
-    public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable int gameCopyId) {
+    public List<BorrowRequestResponseDto> findPendingBorrowingRequests(@PathVariable("gameCopyId") int gameCopyId) {
         List<BorrowRequest> pendingRequests = borrowingService.findPendingBorrowingRequests(gameCopyId);
     
         return pendingRequests.stream()
@@ -58,7 +94,7 @@ public class BorrowRequestController {
      */
     @GetMapping("/borrowrequests/{gameCopyId}/accepted")
     @ResponseStatus(HttpStatus.OK)
-    public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable int gameCopyId) {
+    public List<BorrowRequestResponseDto> findAcceptedBorrowingRequests(@PathVariable("gameCopyId") int gameCopyId) {
         List<BorrowRequest> acceptedRequests = borrowingService.findAcceptedBorrowingRequests(gameCopyId);
 
         return acceptedRequests.stream()
@@ -74,7 +110,7 @@ public class BorrowRequestController {
     
     @DeleteMapping("/borrowrequests/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BorrowRequestResponseDto declinePendingBorrowingRequest(@PathVariable int id) 
+    public BorrowRequestResponseDto declinePendingBorrowingRequest(@PathVariable("id") int id) 
     {
         return new BorrowRequestResponseDto(borrowingService.declinePendingBorrowingRequest(id));
     }
@@ -85,7 +121,7 @@ public class BorrowRequestController {
      */
     @PutMapping("/borrowrequests/{id}/accept")
     @ResponseStatus(HttpStatus.OK)
-    public BorrowRequestResponseDto acceptPendingBorrowingRequest(@PathVariable int id)
+    public BorrowRequestResponseDto acceptPendingBorrowingRequest(@PathVariable("id") int id)
     {
         return new BorrowRequestResponseDto(borrowingService.acceptPendingBorrowingRequest(id));
     }
