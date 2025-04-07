@@ -248,22 +248,13 @@
                     alert('Please select dates to borrow the game');
     
                 }
-    
-                else if (startDateObj1 >= endDateObj1) {
-                    alert('The start date must be before the end date');
-                }
-    
-                else if (startDateObj1 < today) {
-                    alert('The request cannot occur on these dates')
-                }
-    
                else {
                 let startDateObj = new Date(selectedDate1.value);
                 let endDateObj = new Date(selectedDate2.value);
                 console.log(currentUserId.value)
                 console.log(selectedUserId.value)
             
-                requestService.createRequest(selectedUserId.value, currentUserId.value, {
+                await requestService.createRequest(selectedUserId.value, currentUserId.value, {
                     startDate: startDateObj,
                     endDate: endDateObj
                 })
@@ -271,15 +262,11 @@
     
             }}
             catch(err) {
-                error.value = 'Failed to load game. Please try again later.'
-                console.error('Error creating the borrow request:', err)
-    
+                console.error('Error creating the borrow request:', err.response?.data || err.message);
+                const errorMsg = err.response?.data?.errors?.[0] || err.message || 'Create request failed. Please try again.';
+                error.value = 'Create request failed: ' + errorMsg;
+                alert(error.value);
             }
-    
-    
-    
+
         };
-    
-    
-    
     </script>

@@ -457,7 +457,6 @@ export default {
       });
 
       const checkGameOwnerStatus = async () => {
-      try {
         const result = await gameOwningService.findGameOwner(authStore.user.id)
         if (!result) {
           isGameOwner.value = false
@@ -465,10 +464,6 @@ export default {
           isGameOwner.value = result.userId !== -1
           console.log('result.userId:', result.userId);
         }
-      } catch (error) {
-        console.error('Error checking game owner status:', error)
-        isGameOwner.value = false
-      }
     }
       
       // Computed placeholders to show the current user's data
