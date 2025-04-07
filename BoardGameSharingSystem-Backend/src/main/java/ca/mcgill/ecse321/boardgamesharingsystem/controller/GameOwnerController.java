@@ -26,7 +26,7 @@ public class GameOwnerController {
      */
     @PutMapping("/gameowners/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public GameOwnerResponseDto createGameOwner(@PathVariable int id ){
+    public GameOwnerResponseDto createGameOwner(@PathVariable("id") int id ){
         GameOwner gameOwner = gameOwningService.createGameOwner(id);
         return new GameOwnerResponseDto(gameOwner);
     }
@@ -38,8 +38,9 @@ public class GameOwnerController {
      */
     @GetMapping("/gameowners/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public GameOwnerResponseDto findGameOwner(@PathVariable int id){
+    public GameOwnerResponseDto findGameOwner(@PathVariable("id") int id){
         GameOwner gameOwner = gameOwningService.findGameOwner(id);
         return new GameOwnerResponseDto(gameOwner);
     }
+    
 }

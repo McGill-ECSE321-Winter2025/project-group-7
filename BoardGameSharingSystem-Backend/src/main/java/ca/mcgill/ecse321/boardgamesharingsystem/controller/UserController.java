@@ -108,4 +108,15 @@ public class UserController {
     {
         return new GameOwnerResponseDto(accountService.toggleUserToGameOwner(id));
     }
+    /** 
+     * Forcefully Toggles a UserAccount from Player to GameOwner
+     * @param id the ID of the UserAccount to be toggled
+     * @return the newly toggled GameOwner
+     */
+    @PutMapping("/users/{id}/forceToGameOwner")
+    @ResponseStatus(HttpStatus.OK)
+    public GameOwnerResponseDto forcetoggleUserToGameOwner(@PathVariable("id") int id)
+    {
+        return new GameOwnerResponseDto(accountService.forceToggleUserToGameOwner(id));
+    }
 }

@@ -219,6 +219,36 @@ public class AccountService {
         }
         
     }
+
+    /** 
+     * Forcefully Toggles a User from Player to GameOwner by skipping hasGames check
+     * @param userAccountId the ID of the UserAccount to toggle
+     * @return the GameOwner if toggled
+     */
+    public GameOwner forceToggleUserToGameOwner (int userAccountId) {
+        UserAccount user = userRepo
+            .findById(userAccountId)
+            .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
+                "No userAccount found with id %d", userAccountId)));
+        
+        GameOwner gameOwner = gameOwnerRepo
+            .findById(userAccountId)
+            .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
+                "No gameOwner found with id %d", userAccountId)));
+        
+        List<GameCopy> games = gameCopyRepo.findByOwnerId(userAccountId);
+
+        if (gameOwner.getUser() == null) {
+            gameOwner.setUser(user);
+            gameOwner = gameOwnerRepo.save(gameOwner);
+            return gameOwner;
+        }
+        else {
+            throw new BoardGameSharingSystemException(HttpStatus.BAD_REQUEST, String.format("GameOwner already associated with userAccount with id %d",
+            user.getId()));
+        }
+        
+    }
     
     /** 
      * Validates the username, email and password to ensure they are not null

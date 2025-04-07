@@ -77,4 +77,15 @@ export const userService = {
         throw error
       }
     },
+
+    // PUT /users/{id}/forceToGameOwner
+    async forceToggleUserToGameOwner(id) {
+      try {
+        const response = await api.put(`/users/${id}/forceToGameOwner`)
+        return response.data
+      } catch (error) {
+        console.error('Error force toggling user to game owner:', error)
+        throw error
+      }
+    },
   }

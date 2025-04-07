@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { requestService } from '@/services/requestService'
 import { useAuthStore } from '@/stores/authStore'
@@ -73,10 +73,11 @@ const filterByGame = ref(false)
 const filterByDate = ref(false)
 const requests = ref([])
 const isGameOwner = ref(false)
+const currentUserId = computed(() => authStore.user.id);
 
 const checkGameOwnerStatus = async () => {
   try {
-    const result = await gameOwningService.findGameOwner(authStore.user.id)
+    const result = await gameOwningService.findGameOwner(currentUserId.value)
     if (!result) {
       isGameOwner.value = false
     } else {
@@ -91,7 +92,7 @@ const checkGameOwnerStatus = async () => {
 
 const fetchPendingRequestsForOwnedGames = async () => {
   try {
-    const gameCopies = await gameCopyService.findGameCopiesForGameOwner(authStore.user.id)
+    const gameCopies = await gameCopyService.findGameCopiesForGameOwner(currentUserId.value)
     let allRequests = []
     for (const copy of gameCopies) {
       const pendingRequests = await requestService.findPendingRequests(copy.id)
@@ -140,12 +141,23 @@ const goToHistory = () => {
   router.push('/request-historys')
 }
 
-onMounted(async () => {
-  await checkGameOwnerStatus()
-  if (isGameOwner.value) {
-    await fetchPendingRequestsForOwnedGames()
-  }
-})
+watch(
+  () => authStore.user,
+  async (user) => {
+    if (!user || !user.isAuthenticated) {
+      router.push('/')
+      return
+    }
+
+    if (user.id) {
+      await checkGameOwnerStatus()
+      if (isGameOwner.value) {
+        await fetchPendingRequestsForOwnedGames()
+      }
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>

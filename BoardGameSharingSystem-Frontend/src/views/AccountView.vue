@@ -544,7 +544,7 @@ export default {
                 });
               });
 
-              await userService.toggleUserToGameOwner(authStore.user.id);
+              //await userService.toggleUserToGameOwner(authStore.user.id); now unnecessary due to forceToggle work around
               isGameOwner.value = true;
 
             } else {
@@ -721,6 +721,7 @@ export default {
           const newGameResponse = await gameService.createGame(newGame.value);
           const gameOwnerId = currentUserId.value;
           const gameId = newGameResponse.id;
+          if(!isGameOwner.value) await userService.forceToggleUserToGameOwner(gameOwnerId);
           await gameCopyService.addGameCopyToGameOwner(gameOwnerId, gameId);
           ownedGames.value.push({
             game: newGameResponse
@@ -739,7 +740,7 @@ export default {
         try {
           const gameId = selectedExistingGame.value;
           const gameOwnerId = currentUserId.value;
-
+          if(!isGameOwner.value) await userService.forceToggleUserToGameOwner(gameOwnerId);
           await gameCopyService.addGameCopyToGameOwner(gameOwnerId, gameId);
 
           const selectedGame = getSelectedGameDetails();
