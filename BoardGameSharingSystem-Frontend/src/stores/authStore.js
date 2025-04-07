@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { gameOwningService } from '@/services/gameOwningService'
 
 const axiosClient = axios.create({
     baseURL: "http://localhost:8080",
@@ -12,6 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
         username: null,
         userEmail: null,
         isAuthenticated: false,
+        isGameOwner: false
     });
 
     async function login(username, email, password) {
@@ -33,6 +35,8 @@ export const useAuthStore = defineStore('auth', () => {
             user.value.username = name;
             user.value.userEmail = returnedEmail;
             user.value.isAuthenticated = true;
+            const gameOwnerResponse = await gameOwningService.findGameOwner(id);
+            user.value.isGameOwner = gameOwnerResponse.data ? gameOwnerResponse.data.isGameOwner : false;
 
         } catch (error) {
             console.error('Login failed:', error.response?.data?.errors || error.message);
@@ -46,6 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value.username = null;
         user.value.userEmail = null;
         user.value.isAuthenticated = false;
+        user.value.isGameOwner = false;
     }
 
     return { user, login, logout }

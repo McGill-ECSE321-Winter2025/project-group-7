@@ -516,6 +516,7 @@ export default {
         if (isGameOwner.value) {
           await userService.toggleUserToPlayer(authStore.user.id);
           isGameOwner.value = false;
+          authStore.user.isGameOwner = false;
         } 
         
         // Toggling to GAME OWNER (user is currently a player)
@@ -550,6 +551,10 @@ export default {
             } else {
               throw err; // Unknown error, bubble it up
             }
+          }
+          finally
+          {
+            authStore.user.isGameOwner = true
           }
         }
 

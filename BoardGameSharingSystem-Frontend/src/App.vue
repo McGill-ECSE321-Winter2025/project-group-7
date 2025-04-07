@@ -1,10 +1,33 @@
 <script setup>
 import { useRoute, useRouter, RouterLink, RouterView } from 'vue-router'
+import {ref, computed, watch} from 'vue'
+import { useAuthStore } from './stores/authStore';
+import { gameOwningService } from './services/gameOwningService';
 const route = useRoute()
 const router = useRouter()
 function goToHomePage() {
   router.push('/games')
 }
+const authStore = useAuthStore()
+console.log('isGameOwner (from store):', authStore.user.isGameOwner);
+const isGameOwner = computed(() => authStore.user.isGameOwner);
+const currentUserId = ref(authStore.user.id) // ensure user is loaded before this
+watch(
+  () => authStore.user.id,
+  async (newId) => {
+    if (authStore.user.isAuthenticated && newId) {
+      try {
+        const result = await gameOwningService.findGameOwner(newId)
+        authStore.user.isGameOwner = result?.userId !== -1
+        console.log('Game owner status updated:', authStore.user.isGameOwner)
+      } catch (err) {
+        console.error('Failed to fetch game owner status:', err)
+        authStore.user.isGameOwner = false
+      }
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -15,7 +38,7 @@ function goToHomePage() {
         <div class="nav-left">
           <RouterLink to="/games">Game</RouterLink>
           <RouterLink to="/events">Event</RouterLink>
-          <RouterLink to="/requests">Request</RouterLink>
+          <RouterLink v-if="isGameOwner" to="/requests">Request</RouterLink>
         </div>
 
       <!-- Account icon and Link on the right -->

@@ -45,15 +45,15 @@ const handleSignUp = async () => {
       password: password.value,
     });
     
-    // Log the user in immediately after successful sign-up
-    await authStore.login(username.value, email.value, password.value);
-
     // Create a game owner placeholder for user after successful sign-up (to switch to later if toggling)
     await gameOwningService.createGameOwner(response.data.id);
     console.log("User is now a gameOwner");
     await userService.toggleUserToPlayer(response.data.id);
     console.log("User has been toggled to player");
     console.log("Placeholder GameOwner account successfully created");
+
+    // Log the user in immediately after successful sign-up
+    await authStore.login(username.value, email.value, password.value);
     
     router.push('/games');
 
