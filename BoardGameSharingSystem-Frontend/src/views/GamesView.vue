@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import { gameService } from '@/services/gameService';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
+import { gameCopyService } from '@/services/gameCopyService';
 
 let games = ref([]);
 const error = ref(null);
@@ -163,7 +164,7 @@ const show = () => {
 }
 
 .details-button{
-  margin-top: 10vh;
+  margin-top: 9vh;
   background-color:transparent ;
   border-color: white;
   cursor: pointer;

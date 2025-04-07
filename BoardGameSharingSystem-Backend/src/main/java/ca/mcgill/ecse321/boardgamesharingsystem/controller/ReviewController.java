@@ -36,7 +36,7 @@ public class ReviewController {
      */
     @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewResponseDto createReviewForGame(@RequestParam int reviewerId, @RequestParam int gameId, @RequestBody ReviewDto review) {
+    public ReviewResponseDto createReviewForGame(@RequestParam("reviewerId") int reviewerId, @RequestParam("gameId") int gameId, @RequestBody ReviewDto review) {
         return new ReviewResponseDto(reviewService.createReview(review, reviewerId, gameId));
     }
 
@@ -47,7 +47,7 @@ public class ReviewController {
      */
     @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponseDto> findReviewsForGame(@RequestParam int gameId) {
+    public List<ReviewResponseDto> findReviewsForGame(@RequestParam("gameId") int gameId) {
         List <Review> reviewsFound = reviewService.findReviewsForGame(gameId);
         List <ReviewResponseDto> responses = new ArrayList<>();
         reviewsFound.forEach(review -> responses.add(new ReviewResponseDto(review)));
@@ -61,7 +61,7 @@ public class ReviewController {
      */
     @PutMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto updateReview(@PathVariable int id, @RequestBody ReviewDto review) {
+    public ReviewResponseDto updateReview(@PathVariable("id") int id, @RequestBody ReviewDto review) {
         return new ReviewResponseDto(reviewService.updateReview(review));
     }
     /**
@@ -71,7 +71,7 @@ public class ReviewController {
      */
     @DeleteMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewResponseDto deleteReview(@PathVariable int id) {
+    public ReviewResponseDto deleteReview(@PathVariable("id") int id) {
         return new ReviewResponseDto(reviewService.deleteReview(id));
     }
 
