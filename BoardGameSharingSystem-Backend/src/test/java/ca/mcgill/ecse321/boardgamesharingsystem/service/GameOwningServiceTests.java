@@ -1,20 +1,33 @@
 package ca.mcgill.ecse321.boardgamesharingsystem.service;
 
-import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
-import ca.mcgill.ecse321.boardgamesharingsystem.model.*;
-import ca.mcgill.ecse321.boardgamesharingsystem.repo.*;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+
+import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystemException;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.Game;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
+import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class GameOwningServiceTests {
@@ -30,6 +43,8 @@ public class GameOwningServiceTests {
 
     @Mock
     private GameCopyRepository gameCopyRepository;
+    @Mock
+    private BorrowRequestRepository borrowRequestRepository;
 
     @InjectMocks
     private GameOwningService gameOwningService;

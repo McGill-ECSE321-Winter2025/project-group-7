@@ -14,6 +14,7 @@ import ca.mcgill.ecse321.boardgamesharingsystem.exception.BoardGameSharingSystem
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameCopy;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.GameOwner;
 import ca.mcgill.ecse321.boardgamesharingsystem.model.UserAccount;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.BorrowRequestRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameCopyRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameOwnerRepository;
 import ca.mcgill.ecse321.boardgamesharingsystem.repo.UserAccountRepository;
@@ -32,6 +33,8 @@ public class AccountService {
     private GameOwnerRepository gameOwnerRepo;
     @Autowired
     private GameCopyRepository gameCopyRepo;
+    @Autowired
+    private BorrowRequestRepository borrowRequestRepository;
     
     /** 
      * Searches the database for a UserAccount given an ID and returns it if found
@@ -89,6 +92,7 @@ public class AccountService {
                 "No userAccount found with id %d", userAccountId)));
         gameCopyRepo.deleteByOwnerId(userAccountId);
         GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(userAccountId);
+        borrowRequestRepository.deleteByBorrowerId(userAccountId);
         if(gameOwner != null) gameOwnerRepo.delete(gameOwner);
         userRepo.delete(user);
         return user;
