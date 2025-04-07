@@ -72,7 +72,7 @@ public class GameController {
      */
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
-    public GameResponseDto findGameById(@PathVariable int gameId) 
+    public GameResponseDto findGameById(@PathVariable("gameId") int gameId) 
     {
         return new GameResponseDto(gameCollectionService.findGameById(gameId));
     }
