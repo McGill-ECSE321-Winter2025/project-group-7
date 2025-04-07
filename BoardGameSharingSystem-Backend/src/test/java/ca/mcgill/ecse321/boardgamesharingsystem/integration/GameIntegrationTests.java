@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.ErrorDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameRequestDto;
 import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameResponseDto;
+import ca.mcgill.ecse321.boardgamesharingsystem.repo.GameRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -30,6 +32,8 @@ import ca.mcgill.ecse321.boardgamesharingsystem.dto.GameResponseDto;
 public class GameIntegrationTests {
     @Autowired
     private TestRestTemplate restTemplate;
+    @Autowired
+    private GameRepository gameRepo;
 
     private static final String VALID_TITLE = "Connect4";
     private static final int VALID_MIN_NUM_PLAYERS = 2;
@@ -43,6 +47,11 @@ public class GameIntegrationTests {
     private static final String UPDATED_VALID_DESCRIPTION = "A twist to the classic Connect4 game that can now be played with up to 4 players!";   
 
     private int testGameId; //id of Connect4
+
+    @BeforeAll
+    public void setup() {
+        gameRepo.deleteAll();
+    }
 
     @Test
     @Order(2)
