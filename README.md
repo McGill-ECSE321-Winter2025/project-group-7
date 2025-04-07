@@ -59,7 +59,7 @@ Follow these steps for running the app:
 
 1. Ensure that a PostgreSQL user with the name of postgres and password ecse321 exists, using port 5432
 2. Ensure that a PostgreSQL database with the name board_game_sharing_system exists
-3. Ensure that you have node and npm installed
+3. Ensure that you have node and npm installed ( run the `npm install` command on the terminal for npm installation)
     ```bash
     $ node -v
     v10.21.0 (or higher)
@@ -68,9 +68,8 @@ Follow these steps for running the app:
     ```
     *The frontend uses port 8090. Please ensure that the port is not taken by another process*
 5. Open a command terminal and from BoardGameSharingSystem-Backend run the command `.\gradlew bootRun`
-6. Open another terminal and from BoardGameSharingSystem-Frontend run the command `npm install` (only for the first time when you run the system, to install necessary packages)
-7. In the same terminal as the previous step, run the command `npm run dev`
-8. Copy the link generated on the frontend terminal (the link afetr " ➜  Local:" into a browser of your choice to view the application
+6. In the same terminal as the previous step, run the command `npm run dev`
+7. Copy the link generated on the frontend terminal (the link afetr " ➜  Local:" into a browser of your choice to view the application
    
 Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
 
