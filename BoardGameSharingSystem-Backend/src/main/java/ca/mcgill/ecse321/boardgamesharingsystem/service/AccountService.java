@@ -87,7 +87,9 @@ public class AccountService {
             .findById(userAccountId)
             .orElseThrow(() -> new BoardGameSharingSystemException(HttpStatus.NOT_FOUND, String.format(
                 "No userAccount found with id %d", userAccountId)));
-
+        gameCopyRepo.deleteByOwnerId(userAccountId);
+        GameOwner gameOwner = gameOwnerRepo.findGameOwnerById(userAccountId);
+        if(gameOwner != null) gameOwnerRepo.delete(gameOwner);
         userRepo.delete(user);
         return user;
     }
