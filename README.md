@@ -34,17 +34,8 @@ This project is focused on providing a seamless experience for board game enthus
 
 ## Installing, Building, Testing and Running the Application 
 
-Running the app locally requires Java and PostgreSQL 
-
-```
-$ java --version
-java 21.0.1 2023-10-17 LTS
-Java(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)
-Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
-$ psql --version
-psql (PostgreSQL) 17.2
-```
-This project uses java 21. Furthermore the app requires a database. **Create a database** using:
+Running the app locally requires Java and PostgreSQL. Ensure you have java version 21.0.1 or later, and psql version 17.2 or later.
+Furthermore the app requires a database. **Create a database** using the following steps :
 ```SQL
 psql --username postgres
 Password for user postgres: 
@@ -52,54 +43,43 @@ postgres=# CREATE DATABASE board_game_sharing_system
 ```
 *Note that the password for the user postgres is ecse321. Details of database configuration can be found in the app.properties file*
 
-**Steps to build the project:**
+<ins>**Steps to Build the Project:**</ins> <br />
+<br />
+Follow the steps at this link:   [Build Instructions](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report#build-system)
 
-```bash
-## . is project-group7
-$ cd BoardGameSharingSystem-Backend
-$ ./gradlew build -xtest
+<ins>**Steps to Run the Tests:**</ins> <br />
+<br />
+Follow the steps at these links: <br />
+[Service Tests](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report#general-standards) <br />
+[Integration Tests](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report#test-coverage-report-criteria--results)
 
-```
-**Steps to run the tests:**
-```bash
-## . is project-group7
-$ cd BoardGameSharingSystem-Backend
-$ ./gradlew test
+<ins>**Steps to Run The Website (frontend)**</ins>  <br />
+<br />
+Follow these steps for running the app:
 
-```
+1. Ensure that a PostgreSQL user with the name of postgres and password ecse321 exists, using port 5432
+2. Ensure that a PostgreSQL database with the name board_game_sharing_system exists
+3. Ensure that you have node and npm installed
+    ```bash
+    $ node -v
+    v10.21.0 (or higher)
+    $ npm -v
+    6.14.4 (or higher)
+    ```
+    *The frontend uses port 8090. Please ensure that the port is not taken by another process*
+5. Open a command terminal and from BoardGameSharingSystem-Backend run the command `.\gradlew bootRun`
+6. Open another terminal and from BoardGameSharingSystem-Frontend run the command `npm run dev`
+7. Copy the link generated on the frontend terminal into a browser of your choice to view the application
+   
+Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
 
-**Steps to generate the REST API documentation:**
-
+<ins>**Steps to generate the REST API documentation:**</ins> 
+<br />
 ```bash
 ## . is project-group7
 $ cd BoardGameSharingSystem-Backend
 $ ./gradlew bootRun
 
-```
-Once the application is running, it is normal that it only reaches 80%. Click this link http://localhost:8080/swagger-ui.html to be amazed by this technology. To find the **test coverage report**, please consult [Software-Quality-Assurance-Report](https://github.com/McGill-ECSE321-Winter2025/project-group-7/wiki/Software-Quality-Plan-and-Report)
-
-
-**Steps to run the frontend**
-
-Ensure that you have node and npm installed
-```bash
-$ node -v
-v10.21.0 (or higher)
-$ npm -v
-6.14.4 (or higher)
-```
-
-```bash
-## . is project-group7
-$ cd BoardGameSharingSystem-Frontend
-$ npm install
-$ npm run dev
-```
-*The frontend uses port 8090. Please ensure that the port is not taken by another process*
-
-On windows
-```
-netstat -ano |find /i "8090"
 ```
 
 ## Team Management
