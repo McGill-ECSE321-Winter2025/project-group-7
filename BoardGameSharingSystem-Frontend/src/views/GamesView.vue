@@ -17,7 +17,18 @@ const router = useRouter();
 const findAllGames = async () => {
   try{
     let fetchedGames = await gameService.findAllGames()
-    games.value = fetchedGames;
+    const gamesWithCopies = [];
+    for (const game of fetchedGames) {
+      try {
+        const copies = await gameCopyService.findGameCopiesFromGame(game.id);
+        if (copies.length > 0) {
+          gamesWithCopies.push(game);
+        }
+      } catch (copyErr) {
+        console.warn(`Error checking copies for game ID ${game.id}`, copyErr);
+      }
+    }
+    games.value = gamesWithCopies;
   }catch (err){
     error.value = 'Failed to load available games. PLease try later'
     console.error('Error loading games', err)
