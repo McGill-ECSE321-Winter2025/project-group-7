@@ -59,7 +59,7 @@ Follow these steps for running the app:
 
 1. Ensure that a PostgreSQL user with the name of postgres and password ecse321 exists, using port 5432
 2. Ensure that a PostgreSQL database with the name board_game_sharing_system exists
-3. Ensure that you have node and npm installed
+3. Ensure that you have node and npm installed ( run the `npm install` command on the terminal)
     ```bash
     $ node -v
     v10.21.0 (or higher)
